@@ -28,6 +28,6 @@
 		"skipLibCheck": true,
 		"moduleDetection": "force"
 	},
-	"include": ["src/**/*", "lib/**/*"], // <-- ADD THIS LINE
+	"include": ["src/**/*", "lib/**/*", "types"], // <-- ADD THIS LINE
 	"exclude": ["node_modules", "dist"]
 }

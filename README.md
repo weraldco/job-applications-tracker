@@ -5,6 +5,7 @@ A comprehensive job application tracking application built with Next.js, TypeScr
 ## Features
 
 ### 🎯 Core Features
+
 - **Job Application Tracker**: Centralized list of job applications with filtering and search
 - **AI-Powered Job Summarizer**: Automatically extract key information from job postings
 - **Analytics Dashboard**: Visual insights into job search performance
@@ -12,6 +13,7 @@ A comprehensive job application tracking application built with Next.js, TypeScr
 - **Status Management**: Track applications through different stages
 
 ### 🔧 Technical Features
+
 - **Authentication**: Secure login with NextAuth.js (Google, GitHub, Credentials)
 - **Database**: SQLite with Prisma ORM
 - **UI Components**: Modern, responsive design with Tailwind CSS
@@ -21,28 +23,33 @@ A comprehensive job application tracking application built with Next.js, TypeScr
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd job-application-tracker
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env.local
 ```
 
 Edit `.env.local` with your configuration:
+
 ```env
 DATABASE_URL="file:./dev.db"
 NEXTAUTH_URL="http://localhost:3000"
@@ -55,12 +62,14 @@ GITHUB_CLIENT_SECRET="your-github-client-secret"
 ```
 
 4. Set up the database:
+
 ```bash
 npx prisma generate
 npx prisma migrate dev
 ```
 
 5. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -122,6 +131,7 @@ The application uses the following main entities:
 ## API Endpoints
 
 ### Jobs
+
 - `GET /api/jobs` - Get all jobs for authenticated user
 - `POST /api/jobs` - Create new job application
 - `GET /api/jobs/[id]` - Get specific job
@@ -129,9 +139,11 @@ The application uses the following main entities:
 - `DELETE /api/jobs/[id]` - Delete job
 
 ### AI
+
 - `POST /api/ai/summarize-job` - Summarize job posting
 
 ### Authentication
+
 - `GET /api/auth/[...nextauth]` - NextAuth.js endpoints
 
 ## Technologies Used
@@ -159,6 +171,7 @@ This project is licensed under the MIT License.
 ## Demo
 
 For demo purposes, you can sign in with:
+
 - Email: `demo@example.com`
 - Password: `demo123`
 

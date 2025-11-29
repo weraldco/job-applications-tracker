@@ -1,55 +1,54 @@
 'use client';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 export default function PdfUploader() {
-	const [file, setFile] = useState<File | null>(null);
-	const [loading, setLoading] = useState(false);
-	const [text, setText] = useState<string>('');
-
-	const handleUpload = async () => {
-		if (!file) return;
-
-		setLoading(true);
-
-		const formData = new FormData();
-		formData.append('pdf', file);
-
+	const handleLogin = async () => {
 		try {
-			const res = await fetch('/api/parse-pdf', {
-				method: 'POST',
-				body: formData,
+			const { data, error } = await supabase.auth.signInWithPassword({
+				email: 'werald.opolento@gmail.com',
+				password: 'password123',
+			});
+			const session = await supabase.auth.getSession();
+			const token = session.data.session?.access_token;
+
+			const res = await fetch('http://localhost:4000/api/jobs', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`, // <-- IMPORTANT
+				},
 			});
 
-			const data = await res.json();
-			setText(data.text || 'No text found.');
-		} catch (err) {
-			console.error(err);
-			setText('Error parsing PDF');
-		} finally {
-			setLoading(false);
+			if (error) {
+				console.log('ERROR', error);
+			}
+			console.log('DATA', data);
+			const response = await res.json();
+			console.log('RES', response);
+		} catch (error) {
+			console.error('Something went wrong!');
 		}
 	};
 
+	const handleSignUp = async () => {
+		try {
+			const { data, error } = await supabase.auth.signUp({
+				email: 'werald.opolento@gmail.com',
+				password: 'password123',
+			});
+
+			if (error) {
+				console.log('Error', error);
+			}
+			console.log('Data', data);
+		} catch (error) {
+			console.log('Error signup');
+		}
+	};
 	return (
 		<div className="flex flex-col gap-4 w-full max-w-md">
-			<Input
-				type="file"
-				accept="application/pdf"
-				onChange={(e) => setFile(e.target.files?.[0] || null)}
-			/>
-			<Button onClick={handleUpload} disabled={!file || loading}>
-				{loading ? 'Parsing...' : 'Upload & Parse PDF'}
-			</Button>
-
-			{text && (
-				<div className="mt-4 p-2 border rounded bg-gray-50">
-					<h3 className="font-semibold mb-2">Extracted Text:</h3>
-					<pre className="whitespace-pre-wrap">{text}</pre>
-				</div>
-			)}
+			<button onClick={handleLogin}>Login</button>
+			<button onClick={handleSignUp}>Sign up</button>
 		</div>
 	);
 }

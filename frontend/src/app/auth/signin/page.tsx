@@ -10,22 +10,21 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { supabase } from '../../../lib/supabase';
 
 import { Lock, Mail } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+// import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 export default function SignInPage() {
 	const router = useRouter();
-	const searchParams = useSearchParams();
+	// const searchParams = useSearchParams();
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-
-	const callbackUrl = searchParams.get('callbackUrl') ?? '/';
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -33,25 +32,22 @@ export default function SignInPage() {
 		setIsLoading(true);
 
 		try {
-			const result = await signIn('credentials', {
+			const { data, error } = await supabase.auth.signInWithPassword({
 				email,
 				password,
-				redirect: false,
-				callbackUrl,
 			});
 
-			console.log('Res', result);
-
-			if (result?.error) {
-				console.log(result.error);
+			if (error) {
+				toast.error('ERROR MESSAGE', { description: error.message });
 				return;
 			}
 
-			toast.success('Welcome back', {
-				description: 'You have been signed in successfully.',
+			toast.success('SUCCESS', {
+				description: 'Successfully Login, welcome back!',
 			});
 
-			router.push(callbackUrl);
+			console.log('DATA', data);
+			router.push('/');
 			router.refresh();
 		} catch (error) {
 			toast.error('Sign in failed', {

@@ -146,6 +146,158 @@ then in the deleteBtn
     deleteJobMutation.mutate(id)
 ```
 
-# JEST TEST UNIT
+## USING SUPABASE AUTHENTICATION
 
-1.
+### FRONTEND
+
+1. Install the npm packages
+
+```
+    npm install @supabase/supabase-js
+
+```
+
+2.  create /lib/supabase.ts and put this code.
+
+```
+    import { createClient } from '@supabase/supabase-js';
+
+    export const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+```
+
+- dont forget to provide a SUPABASE URL and SUPABASE ANON KEY
+- **SUPABASE_URL**-> Project > Settings > Data API -> get the Project URL
+- **SUPABASE_ANNON** -> Project > Settings > API Keys -> Legacy anon, service_role API keys -> get anon public
+
+3. In your sign-up form handlesubmit, you can use this code that sends data to supabase and saves it
+
+```
+    const { data, error } = await supabase.auth.signUp({
+    email: 'john@example.com',
+    password: 'password123',
+    });
+```
+
+- You can also add fields like
+
+  - display name
+  - phone
+
+- one the sign-up push through, supabase will send you to verify email address
+  note: invalid email address provider cannot register.
+
+4. In your sign-up button you can use this code:
+
+```
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: 'john@example.com',
+        password: 'password123',
+    });
+```
+
+- What You Get After Login
+  **Supabase stores:**
+
+  1.  access_token (JWT)
+  2.  refresh_token
+  3.  user session inside the browser automatically
+
+5. To send token to your backend you can use:
+
+```
+    const session = await supabase.auth.getSession();
+    const token = session.data.session?.access_token;
+
+    // then send the token to your backend
+
+    fetch("http://localhost:5000/api/jobs", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+```
+
+### BACKEND
+
+6. In backend example nodejs. Install these packages
+   ```
+    npm install jsonwebtoken jwk-to-pem
+   ```
+
+- use supabase jwk to verify your token, the key should be look like this
+  https://<PROJECT_REF>.supabase.co/auth/v1/.well-known/jwks.json
+
+7. You can use this code for youyr authMiddleware.ts
+
+   ```
+        import { NextFunction, Request, Response } from 'express';
+        import jwt from 'jsonwebtoken';
+        import jwkToPem from 'jwk-to-pem';
+
+
+        let JWKS: any = null;
+
+        async function getJWKS() {
+        if (!JWKS) {
+        const res = await fetch(process.env.SUPABASE_JWKS_URL!);
+        JWKS = await res.json();
+        }
+        return JWKS;
+        }
+
+        export const verifySupabaseToken = async (
+        req: any,
+        res: Response,
+        next: NextFunction
+        ) => {
+        try {
+        const header = req.headers.authorization;
+
+        if (!header || !header.startsWith('Bearer '))
+        return res.status(401).json({ message: 'No token' });
+
+        const token = header.split(' ')[1];
+
+        const jwks = await getJWKS();
+
+        const jwtHeader = JSON.parse(
+        Buffer.from(token.split('.')[0], 'base64').toString()
+        );
+
+        const jwk = jwks.keys.find((k: any) => k.kid === jwtHeader.kid);
+        const pem = jwkToPem(jwk);
+
+        const decoded = jwt.verify(token, pem) as any;
+
+        req.user = { id: decoded.sub };
+
+        next();
+        } catch (err) {
+        return res.status(401).json({ message: 'Token invalid' });
+        }
+
+
+        };
+   ```
+
+8. then create a route to test
+
+```
+    import express from "express";
+    mport { verifySupabaseToken } from "./middleware/auth";
+
+    const router = express.Router();
+
+    router.get("/jobs", verifySupabaseToken, async (req, res) => {
+    res.json({
+        message: "User authenticated!",
+        userId: req.user.id,
+    });
+    });
+
+    export default router;
+```

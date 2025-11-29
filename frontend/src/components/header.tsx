@@ -1,14 +1,35 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
 import { Bell, LogOut, User } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
-export function Header() {
-	const { data: session } = useSession();
+interface HeaderT {
+	user: string;
+}
 
-	const userName = session?.user?.name ?? session?.user?.email ?? 'User';
+export function Header({ user }: HeaderT) {
+	const router = useRouter();
+	const handleSignOut = async () => {
+		try {
+			const signOut = await supabase.auth.signOut();
 
+			if (signOut) {
+				toast.success('Logout Success', {
+					description: 'Successfully Logout, thank you!',
+				});
+
+				router.push('/auth/signin');
+			}
+		} catch (error) {
+			toast.error('Error Message', {
+				description: 'Something went wront, cannot sign out..',
+			});
+		}
+		localStorage.removeItem('supabase_token');
+	};
 	return (
 		<header className="bg-white shadow-sm border-b">
 			<div className="container mx-auto px-4 py-4">
@@ -25,7 +46,7 @@ export function Header() {
 					<div className="flex items-center space-x-4">
 						<div className="flex items-center space-x-2">
 							<User className="h-5 w-5 text-gray-500" />
-							<span className="text-sm text-gray-700">{userName}</span>
+							<span className="text-sm text-gray-700">{user}</span>
 						</div>
 						<Button className="relative hover:bg-neutral-200 rounded-full h-10 w-10 p-0">
 							<Bell size={20} />
@@ -36,7 +57,7 @@ export function Header() {
 						<Button
 							variant="outline"
 							size="sm"
-							onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+							onClick={handleSignOut}
 							className="flex items-center space-x-2"
 						>
 							<LogOut className="h-4 w-4" />
