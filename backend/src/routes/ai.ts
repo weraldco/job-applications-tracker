@@ -1,11 +1,11 @@
-// routes/aiRoutes.ts
-
 import express, { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import { aiController } from '../controlers/aiController';
+import { verifySupabaseToken } from '../middleware/auth/authMiddleware';
 import { uploadDocument } from '../middleware/upload'; // <-- Import the configured middleware
 
 const router = express.Router();
+router.use(verifySupabaseToken);
 
 // Custom error handler for Multer
 const multerErrorHandler = (
@@ -27,12 +27,11 @@ const multerErrorHandler = (
 };
 
 router.post(
-	'/parse',
-	uploadDocument.single('imageFile'),
-	// FIX: Explicitly cast the controller method to the RequestHandler type.
-	// This tells Express to treat it as a standard middleware/handler
-	aiController.parseData as express.RequestHandler,
+	'/parse-file',
+	uploadDocument.single('fileData'),
+	aiController.parseFileData as express.RequestHandler,
 	multerErrorHandler
 );
+router.post('/parse-text', aiController.parseTextData);
 
 export default router;

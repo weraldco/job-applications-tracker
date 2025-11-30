@@ -1,5 +1,3 @@
-// controllers/aiController.ts
-
 import { Request, Response } from 'express';
 import { summarizeJob } from '../lib/helper';
 import { aiServices } from '../services/aiServices';
@@ -9,7 +7,7 @@ interface MulterRequest extends Request {
 }
 
 export const aiController = {
-	async parseData(req: MulterRequest, res: Response) {
+	async parseFileData(req: MulterRequest, res: Response) {
 		if (!req.file) {
 			return res.status(400).json({ error: 'No file data received.' });
 		}
@@ -34,9 +32,22 @@ export const aiController = {
 		console.log(extractedContent);
 		const result = await summarizeJob(extractedContent);
 
-		return res.status(200).json(result);
+		return res
+			.status(200)
+			.json({ message: 'Successfully summarize file data.', result });
 	},
-	async testData(req: MulterRequest, res: Response) {
-		return res.status(200).json('Hello');
+	async parseTextData(req: Request, res: Response) {
+		if (!req.body) {
+			return res.status(400).json({ error: 'No data received.' });
+		}
+		const { textData } = req.body;
+		// 🚨 Access the binary data buffer
+		let extractedContent: string = JSON.stringify(textData);
+
+		const result = await summarizeJob(extractedContent);
+
+		return res
+			.status(200)
+			.json({ message: 'Successfully summarized the text data.', result });
 	},
 };

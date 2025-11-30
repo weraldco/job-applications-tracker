@@ -1,5 +1,3 @@
-// middleware/upload.ts
-
 import { Request } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 

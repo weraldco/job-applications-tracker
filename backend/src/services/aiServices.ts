@@ -1,6 +1,4 @@
-import fs from 'fs';
 import mammoth from 'mammoth';
-import path from 'path';
 
 const { PDFParse } = require('pdf-parse');
 interface PDFParseResult {
