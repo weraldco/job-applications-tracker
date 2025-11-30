@@ -5,11 +5,12 @@
 		"outDir": "./dist",
 
 		// Environment Settings
-		"module": "nodenext",
+		"module": "CommonJS",
 		"target": "esnext",
 		"lib": ["esnext"],
 		"types": ["node"],
-
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
 		// Other Outputs
 		"sourceMap": true,
 		"declaration": true,

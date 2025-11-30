@@ -156,11 +156,13 @@ export const prisma = new PrismaClient();
 
 ### Step 5: Auth API Endpoints (Supabase Integration)
 
-| HTTP Method | Route                 | Description                                             |
-| ----------- | --------------------- | ------------------------------------------------------- |
-| POST        | /api/v1/auth/register | Register user via Supabase and create Prisma User entry |
-| POST        | /api/v1/auth/login    | Sign in via Supabase, return JWT/session                |
-| POST        | /api/v1/auth/refresh  | Refresh token/session                                   |
+| HTTP Method | Route                     | Description                                             |
+| ----------- | ------------------------- | ------------------------------------------------------- |
+| POST        | /api/v1/auth/signup       | Register user via Supabase and create Prisma User entry |
+| POST        | /api/v1/auth/signin       | Sign in via Supabase, return JWT/session                |
+| POST        | /api/v1/auth/signout      | Sign out current session                                |
+| POST        | /api/v1/auth/current-user | Get the current user                                    |
+| POST        | /api/v1/auth/refresh      | Refresh token/session                                   |
 
 ### Step 6: CRUD API Endpoints
 

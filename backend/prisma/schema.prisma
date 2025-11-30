@@ -46,6 +46,8 @@ model Session {
 model User {
   // Must match the UUID type used by Supabase Auth
   id           String     @id @db.Uuid
+  email        String     @unique
+  name         String
   applications Job[]
   accounts     Account[]
   sessions     Session[]
