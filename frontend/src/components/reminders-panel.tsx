@@ -10,7 +10,8 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { fetcher } from '@/lib/utils';
-import { Job, Reminder, ReminderType } from '@prisma/client';
+// import { Job, Reminder, ReminderType } from '@prisma/client';
+import { JobType, ReminderType } from '@/types/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Bell, CheckCircle, Clock, Plus, Trash2 } from 'lucide-react';
@@ -22,15 +23,20 @@ export type CreateReminderInput = {
 	description: string;
 	dueDate: string | null;
 	completed: boolean;
-	type: ReminderType; // IMPORTANT: not string
+	type:
+		| 'FOLLOW_UP'
+		| 'INTERVIEW_PREP'
+		| 'THANK_YOU_NOTE'
+		| 'APPLICATION_DEADLINE'
+		| 'OTHER';
 	jobId: string;
 };
 
 export type ReminderFetchType = {
-	jobs: Job[];
-	reminder: Reminder[];
+	message: string;
+	reminders: ReminderType[];
 };
-export function RemindersPanel() {
+export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 	const [isAddReminderModalOpen, setIsAddReminderModalOpen] = useState(false);
 	const queryClient = useQueryClient();
 	const updateReminderMutation = useMutation({
@@ -79,10 +85,10 @@ export function RemindersPanel() {
 
 	const { data, isLoading, error } = useQuery<ReminderFetchType>({
 		queryKey: ['reminder-data'],
-		queryFn: () => fetcher('/api/reminder'),
+		queryFn: () => fetcher(`${process.env.NEXT_PUBLIC_API_URL}/reminders`),
 	});
-	// Mock data for demo
 
+	// Mock data for demo
 	if (isLoading) return <p>Loading..</p>;
 	if (error) return <p>Error</p>;
 	if (!data) return <p>Error fetching reminder datas</p>;
@@ -151,7 +157,7 @@ export function RemindersPanel() {
 					</Button>
 
 					<div className="space-y-3">
-						{data.reminder.map((reminder: Reminder) => (
+						{data.reminders.map((reminder: ReminderType) => (
 							<div
 								key={reminder.id}
 								className={`p-3 border rounded-lg ${
@@ -233,7 +239,7 @@ export function RemindersPanel() {
 						))}
 					</div>
 
-					{data.reminder.length === 0 && (
+					{data.reminders.length === 0 && (
 						<div className="text-center py-6 text-gray-500">
 							<Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
 							<p>No reminders yet</p>
@@ -244,7 +250,7 @@ export function RemindersPanel() {
 			</Card>
 			<ReminderAddModal
 				isOpen={isAddReminderModalOpen}
-				data={data.jobs}
+				data={jobs}
 				onClose={onClose}
 				onReminderAdded={addReminderMutation.mutate}
 			/>

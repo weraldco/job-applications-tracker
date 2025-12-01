@@ -1,5 +1,6 @@
-import { Job, ReminderType } from '@prisma/client';
+import { ReminderType } from '@prisma/client';
 
+import { JobType } from '@/types/types';
 import { Loader2, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -11,7 +12,7 @@ import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 interface ReminderT {
 	isOpen: boolean;
-	data: Job[];
+	data: JobType[] | undefined;
 	onClose: () => void;
 	onReminderAdded: (data: CreateReminderInput) => void;
 }
@@ -33,7 +34,7 @@ const ReminderAddModal = ({
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [reminderType, setReminderType] = useState<string>('Interview Prep');
-	const [jobTitle, setJobTitle] = useState(data[0] ? data[0].title : '');
+	const [jobTitle, setJobTitle] = useState(data ? data[0].title : '');
 	const [dueDate, setDueDate] = useState<string | null>(null);
 	const typeMap: Record<string, ReminderType> = {
 		'Interview Prep': 'INTERVIEW_PREP',
@@ -47,6 +48,10 @@ const ReminderAddModal = ({
 		setReminderType(reminder as ReminderType);
 	};
 
+	if (!data) {
+		<p>Invalid data!</p>;
+		return;
+	}
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);

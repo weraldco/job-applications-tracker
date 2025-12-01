@@ -6,6 +6,7 @@ import { JobSummarizerModal } from '@/components/job-summarizer-modal';
 import { Button } from '@/components/ui/button';
 import { queryClient } from '@/lib/react-query';
 import { fetcher } from '@/lib/utils';
+import { JobType } from '@/types/types';
 import { Job, JobStatus } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ListFilter, Plus, Sparkles } from 'lucide-react';
@@ -26,19 +27,21 @@ export interface JobInput {
 	location?: string;
 }
 
-export function JobTracker() {
+export function JobTracker({
+	jobs,
+	isLoading,
+}: {
+	jobs: JobType[] | null | undefined;
+	isLoading: boolean;
+}) {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const [isSummarizerModalOpen, setIsSummarizerModalOpen] = useState(false);
 	const [filter, setFilter] = useState<JobStatus | 'ALL'>('ALL');
 
-	interface DataType {
-		jobs: Job[];
-	}
-
 	// add new Job
 	const addJobMutation = useMutation({
 		mutationFn: (newJob: Partial<Job>) =>
-			fetcher<JobInput>('/api/jobs', {
+			fetcher<JobInput>(`${process.env.NEXT_PUBLIC_API_URL}/jobs/create`, {
 				method: 'POST',
 				body: JSON.stringify(newJob),
 			}),
@@ -51,7 +54,7 @@ export function JobTracker() {
 	// updating the job data
 	const updateJobMutation = useMutation({
 		mutationFn: (job: Partial<Job>) =>
-			fetcher<Job>(`/api/jobs/${job.id}`, {
+			fetcher<Job>(`${process.env.NEXT_PUBLIC_API_URL}/jobs/${job.id}`, {
 				method: 'PATCH',
 				body: JSON.stringify(job),
 			}),
@@ -77,23 +80,17 @@ export function JobTracker() {
 	// deleting the job
 	const deleteJobMutation = useMutation({
 		mutationFn: (id: string) =>
-			fetcher(`/api/jobs/${id}`, {
+			fetcher(`${process.env.NEXT_PUBLIC_API_URL}/jobs/${id}`, {
 				method: 'DELETE',
 			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['jobs-data'] });
 		},
 	});
-
-	// fetching job data
-	const { data, isLoading, error } = useQuery<DataType>({
-		queryKey: ['jobs-data'],
-		queryFn: () => fetcher('/api/jobs'),
-	});
-	if (!data) return <div>Loading data..</div>;
-	console.log('jobs data', data.jobs);
-	// end of fetching
-
+	if (!jobs) {
+		<p>Loading jobs</p>;
+		return;
+	}
 	const handleJobAdded = (newJob: JobInput) => {
 		addJobMutation.mutate(newJob);
 		setIsAddModalOpen(false);
@@ -115,16 +112,13 @@ export function JobTracker() {
 	};
 
 	const filteredJobs =
-		filter === 'ALL'
-			? data.jobs
-			: data.jobs.filter((job) => job.status === filter);
+		filter === 'ALL' ? jobs : jobs.filter((job) => job.status === filter);
 
 	const statusCounts = {
-		APPLIED: data.jobs.filter((job) => job.status === 'APPLIED').length,
-		INTERVIEWING: data.jobs.filter((job) => job.status === 'INTERVIEWING')
-			.length,
-		OFFER: data.jobs.filter((job) => job.status === 'OFFER').length,
-		REJECTED: data.jobs.filter((job) => job.status === 'REJECTED').length,
+		APPLIED: jobs.filter((job) => job.status === 'APPLIED').length,
+		INTERVIEWING: jobs.filter((job) => job.status === 'INTERVIEWING').length,
+		OFFER: jobs.filter((job) => job.status === 'OFFER').length,
+		REJECTED: jobs.filter((job) => job.status === 'REJECTED').length,
 	};
 
 	if (isLoading) {
@@ -140,9 +134,6 @@ export function JobTracker() {
 				</div>
 			</div>
 		);
-	}
-	if (error) {
-		return <div>Error data..</div>;
 	}
 
 	return (
@@ -197,7 +188,7 @@ export function JobTracker() {
 						size="sm"
 						onClick={() => setFilter('ALL')}
 					>
-						All ({data.jobs.length})
+						All ({jobs.length})
 					</Button>
 					<Button
 						className={
@@ -281,7 +272,6 @@ export function JobTracker() {
 					</div>
 				)}
 			</div>
-			<TestComponent />
 			<AddJobModal
 				isOpen={isAddModalOpen}
 				onClose={() => setIsAddModalOpen(false)}

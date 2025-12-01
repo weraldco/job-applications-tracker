@@ -7,9 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { fetcher } from '@/lib/utils';
-import { JobStatus } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
 import { Briefcase, Calendar, Target, TrendingUp } from 'lucide-react';
 import {
 	Bar,
@@ -37,25 +34,25 @@ type Month =
 	| 'November'
 	| 'December';
 
-type JobStatusCount = Record<JobStatus, number>;
-type MonthCount = Record<Month, number>;
 interface AnalyticsDataT {
-	statusData: JobStatusCount;
-	monthData: MonthCount;
-	total: number;
+	statusCount: Record<string, number> | undefined;
+	monthlyCount: Record<string, number> | undefined;
+	total: number | undefined;
+	isLoading: boolean;
 }
-export function AnalyticsDashboard() {
+export function AnalyticsDashboard({
+	monthlyCount,
+	statusCount,
+	total,
+	isLoading,
+}: AnalyticsDataT) {
 	//
-	const { data, isLoading, error } = useQuery<AnalyticsDataT>({
-		queryKey: ['jobs-analytics'],
-		queryFn: () => fetcher('api/jobs/analytics'),
-	});
 
-	console.log(data);
-	if (isLoading) return <p>Loading...</p>;
-	if (error) return <p>Error Loading analytics</p>;
-	if (!data) return <p>Loading data..</p>;
-	const chartData = Object.entries(data.statusData).map(([status, count]) => ({
+	if (!monthlyCount || !statusCount || !total) {
+		<p>Loading data</p>;
+		return;
+	}
+	const chartData = Object.entries(statusCount).map(([status, count]) => ({
 		name: status,
 		value: count,
 	}));
@@ -77,7 +74,7 @@ export function AnalyticsDashboard() {
 		};
 	});
 
-	const monthlyData = Object.entries(data.monthData).map(
+	const monthlyData = Object.entries(monthlyCount).map(
 		([monthName, count]) => ({
 			month: monthName,
 			applications: count,
@@ -85,20 +82,18 @@ export function AnalyticsDashboard() {
 	);
 
 	const responseRate =
-		data.statusData['INTERVIEWING'] + data.statusData['OFFER']
-			? data.statusData['OFFER']
-			: 0 + data.statusData['REJECTED'];
+		statusCount['INTERVIEWING'] + statusCount['OFFER']
+			? statusCount['OFFER']
+			: 0 + statusCount['REJECTED'];
 
-	const offerRate = data.statusData['OFFER']
-		? data.statusData['OFFER']
-		: 0 / data.total;
+	const offerRate = statusCount['OFFER'] ? statusCount['OFFER'] : 0 / total;
 
-	const interviewRate = (data.statusData['APPLIED'] / data.total).toFixed();
+	const interviewRate = (statusCount['APPLIED'] / total).toFixed();
 	console.log(typeof offerRate);
 	const metrics = [
 		{
 			label: 'Total Applications',
-			value: data.total ? data.total : 0,
+			value: total ? total : 0,
 			icon: Briefcase,
 		},
 		{

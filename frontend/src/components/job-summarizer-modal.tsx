@@ -59,29 +59,32 @@ export function JobSummarizerModal({
 		const formData = new FormData();
 
 		if (file) {
-			formData.append('file', file);
+			formData.append('fileData', file);
 		}
 		if (textData) {
 			formData.append('textData', textData);
 		}
 		setIsLoading(true);
 		try {
-			const response = await fetch('/api/ai/summarize-job', {
-				method: 'POST',
-				body: formData,
-			});
-			if (response.ok) {
-				const data = await response.json();
-				setSummarizedJob(data);
-				toast.success('Success', {
-					description: 'Job posting summarized successfully!',
-				});
-			} else {
-				const error = await response.json();
-				toast.error('Something Error', {
-					description: error.message || 'Failed to summarize job posting',
-				});
-			}
+			console.log('FILE', formData.get('fileData'));
+			console.log('TXT', formData.get('textData'));
+			console.log('textData', textData);
+			// const response = await fetch('/api/ai/summarize-job', {
+			// 	method: 'POST',
+			// 	body: formData,
+			// });
+			// if (response.ok) {
+			// 	const data = await response.json();
+			// 	setSummarizedJob(data);
+			// 	toast.success('Success', {
+			// 		description: 'Job posting summarized successfully!',
+			// 	});
+			// } else {
+			// 	const error = await response.json();
+			// 	toast.error('Something Error', {
+			// 		description: error.message || 'Failed to summarize job posting',
+			// 	});
+			// }
 		} catch (error) {
 			toast.error('Something Error', {
 				description: 'Failed to summarize job posting',
@@ -93,6 +96,7 @@ export function JobSummarizerModal({
 		}
 	};
 	console.log('sumarize', summarizedJob);
+	console.log('file', file);
 	const handleSubmit = async () => {
 		if (!summarizedJob) return;
 

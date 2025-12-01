@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { supabase } from './supabase';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -9,11 +10,16 @@ export async function fetcher<T>(
 	url: string,
 	options?: RequestInit
 ): Promise<T> {
+	const { data } = await supabase.auth.getSession();
+	const access_token = data.session?.access_token;
+
+	if (!access_token) throw new Error('No session found');
 	const res = await fetch(url, {
 		...options,
 		headers: {
 			'Content-Type': 'application/json',
-			...(options?.headers || {}),
+			Authorization: `Bearer ${access_token}`,
+			...options?.headers,
 		},
 	});
 
