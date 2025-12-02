@@ -14,7 +14,9 @@ export const reminderController = {
 					.status(400)
 					.json({ error: 'No reminders fetch from db, something went wrong!' });
 			if (reminders.length == 0)
-				return res.status(200).json({ message: 'No data in database.' });
+				return res
+					.status(200)
+					.json({ message: 'No data in database.', reminders: [] });
 			return res
 				.status(200)
 				.json({ message: 'Successfully fetch all the reminders.', reminders });

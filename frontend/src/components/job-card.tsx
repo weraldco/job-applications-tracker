@@ -3,14 +3,16 @@
 import { JobDetailModal } from '@/components/job-detail-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { JobType } from '@/types/types';
 import { Job, JobStatus } from '@prisma/client';
 import { format } from 'date-fns';
 import { Calendar, ExternalLink, MapPin, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { JobInput } from './job-tracker';
 
 interface JobCardProps {
-	job: Job;
-	onUpdate: (job: Job) => void;
+	job: JobType;
+	onUpdate: (job: JobInput) => void;
 	onDelete: (jobId: string) => void;
 	onStatusChange: (status: JobStatus, id: string) => void;
 }

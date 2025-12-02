@@ -32,6 +32,6 @@ router.post(
 	aiController.parseFileData as express.RequestHandler,
 	multerErrorHandler
 );
-router.post('/parse-text', aiController.parseTextData);
+router.post('/parse-text', uploadDocument.none(), aiController.parseTextData);
 
 export default router;

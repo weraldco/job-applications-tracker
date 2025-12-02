@@ -31,10 +31,12 @@ const ReminderAddModal = ({
 		type: '',
 		jobId: '',
 	});
-
+	console.log('add ', data);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [reminderType, setReminderType] = useState<string>('Interview Prep');
-	const [jobTitle, setJobTitle] = useState(data ? data[0].title : '');
+	const [jobTitle, setJobTitle] = useState(
+		"	data.r != '' !== undefined ? data[0].title : ''"
+	);
 	const [dueDate, setDueDate] = useState<string | null>(null);
 	const typeMap: Record<string, ReminderType> = {
 		'Interview Prep': 'INTERVIEW_PREP',

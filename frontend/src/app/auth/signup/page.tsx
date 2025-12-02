@@ -10,7 +10,10 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { queryClient } from '@/lib/react-query';
 import { supabase } from '@/lib/supabase';
+import { fetcher } from '@/lib/utils';
+import { useMutation } from '@tanstack/react-query';
 import { Lock, Mail, User2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,41 +27,43 @@ export default function SignUpPage() {
 	const [password, setPassword] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		setIsSubmitting(true);
-
-		try {
-			const { data, error } = await supabase.auth.signUp({
-				email,
-				password,
-				options: {
-					data: {
-						displayName: name,
-					},
-				},
-			});
-
-			if (error) {
-				toast.error('Error Message', { description: error.message });
-				return;
-			}
-
+	interface UserType {
+		name: string;
+		email: string;
+		password: string;
+	}
+	const registerUser = useMutation({
+		mutationFn: (newUser: Partial<UserType>) =>
+			fetcher(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
+				method: 'POST',
+				body: JSON.stringify(newUser),
+			}),
+		onSuccess: () => {
+			// redirect to '/' or index page
 			toast.success('Successfully Signup', {
 				description:
 					"Welcome! You've successfully sign-up. You must very your account first to complete the registration.",
 			});
 			router.push('/');
 			router.refresh();
-		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : 'Unexpected error';
-			toast.error('Error Message ', {
-				description: message,
-			});
-		} finally {
+		},
+		onError: () => {
+			toast.error('Error:', { description: 'Registration failed!' });
+		},
+		onSettled: () => {
 			setIsSubmitting(false);
-		}
+		},
+	});
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const newUser = {
+			name,
+			email,
+			password,
+		};
+		registerUser.mutate(newUser);
+		setIsSubmitting(true);
 	};
 
 	return (

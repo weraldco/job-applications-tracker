@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { JobType } from '@/types/types';
 import { Job, JobStatus } from '@prisma/client';
 import { Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import JobRequirementItem from './job-requirement-item';
+import { JobInput } from './job-tracker';
 import { SkillsItem } from './skill-item';
 
 export interface FormDataT {
@@ -30,11 +32,11 @@ export interface FormDataT {
 }
 
 interface EditJobModalProps {
-	job: Job;
+	job: JobType;
 	isOpen: boolean;
 	onClose: () => void;
 	setIsEditing: (b: boolean) => void;
-	onUpdate: (job: Job) => void;
+	onUpdate: (job: JobInput) => void;
 }
 
 export function EditJobModal({
@@ -44,7 +46,7 @@ export function EditJobModal({
 	setIsEditing,
 	onUpdate,
 }: EditJobModalProps) {
-	const [formData, setFormData] = useState<FormDataT>({
+	const [formData, setFormData] = useState<JobInput>({
 		...job,
 		skillsRequired: JSON.parse(job.skillsRequired),
 		jobRequirements: JSON.parse(job.jobRequirements),

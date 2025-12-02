@@ -9,6 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { JobType } from '@/types/types';
 import { Job } from '@prisma/client';
 import { format } from 'date-fns';
 import {
@@ -25,13 +26,14 @@ import { useState } from 'react';
 import { EditJobModal } from './edit-job-modal';
 import { statusColors } from './job-card';
 import JobRequirementItem from './job-requirement-item';
+import { JobInput } from './job-tracker';
 import { SkillsItem } from './skill-item';
 
 interface JobDetailModalProps {
-	job: Job;
+	job: JobType;
 	isOpen: boolean;
 	onClose: () => void;
-	onUpdate: (job: Job) => void;
+	onUpdate: (job: JobInput) => void;
 }
 
 export function JobDetailModal({
@@ -107,8 +109,8 @@ export function JobDetailModal({
 								{job.salary && (
 									<div className="flex items-center space-x-2">
 										<span className="text-sm text-gray-600">
-											Salary:{' '}
-											{job.salary !== '0' ? (
+											Salary:
+											{job.salary > 0 ? (
 												<span className="flex flex-row items-center">
 													<DollarSign className="h-4 w-4 text-gray-500" />
 													{job.salary}

@@ -17,12 +17,13 @@ import { Card } from './ui/card';
 export interface JobInput {
 	title: string;
 	company: string;
-	jobUrl: string;
+	jobUrl?: string;
 	applicationDate: Date; // from form
+	jobDetails: string;
 	skillsRequired: string;
 	jobRequirements: string;
 	experienceNeeded: number | null;
-	salary: string;
+	salary?: number;
 	notes?: string;
 	location?: string;
 }
@@ -40,7 +41,7 @@ export function JobTracker({
 
 	// add new Job
 	const addJobMutation = useMutation({
-		mutationFn: (newJob: Partial<Job>) =>
+		mutationFn: (newJob: Partial<JobType>) =>
 			fetcher<JobInput>(`${process.env.NEXT_PUBLIC_API_URL}/jobs/create`, {
 				method: 'POST',
 				body: JSON.stringify(newJob),
@@ -53,8 +54,8 @@ export function JobTracker({
 
 	// updating the job data
 	const updateJobMutation = useMutation({
-		mutationFn: (job: Partial<Job>) =>
-			fetcher<Job>(`${process.env.NEXT_PUBLIC_API_URL}/jobs/${job.id}`, {
+		mutationFn: (job: Partial<JobType>) =>
+			fetcher<JobType>(`${process.env.NEXT_PUBLIC_API_URL}/jobs/${job.id}`, {
 				method: 'PATCH',
 				body: JSON.stringify(job),
 			}),
@@ -66,7 +67,7 @@ export function JobTracker({
 
 	const changeStatusMutation = useMutation({
 		mutationFn: ({ status, id }: { status: JobStatus; id: string }) =>
-			fetcher(`/api/jobs/${id}`, {
+			fetcher(`${process.env.NEXT_PUBLIC_API_URL}/jobs/${id}`, {
 				method: 'PATCH',
 				body: JSON.stringify({ status }),
 			}),
@@ -96,7 +97,7 @@ export function JobTracker({
 		setIsAddModalOpen(false);
 	};
 
-	const handleJobUpdated = (updatedJob: Job) => {
+	const handleJobUpdated = (updatedJob: JobInput) => {
 		updateJobMutation.mutate(updatedJob);
 	};
 

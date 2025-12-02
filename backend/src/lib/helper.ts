@@ -40,16 +40,22 @@ export async function summarizeJob(parseText: string) {
 		const prompt = `
 		        You are a job posting details extractor. Your task is to extract the key information from the provided job posting text. 
                     The output should be a JSON object with the following fields:
-                    - title: The title of the job.
+                    - title: job title or job position. The job title is the primary role being hired
                     - company: The name of the company.
                     - jobDetails: A summary of the job description. Keep it concise, but include key responsibilities.
-                    - jobRequirements: A summary of the candidate requirements, such as qualifications and experience.
-                    - skillRequired: A list of specific skills required for the role.
+                    - jobRequirements: A list of requirements, such as qualifications and experience.
+                    - skillsRequired: A list of specific skills required for the role.
                     - experienceNeeded: number of years of experience
                     - location: Location of the company, address of the company.
                     - salary: A salary of this job posting
-                    Provided job posting text:
-                    ${parseText}
+                   
+				Rules:
+				- Be concise but accurate.
+				- Do not add fields that are not present.
+				- If a field is missing in the text, return an empty string or empty array.
+
+				Provided job posting text:
+                ${parseText}
 		`;
 
 		const payload = {
@@ -91,7 +97,7 @@ export async function summarizeJob(parseText: string) {
 		}
 
 		// *** CRITICAL ERROR HANDLING ***
-		if (candidate.finishReason === 'MAX_TOKENS') {
+		if (candidate?.finishReason === 'MAX_TOKENS') {
 			// This handles the truncation error
 			console.error('Gemini stopped due to MAX_TOKENS. Output was truncated.');
 			return [

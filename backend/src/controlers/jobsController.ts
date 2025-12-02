@@ -41,7 +41,7 @@ export const jobController = {
 	// Add new job data  -> api/v1/jobs/addjob
 	async createNewJob(req: Request, res: Response) {
 		try {
-			const userId = req.user?.id;
+			const userId = req.user.id;
 			if (!userId) {
 				return res.status(401).json({ error: 'Unauthorized user!' });
 			}
@@ -50,9 +50,9 @@ export const jobController = {
 			if (!body) {
 				return res.status(400).json({ error: 'Invalid or empty data' });
 			}
-			const job = await jobService.create({ ...body, userId });
+			const job = await jobService.create({ ...body }, userId);
 
-			res.status(201).json(job);
+			res.status(201).json({ job: '' });
 		} catch (error) {
 			res.status(500).json({ error: 'Server error!' });
 		}

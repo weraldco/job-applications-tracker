@@ -19,11 +19,12 @@ export interface JobType {
 	applicationDate: Date;
 	status: 'APPLIED' | 'INTERVIEWING' | 'OFFER' | 'REJECTED' | 'WITHDRAWN';
 	jobUrl: string | null;
+	jobDetails: string;
 	skillsRequired: string;
 	jobRequirements: string;
 	experienceNeeded: number | null;
 	notes: string | null;
-	salary: string | null;
+	salary: number | null;
 	location: string | null;
 	userId: string;
 	createdAt: Date;
@@ -46,4 +47,18 @@ export interface ReminderType {
 	jobId: string | null;
 	createdAt: Date;
 	updatedAt: Date;
+}
+
+export interface JobInputData {
+	title: string;
+	company: string;
+	jobUrl?: string;
+	applicationDate: Date;
+	jobDetails: string;
+	skillsRequired: string[];
+	jobRequirements: string[];
+	experienceNeeded: number | null;
+	notes?: string;
+	location?: string;
+	salary?: number;
 }

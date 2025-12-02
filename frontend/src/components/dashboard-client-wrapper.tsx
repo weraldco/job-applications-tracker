@@ -23,6 +23,7 @@ export default function DashboardClientWrapper() {
 	});
 
 	if (loading) return <p>Loading..</p>;
+	if (!data) return <p>No data</p>;
 	return (
 		<div className="min-h-screen bg-gray-50">
 			<Header user={user.user_metadata.displayName} />

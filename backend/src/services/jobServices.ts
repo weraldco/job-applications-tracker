@@ -15,9 +15,11 @@ export const jobService = {
 	},
 
 	// Creating new job
-	create(data: any) {
+	create(data: any, userId: string) {
+		const newData = { ...data, userId };
+
 		return prisma.job.create({
-			data,
+			data: newData,
 		});
 	},
 

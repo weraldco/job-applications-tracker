@@ -68,7 +68,7 @@ model Job {
   company          String
   applicationDate  DateTime
   status           JobStatus    @default(APPLIED)
-  jobDetail        String
+  jobDetails       String
   jobUrl           String?
   skillsRequired   String
   jobRequirements  String

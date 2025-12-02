@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { FormDataT } from '@/types/types';
+import { FormDataT, JobInputData } from '@/types/types';
 import { Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import JobRequirementItem from './job-requirement-item';
@@ -26,16 +26,17 @@ interface AddJobModalProps {
 }
 
 export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
-	const [formData, setFormData] = useState<FormDataT>({
+	const [formData, setFormData] = useState<JobInputData>({
 		title: '',
 		company: '',
 		applicationDate: new Date(),
 		jobUrl: '',
 		skillsRequired: [],
+		jobDetails: '',
 		jobRequirements: [],
-		experienceNeeded: '',
+		experienceNeeded: 0,
 		notes: '',
-		salary: '',
+		salary: 0,
 		location: '',
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,15 +49,16 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 		setIsSubmitting(true);
 
 		try {
+			console.log(typeof formData['experienceNeeded']);
 			const newJob = {
 				...formData,
 				applicationDate: new Date(formData.applicationDate),
-				experienceNeeded: formData.experienceNeeded
-					? parseInt(formData.experienceNeeded)
-					: null,
+				experienceNeeded: Number(formData.experienceNeeded),
 				skillsRequired: JSON.stringify(formData['skillsRequired']),
 				jobRequirements: JSON.stringify(formData['jobRequirements']),
+				salary: Number(formData.salary),
 			};
+			console.log('newJob', newJob);
 
 			onJobAdded(newJob);
 			toast({
@@ -81,11 +83,12 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 			company: '',
 			applicationDate: new Date(),
 			jobUrl: '',
+			jobDetails: '',
 			skillsRequired: [],
 			jobRequirements: [],
-			experienceNeeded: '',
+			experienceNeeded: 0,
 			notes: '',
-			salary: '',
+			salary: 0,
 			location: '',
 		});
 		onClose();
@@ -215,7 +218,7 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 									value={formData.salary}
 									placeholder="Enter a Job Salary.."
 									onChange={(e) =>
-										setFormData({ ...formData, salary: e.target.value })
+										setFormData({ ...formData, salary: Number(e.target.value) })
 									}
 									className="mt-1"
 								/>
@@ -232,16 +235,33 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 									id="experienceNeeded"
 									type="number"
 									placeholder="Enter a Year of experiences needed.."
-									value={formData.experienceNeeded}
+									value={formData.experienceNeeded || 0}
 									onChange={(e) =>
 										setFormData({
 											...formData,
-											experienceNeeded: e.target.value,
+											experienceNeeded: Number(e.target.value),
 										})
 									}
 									className="mt-1"
 								/>
 							</div>
+						</div>
+						<div className="space-y-2 flex flex-col">
+							<Label
+								className="text-sm text-neutral-500 font-normal"
+								htmlFor="jobDetail"
+							>
+								Job Detail
+							</Label>
+							<Textarea
+								id="jobDetail"
+								placeholder="Enter a job details.."
+								value={formData.jobDetails}
+								onChange={(e) =>
+									setFormData({ ...formData, jobDetails: e.target.value })
+								}
+								className="mt-1"
+							/>
 						</div>
 
 						<div className="space-y-2 flex flex-col">
@@ -262,23 +282,6 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								className="mt-1"
 							/>
 						</div>
-						{/* <div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobDetail"
-							>
-								Job Detail
-							</Label>
-							<Textarea
-								id="jobDetail"
-								placeholder="Enter a job details.."
-								value={formData.jobDetails}
-								onChange={(e) =>
-									setFormData({ ...formData, jobDetails: e.target.value })
-								}
-								className="mt-1"
-							/>
-						</div> */}
 
 						<div className="space-y-2 flex flex-col">
 							<Label

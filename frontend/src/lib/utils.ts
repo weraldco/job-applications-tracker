@@ -14,10 +14,11 @@ export async function fetcher<T>(
 	const access_token = data.session?.access_token;
 
 	if (!access_token) throw new Error('No session found');
+	const isFormData = options?.body instanceof FormData;
 	const res = await fetch(url, {
 		...options,
 		headers: {
-			'Content-Type': 'application/json',
+			...(isFormData ? {} : { 'Content-Type': 'application/json' }),
 			Authorization: `Bearer ${access_token}`,
 			...options?.headers,
 		},

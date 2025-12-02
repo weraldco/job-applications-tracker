@@ -11,6 +11,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useSummarizeFile } from '@/hooks/use-summarize';
+import { fetcher } from '@/lib/utils';
+import { JobType } from '@/types/types';
+import { useMutation } from '@tanstack/react-query';
 import { Check, Loader2, Sparkles, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -27,17 +31,21 @@ interface JobSummarizerModalProps {
 export interface SummarizedJob {
 	title: string;
 	company: string;
-	applicationDate: string;
 	jobUrl?: string;
-	jobDetails?: string;
+	applicationDate: Date;
+	jobDetails: string;
 	skillsRequired: string[];
 	jobRequirements: string[];
 	experienceNeeded: number | null;
 	notes?: string;
 	location?: string;
-	salary?: string;
+	salary?: number;
 }
 
+interface ResponseT {
+	message: string;
+	result: SummarizedJob;
+}
 export function JobSummarizerModal({
 	isOpen,
 	onClose,
@@ -55,48 +63,64 @@ export function JobSummarizerModal({
 	const [isJobDescription, setIsJobDescription] = useState(false);
 	const [isJobFile, setIsJobFile] = useState(false);
 
-	const handleSummarize = async () => {
-		const formData = new FormData();
+	// const { mutate: summarizeFile, data, isPending } = useSummarizeFile();
 
-		if (file) {
-			formData.append('fileData', file);
-		}
-		if (textData) {
-			formData.append('textData', textData);
-		}
-		setIsLoading(true);
-		try {
-			console.log('FILE', formData.get('fileData'));
-			console.log('TXT', formData.get('textData'));
-			console.log('textData', textData);
-			// const response = await fetch('/api/ai/summarize-job', {
-			// 	method: 'POST',
-			// 	body: formData,
-			// });
-			// if (response.ok) {
-			// 	const data = await response.json();
-			// 	setSummarizedJob(data);
-			// 	toast.success('Success', {
-			// 		description: 'Job posting summarized successfully!',
-			// 	});
-			// } else {
-			// 	const error = await response.json();
-			// 	toast.error('Something Error', {
-			// 		description: error.message || 'Failed to summarize job posting',
-			// 	});
-			// }
-		} catch (error) {
-			toast.error('Something Error', {
-				description: 'Failed to summarize job posting',
-			});
-		} finally {
-			setIsLoading(false);
+	const fileSummarizer = useMutation({
+		mutationFn: (formData: FormData) =>
+			fetcher<ResponseT>(`${process.env.NEXT_PUBLIC_API_URL}/ai/parse-file`, {
+				method: 'POST',
+				body: formData,
+			}),
+		onSuccess: (res) => {
+			setSummarizedJob(res.result);
 			setIsJobDescription(false);
 			setIsJobFile(false);
+		},
+		onError: () => {
+			toast.error('Error', { description: 'Error summarizing data' });
+		},
+		onSettled: () => {
+			setIsLoading(false);
+		},
+	});
+
+	const textSummarizer = useMutation({
+		mutationFn: (formData: FormData) =>
+			fetcher<ResponseT>(`${process.env.NEXT_PUBLIC_API_URL}/ai/parse-text`, {
+				method: 'POST',
+				body: formData,
+			}),
+		onSuccess: (res) => {
+			setSummarizedJob(res.result);
+			setIsJobDescription(false);
+			setIsJobFile(false);
+		},
+		onError: () => {
+			toast.error('Error', { description: 'Error summarizing data' });
+		},
+		onSettled: () => {
+			setIsLoading(false);
+		},
+	});
+
+	const handleSummarize = () => {
+		if (!textData && !file) return;
+		setIsLoading(true);
+
+		if (file) {
+			const fileForm = new FormData();
+			fileForm.append('fileData', file);
+			fileSummarizer.mutate(fileForm);
+			return;
+		}
+
+		if (textData) {
+			const textForm = new FormData();
+			textForm.append('textData', textData);
+			textSummarizer.mutate(textForm);
+			return;
 		}
 	};
-	console.log('sumarize', summarizedJob);
-	console.log('file', file);
 	const handleSubmit = async () => {
 		if (!summarizedJob) return;
 
@@ -108,8 +132,9 @@ export function JobSummarizerModal({
 				jobUrl: summarizedJob?.jobUrl ? summarizedJob.jobUrl : '',
 				skillsRequired: JSON.stringify(summarizedJob.skillsRequired),
 				jobRequirements: JSON.stringify(summarizedJob.jobRequirements),
-				salary: String(summarizedJob.salary),
+				salary: summarizedJob.salary,
 			};
+			console.log('newJob', newJob);
 			onJobAdded(newJob);
 			toast.success('Success', {
 				description: 'Job application added successfully!',
@@ -351,7 +376,7 @@ export function JobSummarizerModal({
 										onChange={(e) =>
 											setSummarizedJob({
 												...summarizedJob,
-												salary: e.target.value,
+												salary: Number(e.target.value),
 											})
 										}
 									/>

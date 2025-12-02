@@ -93,6 +93,7 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 	if (error) return <p>Error</p>;
 	if (!data) return <p>Error fetching reminder datas</p>;
 	console.log('Reminder data', data);
+	console.log('job', jobs);
 
 	const getTypeColor = (type: string) => {
 		switch (type) {
