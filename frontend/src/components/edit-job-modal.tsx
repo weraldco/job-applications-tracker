@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { JobType } from '@/types/types';
-import { Job, JobStatus } from '@prisma/client';
+import { JobInputData, JobType } from '@/types/types';
+import { JobStatus } from '@prisma/client';
 import { Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import JobRequirementItem from './job-requirement-item';
@@ -46,10 +46,14 @@ export function EditJobModal({
 	setIsEditing,
 	onUpdate,
 }: EditJobModalProps) {
-	const [formData, setFormData] = useState<JobInput>({
+	const [formData, setFormData] = useState<JobInputData>({
 		...job,
 		skillsRequired: JSON.parse(job.skillsRequired),
+		jobUrl: job.jobUrl || '',
+		location: job.location || '',
 		jobRequirements: JSON.parse(job.jobRequirements),
+		salary: Number(job.salary),
+		notes: job.notes || '',
 	});
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -188,9 +192,9 @@ export function EditJobModal({
 								</Label>
 								<Input
 									id="salary"
-									value={Number(formData.salary)}
+									value={String(formData.salary)}
 									onChange={(e) =>
-										setFormData({ ...formData, salary: e.target.value })
+										setFormData({ ...formData, salary: Number(e.target.value) })
 									}
 									className="mt-1"
 								/>

@@ -147,14 +147,14 @@ export function JobDetailModal({
 									</Button>
 								</div>
 							)}
-							{/* {job.jobDetails && (
+							{job.jobDetails && (
 								<div>
-									<h3 className="font-medium mb-2">Required Skills</h3>
+									<h3 className="font-medium mb-2">Job Details</h3>
 									<div className="text-sm text-gray-600 flex flex-row flex-wrap gap-2">
 										{job.jobDetails}
 									</div>
 								</div>
-							)} */}
+							)}
 							{/* Skills Required */}
 							{job.skillsRequired && (
 								<div>

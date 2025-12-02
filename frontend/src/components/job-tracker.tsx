@@ -7,11 +7,10 @@ import { Button } from '@/components/ui/button';
 import { queryClient } from '@/lib/react-query';
 import { fetcher } from '@/lib/utils';
 import { JobType } from '@/types/types';
-import { Job, JobStatus } from '@prisma/client';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { ListFilter, Plus, Sparkles } from 'lucide-react';
+import { JobStatus } from '@prisma/client';
+import { useMutation } from '@tanstack/react-query';
+import { Plus, Sparkles } from 'lucide-react';
 import { useState } from 'react';
-import TestComponent from './test-component';
 import { Card } from './ui/card';
 
 export interface JobInput {
