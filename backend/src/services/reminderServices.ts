@@ -9,12 +9,16 @@ export const reminderService = {
 			orderBy: { createdAt: 'desc' },
 		});
 	},
-	create(userId: string, data: any) {
+	create(data: any, userId: string) {
+		const parsedDueDate = data.dueDate && new Date(data.dueDate);
+
+		// Validate date
+		if (data.dueDate && isNaN(parsedDueDate.getTime())) {
+			throw new Error('Invalid dueDate');
+		}
+		const newData = { ...data, dueDate: parsedDueDate, userId };
 		return prisma.reminder.create({
-			data: {
-				...data,
-				userId,
-			},
+			data: newData,
 		});
 	},
 	getOne(id: string, userId: string) {

@@ -47,12 +47,13 @@ export const jobController = {
 			}
 			console.log('USERID', userId);
 			const body = req.body;
+
 			if (!body) {
 				return res.status(400).json({ error: 'Invalid or empty data' });
 			}
 			const job = await jobService.create({ ...body }, userId);
 
-			res.status(201).json({ job: '' });
+			res.status(201).json(job);
 		} catch (error) {
 			res.status(500).json({ error: 'Server error!' });
 		}
