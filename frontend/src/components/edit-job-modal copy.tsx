@@ -9,16 +9,10 @@ import UseEscClose from '@/hooks/use-esc-close';
 import { JobInputData, JobType } from '@/types/types';
 import { JobStatus } from '@prisma/client';
 import { Loader2, Plus, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import JobRequirementItem from './job-requirement-item';
 import { JobInput } from './job-tracker';
 import { SkillsItem } from './skill-item';
-
-//zod imports
-import { JobsSchema, JobsSchemaType } from '@/schemas/jobs.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 
 export interface FormDataT {
 	id: string;
@@ -53,102 +47,35 @@ export function EditJobModal({
 	setIsEditing,
 	onUpdate,
 }: EditJobModalProps) {
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		getValues,
-		reset,
-		formState: { errors, isSubmitting },
-	} = useForm<JobsSchemaType>({
-		resolver: zodResolver(JobsSchema),
-		defaultValues: {
-			title: '',
-			company: '',
-			applicationDate: new Date().toISOString().split('T')[0],
-			jobUrl: '',
-			jobDetails: '',
-			skillsRequired: [],
-			jobRequirements: [],
-			experienceNeeded: 0,
-			notes: '',
-			salary: 0,
-			location: '',
-		},
+	const [formData, setFormData] = useState<JobInputData>({
+		...job,
+		skillsRequired: JSON.parse(job.skillsRequired),
+		jobUrl: job.jobUrl || '',
+		location: job.location || '',
+		jobRequirements: JSON.parse(job.jobRequirements),
+		salary: Number(job.salary),
+		notes: job.notes || '',
 	});
 
-	useEffect(() => {
-		async function fetchJob() {
-			setLoading(true);
-			try {
-				const formattedData = {
-					...job,
-					id: job.id,
-					applicationDate: new Date(job.applicationDate)
-						.toISOString()
-						.split('T')[0],
-					experienceNeeded: Number(job.experienceNeeded),
-					skillsRequired: JSON.parse(job.skillsRequired),
-					jobRequirements: JSON.parse(job.jobRequirements),
-					jobUrl: job.jobUrl || '',
-					location: job.location || '',
-					salary: Number(job.salary),
-					notes: job.notes || '',
-				};
-
-				setJobData(formattedData);
-				reset(formattedData); // <-- important! reset form with fetched values
-			} catch (err) {
-				console.error(err);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchJob();
-	}, [job, reset]);
-
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [skill, setSkill] = useState('');
 	const [requirements, setRequirements] = useState('');
-	const [loading, setLoading] = useState(false);
-	const [jobData, setJobData] = useState<JobsSchemaType | null>(null);
 
-	// const handleSubmit = async (e: React.FormEvent) => {
-	// 	e.preventDefault();
-	// 	setIsSubmitting(true);
-	// 	const newData = {
-	// 		...formData,
-	// 		skillsRequired: JSON.stringify(formData['skillsRequired']),
-	// 		jobRequirements: JSON.stringify(formData['jobRequirements']),
-	// 	};
-	// 	onUpdate(newData);
-	// 	setIsEditing(false);
-	// 	setIsSubmitting(false);
-	// };
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsSubmitting(true);
+		const newData = {
+			...formData,
+			skillsRequired: JSON.stringify(formData['skillsRequired']),
+			jobRequirements: JSON.stringify(formData['jobRequirements']),
+		};
+		onUpdate(newData);
+		setIsEditing(false);
+		setIsSubmitting(false);
+	};
 
 	UseEscClose(onClose);
 	if (!isOpen) return null;
-	if (loading) return <p>Loading..</p>;
-
-	const onSubmit = (data: JobsSchemaType) => {
-		console.log('Edited job data:', data);
-		const newJob = {
-			...data,
-			id: job.id,
-			applicationDate: new Date(data.applicationDate),
-			skillsRequired: JSON.stringify(data.skillsRequired),
-			jobRequirements: JSON.stringify(data.jobRequirements),
-		};
-		onUpdate(newJob);
-
-		toast('Success', {
-			description: 'Job application added successfully!',
-		});
-
-		reset();
-		onClose();
-		setIsEditing(false);
-	};
 	return (
 		<>
 			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white ">
@@ -171,7 +98,7 @@ export function EditJobModal({
 					</div>
 				</CardHeader>
 				<CardContent className="p-6">
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+					<form onSubmit={handleSubmit} className="space-y-6">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div className="space-y-3">
 								<Label
@@ -182,11 +109,13 @@ export function EditJobModal({
 								</Label>
 								<Input
 									id="title"
+									value={formData.title}
+									onChange={(e) =>
+										setFormData({ ...formData, title: e.target.value })
+									}
 									required
 									className="mt-1"
-									{...register('title')}
 								/>
-								{errors.title && <p>{errors.title.message}</p>}
 							</div>
 
 							<div className="space-y-3">
@@ -198,11 +127,13 @@ export function EditJobModal({
 								</Label>
 								<Input
 									id="company"
+									value={formData.company}
+									onChange={(e) =>
+										setFormData({ ...formData, company: e.target.value })
+									}
 									required
 									className="mt-1"
-									{...register('company')}
 								/>
-								{errors.company && <p>{errors.company.message}</p>}
 							</div>
 
 							<div className="space-y-3">
@@ -215,13 +146,22 @@ export function EditJobModal({
 								<Input
 									id="applicationDate"
 									type="date"
+									value={
+										formData.applicationDate
+											? new Date(formData.applicationDate)
+													.toISOString()
+													.split('T')[0]
+											: ''
+									}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											applicationDate: new Date(e.target.value),
+										})
+									}
 									required
 									className="mt-1"
-									{...register('applicationDate')}
 								/>
-								{errors.applicationDate && (
-									<p>{errors.applicationDate.message}</p>
-								)}
 							</div>
 
 							<div className="space-y-3">
@@ -233,10 +173,12 @@ export function EditJobModal({
 								</Label>
 								<Input
 									id="location"
+									value={formData.location ?? ''}
+									onChange={(e) =>
+										setFormData({ ...formData, location: e.target.value })
+									}
 									className="mt-1"
-									{...register('location')}
 								/>
-								{errors.location && <p>{errors.location.message}</p>}
 							</div>
 
 							<div className="space-y-3">
@@ -246,8 +188,14 @@ export function EditJobModal({
 								>
 									Salary
 								</Label>
-								<Input id="salary" className="mt-1" {...register('salary')} />
-								{errors.salary && <p>{errors.salary.message}</p>}
+								<Input
+									id="salary"
+									value={String(formData.salary)}
+									onChange={(e) =>
+										setFormData({ ...formData, salary: Number(e.target.value) })
+									}
+									className="mt-1"
+								/>
 							</div>
 
 							<div className="space-y-3">
@@ -260,12 +208,15 @@ export function EditJobModal({
 								<Input
 									id="experienceNeeded"
 									type="number"
+									value={Number(formData.experienceNeeded)}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											experienceNeeded: Number(e.target.value),
+										})
+									}
 									className="mt-1"
-									{...register('experienceNeeded')}
 								/>
-								{errors.experienceNeeded && (
-									<p>{errors.experienceNeeded.message}</p>
-								)}
 							</div>
 						</div>
 
@@ -279,62 +230,70 @@ export function EditJobModal({
 							<Input
 								id="jobUrl"
 								type="url"
-								className="mt-1"
-								{...register('jobUrl')}
-							/>
-							{errors.jobUrl && <p>{errors.jobUrl.message}</p>}
-						</div>
-						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobDetails"
-							>
-								Job Details
-							</Label>
-							<Textarea
-								id="jobDetails"
-								placeholder="Job details or Roles in this job post"
-								{...register('jobDetails')}
-								rows={3}
+								value={formData.jobUrl ?? ''}
+								onChange={(e) =>
+									setFormData({ ...formData, jobUrl: e.target.value })
+								}
 								className="mt-1"
 							/>
-							{errors.jobDetails && (
-								<p className="text-red-500">{errors.jobDetails.message}</p>
-							)}
 						</div>
+
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
 								htmlFor="skillsRequired"
 							>
-								Skills Requirements
+								Required Skills
 							</Label>
-							<div className="flex flex-row gap-2">
+							<div className="flex gap-2">
 								<Input
-									className="input"
+									placeholder="Enter a skills.."
 									value={skill}
 									onChange={(e) => setSkill(e.target.value)}
-									placeholder="Enter a skill"
-								/>
+								></Input>
 								<Button
 									type="button"
 									className="bg-neutral-400 text-white"
 									onClick={() => {
-										const list = getValues('skillsRequired') ?? [];
-										if (!skill) return;
-										setValue('skillsRequired', [...list, skill]);
-										setSkill(''); // clear input
+										setFormData({
+											...formData,
+											skillsRequired: [...formData['skillsRequired'], skill],
+										});
+										setSkill('');
 									}}
 								>
 									<Plus size={18} />
 								</Button>
 							</div>
-							<div className="flex gap-2 text-sm flex-wrap ">
-								{(getValues('skillsRequired') ?? []).map((s, i) => (
-									<SkillsItem key={i}>{s}</SkillsItem>
-								))}
-							</div>
+							{formData['skillsRequired'].length != 0 && (
+								<div className="flex flex-wrap gap-2">
+									{formData['skillsRequired'].map(
+										(skill: string, i: number) => (
+											<SkillsItem key={i}>
+												<div className="group flex flex-row items-center gap-2">
+													{skill}
+													<button
+														type="button"
+														className="group-hover:flex hidden px-0 py-0"
+														onClick={() => {
+															setFormData({
+																...formData,
+																skillsRequired: formData[
+																	'skillsRequired'
+																].filter((item) => item != skill),
+															});
+														}}
+													>
+														<X size={16} />
+													</button>
+												</div>
+											</SkillsItem>
+										)
+									)}
+								</div>
+							)}
 						</div>
+
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
@@ -344,30 +303,53 @@ export function EditJobModal({
 							</Label>
 							<div className="flex flex-row gap-2">
 								<Input
-									className="input"
-									id="jobRequirements"
+									placeholder="Enter job requirements here.."
 									value={requirements}
 									onChange={(e) => setRequirements(e.target.value)}
-									placeholder="Enter a requirements"
 								/>
 								<Button
 									type="button"
 									className="bg-neutral-400 text-white"
 									onClick={() => {
-										const list = getValues('jobRequirements') ?? [];
-										if (!requirements) return;
-										setValue('jobRequirements', [...list, requirements]);
-										setRequirements(''); // clear input
+										setFormData({
+											...formData,
+											jobRequirements: [
+												...formData['jobRequirements'],
+												requirements,
+											],
+										});
 									}}
 								>
-									<Plus size={18} />
+									<Plus size={18}></Plus>
 								</Button>
 							</div>
-							<div className="flex flex-col gap-2 text-sm ">
-								{(getValues('jobRequirements') ?? []).map((s, i) => (
-									<JobRequirementItem key={i} required={s} i={i} />
-								))}
-							</div>
+							{formData['jobRequirements'].length != 0 && (
+								<div className="flex flex-col gap-2 text-sm ">
+									{formData['jobRequirements'].map(
+										(requirements: string, i: number) => (
+											<div
+												key={i}
+												className="group flex flex-row justify-between hover:bg-neutral-100 rounded-full"
+											>
+												<JobRequirementItem i={i} required={requirements} />
+												<Button
+													className="group-hover:flex hidden"
+													onClick={() =>
+														setFormData({
+															...formData,
+															jobRequirements: formData[
+																'jobRequirements'
+															].filter((item) => item != requirements),
+														})
+													}
+												>
+													<X size={16}></X>
+												</Button>
+											</div>
+										)
+									)}
+								</div>
+							)}
 						</div>
 						<div className="space-y-3">
 							<Label
@@ -378,11 +360,13 @@ export function EditJobModal({
 							</Label>
 							<Textarea
 								id="notes"
+								value={formData.notes ?? ''}
+								onChange={(e) =>
+									setFormData({ ...formData, notes: e.target.value })
+								}
 								rows={3}
 								className="mt-1"
-								{...register('notes')}
 							/>
-							{errors.notes && <p>{errors.notes.message}</p>}
 						</div>
 
 						<div className="flex space-x-3 pt-4 border-t border-gray-200">

@@ -12,11 +12,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import UseEscClose from '@/hooks/use-esc-close';
+
+// Zod and RHF
 import { JobsSchema, JobsSchemaType } from '@/schemas/jobs.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
 import { Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import JobRequirementItem from './job-requirement-item';
 import { JobInput } from './job-tracker';
@@ -56,8 +59,6 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 	const [requirements, setRequirements] = useState('');
 
 	const onSubmit = (data: JobsSchemaType) => {
-		console.log(data);
-		console.log('test');
 		const newJob = {
 			...data,
 			applicationDate: new Date(data.applicationDate),
@@ -240,6 +241,7 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 							</div>
 						</div>
 
+						{/* Job Details */}
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
@@ -258,6 +260,8 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								<p className="text-red-500">{errors.jobDetails.message}</p>
 							)}
 						</div>
+
+						{/* Skills Requirements */}
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
@@ -285,12 +289,14 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 									<Plus size={18} />
 								</Button>
 							</div>
-							<div className="flex gap-2 text-sm ">
+							<div className="flex gap-2 text-sm flex-wrap ">
 								{(getValues('skillsRequired') ?? []).map((s, i) => (
 									<SkillsItem key={i}>{s}</SkillsItem>
 								))}
 							</div>
 						</div>
+
+						{/* Job Requirements */}
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
@@ -326,6 +332,7 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 							</div>
 						</div>
 
+						{/* Notes */}
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
