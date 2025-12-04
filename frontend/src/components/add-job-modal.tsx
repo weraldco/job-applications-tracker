@@ -11,10 +11,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import { FormDataT, JobInputData } from '@/types/types';
+import UseEscClose from '@/hooks/use-esc-close';
+import { JobsSchema, JobsSchemaType } from '@/schemas/jobs.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import JobRequirementItem from './job-requirement-item';
 import { JobInput } from './job-tracker';
 import { SkillsItem } from './skill-item';
@@ -26,62 +29,19 @@ interface AddJobModalProps {
 }
 
 export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
-	const [formData, setFormData] = useState<JobInputData>({
-		title: '',
-		company: '',
-		applicationDate: new Date(),
-		jobUrl: '',
-		skillsRequired: [],
-		jobDetails: '',
-		jobRequirements: [],
-		experienceNeeded: 0,
-		notes: '',
-		salary: 0,
-		location: '',
-	});
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const { toast } = useToast();
-	const [skill, setSkill] = useState('');
-	const [requirements, setRequirements] = useState('');
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setIsSubmitting(true);
-
-		try {
-			console.log(typeof formData['experienceNeeded']);
-			const newJob = {
-				...formData,
-				applicationDate: new Date(formData.applicationDate),
-				experienceNeeded: Number(formData.experienceNeeded),
-				skillsRequired: JSON.stringify(formData['skillsRequired']),
-				jobRequirements: JSON.stringify(formData['jobRequirements']),
-				salary: Number(formData.salary),
-			};
-			console.log('newJob', newJob);
-
-			onJobAdded(newJob);
-			toast({
-				title: 'Success',
-				description: 'Job application added successfully!',
-			});
-			handleClose();
-		} catch (error) {
-			toast({
-				title: 'Error',
-				description: 'Failed to add job application',
-				variant: 'destructive',
-			});
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
-
-	const handleClose = () => {
-		setFormData({
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		getValues,
+		reset,
+		formState: { errors, isSubmitting },
+	} = useForm<JobsSchemaType>({
+		resolver: zodResolver(JobsSchema),
+		defaultValues: {
 			title: '',
 			company: '',
-			applicationDate: new Date(),
+			applicationDate: new Date().toISOString().split('T')[0],
 			jobUrl: '',
 			jobDetails: '',
 			skillsRequired: [],
@@ -90,10 +50,34 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 			notes: '',
 			salary: 0,
 			location: '',
+		},
+	});
+	const [skill, setSkill] = useState('');
+	const [requirements, setRequirements] = useState('');
+
+	const onSubmit = (data: JobsSchemaType) => {
+		console.log(data);
+		console.log('test');
+		const newJob = {
+			...data,
+			applicationDate: new Date(data.applicationDate),
+			skillsRequired: JSON.stringify(data.skillsRequired),
+			jobRequirements: JSON.stringify(data.jobRequirements),
+		};
+		onJobAdded(newJob);
+
+		toast('Success', {
+			description: 'Job application added successfully!',
 		});
-		onClose();
+		handleClose();
 	};
-	console.log('job requirement', formData['jobRequirements']);
+
+	const handleClose = () => {
+		onClose();
+		reset();
+	};
+
+	UseEscClose(handleClose);
 	if (!isOpen) return null;
 
 	return (
@@ -120,8 +104,8 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 					</div>
 				</CardHeader>
 				<CardContent className="p-6">
-					<form onSubmit={handleSubmit} className="space-y-6">
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+						<div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 							<div className="space-y-2 flex flex-col">
 								<Label
 									className="text-sm text-neutral-500 font-normal"
@@ -132,15 +116,14 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								<Input
 									id="title"
 									placeholder="Enter a Job Title.."
-									value={formData.title}
-									onChange={(e) =>
-										setFormData({ ...formData, title: e.target.value })
-									}
-									required
-									className="mt-1"
+									type="text"
+									className="input"
+									{...register('title')}
 								/>
+								{errors.title && (
+									<p className="text-red-500">{errors.title.message}</p>
+								)}
 							</div>
-
 							<div className="space-y-2 flex flex-col">
 								<Label
 									className="text-sm text-neutral-500 font-normal"
@@ -150,16 +133,16 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								</Label>
 								<Input
 									id="company"
-									placeholder="Enter a Company name.."
-									value={formData.company}
-									onChange={(e) =>
-										setFormData({ ...formData, company: e.target.value })
-									}
-									required
-									className="mt-1"
+									placeholder="Enter a Job Title.."
+									type="text"
+									className="input"
+									{...register('company')}
 								/>
+								{errors.company && (
+									<p className="text-red-500">{errors.company.message}</p>
+								)}
 							</div>
-
+							{/* Application Date */}
 							<div className="space-y-2 flex flex-col">
 								<Label
 									className="text-sm text-neutral-500 font-normal"
@@ -170,173 +153,144 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								<Input
 									id="applicationDate"
 									type="date"
-									value={
-										formData.applicationDate
-											? new Date(formData.applicationDate)
-													.toISOString()
-													.split('T')[0]
-											: ''
-									}
-									onChange={(e) =>
-										setFormData({
-											...formData,
-											applicationDate: new Date(e.target.value),
-										})
-									}
-									required
-									className="mt-1"
+									className="input"
+									{...register('applicationDate')}
 								/>
+								{errors.applicationDate && (
+									<p className="text-red-500">
+										{errors.applicationDate.message}
+									</p>
+								)}
 							</div>
-
+							{/* Location */}
 							<div className="space-y-2 flex flex-col">
 								<Label
 									className="text-sm text-neutral-500 font-normal"
 									htmlFor="location"
 								>
-									Location
+									Location (optional)
 								</Label>
 								<Input
 									id="location"
-									value={formData.location}
-									placeholder="Enter a Company Location.."
-									onChange={(e) =>
-										setFormData({ ...formData, location: e.target.value })
-									}
-									className="mt-1"
+									placeholder="Location of the company.."
+									type="text"
+									className="input"
+									{...register('location')}
 								/>
+								{errors.location && (
+									<p className="text-red-500">{errors.location.message}</p>
+								)}
 							</div>
-
-							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="salary"
-								>
-									Salary
-								</Label>
-								<Input
-									id="salary"
-									value={formData.salary}
-									placeholder="Enter a Job Salary.."
-									onChange={(e) =>
-										setFormData({ ...formData, salary: Number(e.target.value) })
-									}
-									className="mt-1"
-								/>
-							</div>
-
 							<div className="space-y-2 flex flex-col">
 								<Label
 									className="text-sm text-neutral-500 font-normal"
 									htmlFor="experienceNeeded"
 								>
-									Years of Experience
+									Experience Needed (optional)
 								</Label>
 								<Input
 									id="experienceNeeded"
 									type="number"
-									placeholder="Enter a Year of experiences needed.."
-									value={formData.experienceNeeded || 0}
-									onChange={(e) =>
-										setFormData({
-											...formData,
-											experienceNeeded: Number(e.target.value),
-										})
-									}
-									className="mt-1"
+									className="input"
+									{...register('experienceNeeded', { valueAsNumber: true })}
 								/>
+								{errors.experienceNeeded && (
+									<p className="text-red-500">
+										{errors.experienceNeeded.message}
+									</p>
+								)}
+							</div>
+							{/* Salary */}
+							<div className="space-y-2 flex flex-col">
+								<Label
+									className="text-sm text-neutral-500 font-normal"
+									htmlFor="salary"
+								>
+									Salary (optional)
+								</Label>
+								<Input
+									id="salary"
+									type="number"
+									className="input"
+									{...register('salary', { valueAsNumber: true })}
+								/>
+								{errors.salary && (
+									<p className="text-red-500">{errors.salary.message}</p>
+								)}
+							</div>
+
+							{/* Job URL */}
+							<div className="space-y-2 flex flex-col">
+								<Label
+									className="text-sm text-neutral-500 font-normal"
+									htmlFor="jobUrl"
+								>
+									jobUrl (optional)
+								</Label>
+								<Input
+									id="jobUrl"
+									placeholder="jobUrl of the company.."
+									type="text"
+									className="input"
+									{...register('jobUrl')}
+								/>
+								{errors.jobUrl && (
+									<p className="text-red-500">{errors.jobUrl.message}</p>
+								)}
 							</div>
 						</div>
+
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobDetail"
+								htmlFor="jobDetails"
 							>
-								Job Detail
+								Job Details
 							</Label>
 							<Textarea
-								id="jobDetail"
-								placeholder="Enter a job details.."
-								value={formData.jobDetails}
-								onChange={(e) =>
-									setFormData({ ...formData, jobDetails: e.target.value })
-								}
+								id="jobDetails"
+								placeholder="Job details or Roles in this job post"
+								{...register('jobDetails')}
+								rows={3}
 								className="mt-1"
 							/>
+							{errors.jobDetails && (
+								<p className="text-red-500">{errors.jobDetails.message}</p>
+							)}
 						</div>
-
-						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobUrl"
-							>
-								Job URL (optional)
-							</Label>
-							<Input
-								id="jobUrl"
-								type="url"
-								placeholder="Enter a Job url or link.."
-								value={formData.jobUrl}
-								onChange={(e) =>
-									setFormData({ ...formData, jobUrl: e.target.value })
-								}
-								className="mt-1"
-							/>
-						</div>
-
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
 								htmlFor="skillsRequired"
 							>
-								Required Skills
+								Skills Requirements
 							</Label>
-							<div className="flex gap-2">
+							<div className="flex flex-row gap-2">
 								<Input
-									placeholder="Enter a skills.."
+									className="input"
 									value={skill}
 									onChange={(e) => setSkill(e.target.value)}
-								></Input>
+									placeholder="Enter a skill"
+								/>
 								<Button
 									type="button"
 									className="bg-neutral-400 text-white"
 									onClick={() => {
-										setFormData(() => ({
-											...formData,
-											skillsRequired: [...formData.skillsRequired, skill],
-										}));
-										setSkill('');
+										const list = getValues('skillsRequired') ?? [];
+										if (!skill) return;
+										setValue('skillsRequired', [...list, skill]);
+										setSkill(''); // clear input
 									}}
 								>
 									<Plus size={18} />
 								</Button>
 							</div>
-							{formData['skillsRequired'].length != 0 && (
-								<div className="flex flex-wrap gap-2">
-									{formData['skillsRequired'].map((skill, i) => (
-										<SkillsItem key={i}>
-											<div className="group flex flex-row items-center gap-2">
-												{skill}
-												<button
-													type="button"
-													className="group-hover:flex hidden px-0 py-0"
-													onClick={() => {
-														setFormData({
-															...formData,
-															skillsRequired: formData['skillsRequired'].filter(
-																(item) => item != skill
-															),
-														});
-													}}
-												>
-													<X size={16} />
-												</button>
-											</div>
-										</SkillsItem>
-									))}
-								</div>
-							)}
+							<div className="flex gap-2 text-sm ">
+								{(getValues('skillsRequired') ?? []).map((s, i) => (
+									<SkillsItem key={i}>{s}</SkillsItem>
+								))}
+							</div>
 						</div>
-
 						<div className="space-y-2 flex flex-col">
 							<Label
 								className="text-sm text-neutral-500 font-normal"
@@ -346,53 +300,30 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 							</Label>
 							<div className="flex flex-row gap-2">
 								<Input
-									placeholder="Enter job requirements here.."
+									className="input"
+									id="jobRequirements"
 									value={requirements}
 									onChange={(e) => setRequirements(e.target.value)}
+									placeholder="Enter a requirements"
 								/>
 								<Button
 									type="button"
 									className="bg-neutral-400 text-white"
 									onClick={() => {
-										setFormData({
-											...formData,
-											jobRequirements: [
-												...formData['jobRequirements'],
-												requirements,
-											],
-										});
-
-										setRequirements('');
+										const list = getValues('jobRequirements') ?? [];
+										if (!requirements) return;
+										setValue('jobRequirements', [...list, requirements]);
+										setRequirements(''); // clear input
 									}}
 								>
-									<Plus size={18}></Plus>
+									<Plus size={18} />
 								</Button>
 							</div>
-							{formData['jobRequirements'].length != 0 && (
-								<div className="flex flex-col gap-2 text-sm ">
-									{formData['jobRequirements'].map((requirements, i) => (
-										<div
-											key={i}
-											className="group flex flex-row justify-between items-center hover:bg-neutral-100 rounded-full"
-										>
-											<JobRequirementItem i={i} required={requirements} />
-											<Button
-												className="group-hover:flex hidden "
-												onClick={() =>
-													setFormData({
-														...formData,
-														jobRequirements: formData['jobRequirements'].filter(
-															(item) => item != requirements
-														),
-													})
-												}
-											>
-												<X size={16}></X>
-											</Button>
-										</div>
-									))}
-								</div>
-							)}
+							<div className="flex flex-col gap-2 text-sm ">
+								{(getValues('jobRequirements') ?? []).map((s, i) => (
+									<JobRequirementItem key={i} required={s} i={i} />
+								))}
+							</div>
 						</div>
 
 						<div className="space-y-2 flex flex-col">
@@ -400,19 +331,15 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								className="text-sm text-neutral-500 font-normal"
 								htmlFor="notes"
 							>
-								Notes
+								Notes (optional)
 							</Label>
 							<Textarea
 								id="notes"
-								value={formData.notes}
-								onChange={(e) =>
-									setFormData({ ...formData, notes: e.target.value })
-								}
+								{...register('notes')}
 								rows={3}
 								className="mt-1"
 							/>
 						</div>
-
 						<div className="flex space-x-3 pt-4 border-t border-gray-200">
 							<Button
 								type="submit"

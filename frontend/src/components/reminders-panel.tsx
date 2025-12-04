@@ -11,26 +11,12 @@ import {
 } from '@/components/ui/card';
 import { fetcher } from '@/lib/utils';
 // import { Job, Reminder, ReminderType } from '@prisma/client';
-import { JobType, ReminderType } from '@/types/types';
+import { CreateReminderInput, JobType, ReminderType } from '@/types/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Bell, CheckCircle, Clock, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import ReminderAddModal from './reminder-add-modal';
-
-export type CreateReminderInput = {
-	title: string;
-	description: string;
-	dueDate: string | null;
-	completed: boolean;
-	type:
-		| 'FOLLOW_UP'
-		| 'INTERVIEW_PREP'
-		| 'THANK_YOU_NOTE'
-		| 'APPLICATION_DEADLINE'
-		| 'OTHER';
-	jobId: string;
-};
 
 export type ReminderFetchType = {
 	message: string;
@@ -39,43 +25,36 @@ export type ReminderFetchType = {
 export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 	const [isAddReminderModalOpen, setIsAddReminderModalOpen] = useState(false);
 	const queryClient = useQueryClient();
-	const updateReminderMutation = useMutation({
-		mutationFn: async (payload: {
-			id: string;
-			data: { completed: boolean };
-		}) => {
-			return await fetch(`/api/reminder/${payload.id}`, {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(payload.data),
-			}).then((res) => res.json());
-		},
 
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['reminder-data'] });
-		},
-	});
-
+	// Add new Reminder
 	const addReminderMutation = useMutation({
-		mutationFn: async (newReminder: CreateReminderInput) => {
-			const response = await fetch('/api/reminder', {
+		mutationFn: (reminder: CreateReminderInput) =>
+			fetcher(`${process.env.NEXT_PUBLIC_API_URL}/reminders/create`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(newReminder),
-			});
-
-			if (!response.ok) throw new Error('Failed to add job');
-			return response.json();
-		},
+				body: JSON.stringify(reminder),
+			}),
 		onSuccess: () => {
-			//Refetch analytics automatically
 			queryClient.invalidateQueries({ queryKey: ['reminder-data'] });
 		},
 	});
-	const deleteReminderMutation = useMutation({
-		mutationFn: (id: string) => deleteReminder(id),
+	const updateReminderMutation = useMutation({
+		mutationFn: async (payload: { id: string; data: { completed: boolean } }) =>
+			fetcher(`${process.env.NEXT_PUBLIC_API_URL}/reminders/${payload.id}`, {
+				method: 'PATCH',
+				body: JSON.stringify(payload.data),
+			}),
+
 		onSuccess: () => {
-			// Refresh your list
+			queryClient.invalidateQueries({ queryKey: ['reminder-data'] });
+		},
+	});
+
+	const deleteReminderMutation = useMutation({
+		mutationFn: (id: string) =>
+			fetcher(`${process.env.NEXT_PUBLIC_API_URL}/reminders/${id}`, {
+				method: 'DELETE',
+			}),
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['reminder-data'] });
 		},
 		onError: (err) => {
@@ -90,10 +69,7 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 
 	// Mock data for demo
 	if (isLoading) return <p>Loading..</p>;
-	if (error) return <p>Error</p>;
-	if (!data) return <p>Error fetching reminder datas</p>;
-	console.log('Reminder data', data);
-	console.log('job', jobs);
+	if (!data) return;
 
 	const getTypeColor = (type: string) => {
 		switch (type) {
@@ -123,16 +99,6 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 
 	const onClose = () => {
 		setIsAddReminderModalOpen(false);
-	};
-
-	const deleteReminder = async (id: string) => {
-		const response = await fetch(`/api/reminder/${id}`, { method: 'DELETE' });
-
-		console.log(response);
-
-		if (!response.ok) throw new Error('Error deleting reminder!');
-
-		return true;
 	};
 
 	return (

@@ -12,16 +12,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '../../../lib/supabase';
 
+import LoadingState from '@/components/loading-state';
+import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { Lock, Mail } from 'lucide-react';
-// import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 export default function SignInPage() {
+	const { user, loading } = useAuthGuard({
+		redirectIfAuthenticated: true,
+		redirectPath: '/',
+	});
 	const router = useRouter();
-	// const searchParams = useSearchParams();
-
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +60,7 @@ export default function SignInPage() {
 			setIsLoading(false);
 		}
 	};
-
+	if (loading) return <LoadingState />;
 	return (
 		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
 			<Card className="w-full max-w-md">

@@ -1,5 +1,6 @@
 'use client';
 
+import LoadingState from '@/components/loading-state';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -10,8 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { queryClient } from '@/lib/react-query';
-import { supabase } from '@/lib/supabase';
+import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { fetcher } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { Lock, Mail, User2 } from 'lucide-react';
@@ -26,7 +26,10 @@ export default function SignUpPage() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
-
+	const { user, loading } = useAuthGuard({
+		redirectIfAuthenticated: true,
+		redirectPath: '/',
+	});
 	interface UserType {
 		name: string;
 		email: string;
@@ -34,15 +37,16 @@ export default function SignUpPage() {
 	}
 	const registerUser = useMutation({
 		mutationFn: (newUser: Partial<UserType>) =>
-			fetcher(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
+			fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
 				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(newUser),
 			}),
 		onSuccess: () => {
 			// redirect to '/' or index page
 			toast.success('Successfully Signup', {
 				description:
-					"Welcome! You've successfully sign-up. You must very your account first to complete the registration.",
+					"Welcome! You've successfully sign-up. You must verify your account first to complete the registration.",
 			});
 			router.push('/');
 			router.refresh();
@@ -62,10 +66,11 @@ export default function SignUpPage() {
 			email,
 			password,
 		};
+
 		registerUser.mutate(newUser);
 		setIsSubmitting(true);
 	};
-
+	if (loading) return <LoadingState />;
 	return (
 		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
 			<Card className="w-full max-w-md">

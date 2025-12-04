@@ -11,6 +11,7 @@ import { JobStatus } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
 import { Plus, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import LoginForm from './test-component';
 import { Card } from './ui/card';
 
 export interface JobInput {
@@ -106,7 +107,6 @@ export function JobTracker({
 
 	const handleJobDeleted = (jobId: string) => {
 		if (confirm('Are you sure you want to delete this job application?')) {
-			console.log('jobid', jobId);
 			deleteJobMutation.mutate(jobId);
 		}
 	};

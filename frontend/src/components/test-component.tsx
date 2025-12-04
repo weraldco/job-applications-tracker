@@ -1,54 +1,47 @@
-'use client';
-import { supabase } from '../lib/supabase';
+import { LoginFormInputs, loginSchema } from '@/schemas/test.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
-export default function PdfUploader() {
-	const handleLogin = async () => {
-		try {
-			const { data, error } = await supabase.auth.signInWithPassword({
-				email: 'werald.opolento@gmail.com',
-				password: 'password123',
-			});
-			const session = await supabase.auth.getSession();
-			const token = session.data.session?.access_token;
+export default function LoginForm() {
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<LoginFormInputs>({
+		// Pass the zodResolver and your schema here
+		resolver: zodResolver(loginSchema),
+		// Optional: Set default values for controlled components
+		defaultValues: {
+			email: '',
+			username: '',
+			password: '',
+		},
+	});
 
-			const res = await fetch('http://localhost:4000/api/jobs', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`, // <-- IMPORTANT
-				},
-			});
-
-			if (error) {
-				console.log('ERROR', error);
-			}
-			console.log('DATA', data);
-			const response = await res.json();
-			console.log('RES', response);
-		} catch (error) {
-			console.error('Something went wrong!');
-		}
+	const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
+		// This function only runs if the form data passes the Zod validation
+		console.log(data);
 	};
 
-	const handleSignUp = async () => {
-		try {
-			const { data, error } = await supabase.auth.signUp({
-				email: 'werald.opolento@gmail.com',
-				password: 'password123',
-			});
-
-			if (error) {
-				console.log('Error', error);
-			}
-			console.log('Data', data);
-		} catch (error) {
-			console.log('Error signup');
-		}
-	};
 	return (
-		<div className="flex flex-col gap-4 w-full max-w-md">
-			<button onClick={handleLogin}>Login</button>
-			<button onClick={handleSignUp}>Sign up</button>
-		</div>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			{/* Email Field */}
+			<input
+				type="email"
+				placeholder="Email"
+				{...register('email')} // Register the input with its schema name
+			/>
+			{/* Display the Zod error message */}
+			{errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+
+			<input type="text" {...register('username')} />
+			{/* Password Field */}
+			<input type="password" placeholder="Password" {...register('password')} />
+			{errors.password && (
+				<p style={{ color: 'red' }}>{errors.password.message}</p>
+			)}
+
+			<button type="submit">Log In</button>
+		</form>
 	);
 }

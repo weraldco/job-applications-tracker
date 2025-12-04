@@ -9,6 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import UseEscClose from '@/hooks/use-esc-close';
 import { JobType } from '@/types/types';
 import { Job } from '@prisma/client';
 import { format } from 'date-fns';
@@ -43,10 +44,11 @@ export function JobDetailModal({
 	onUpdate,
 }: JobDetailModalProps) {
 	const [isEditing, setIsEditing] = useState(false);
-
 	const handleClose = () => {
+		setIsEditing(false);
 		onClose();
 	};
+	UseEscClose(handleClose);
 	if (!isOpen) return null;
 	return (
 		<>
@@ -213,7 +215,7 @@ export function JobDetailModal({
 					<EditJobModal
 						job={job}
 						isOpen={isOpen}
-						onClose={onClose}
+						onClose={handleClose}
 						setIsEditing={setIsEditing}
 						onUpdate={onUpdate}
 					/>

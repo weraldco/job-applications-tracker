@@ -4,7 +4,7 @@ import { JobDetailModal } from '@/components/job-detail-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { JobType } from '@/types/types';
-import { Job, JobStatus } from '@prisma/client';
+import { JobStatus } from '@prisma/client';
 import { format } from 'date-fns';
 import { Calendar, ExternalLink, MapPin, Trash2 } from 'lucide-react';
 import { useState } from 'react';
@@ -106,7 +106,7 @@ export function JobCard({
 							)}
 						</div>
 						<div className="flex space-x-4 text-sm flex-col md:flex-row  gap-y-2 md:items-center">
-							<div className="w-full max-w-[40%]">
+							<div className="w-full md:max-w-[40%]">
 								{job.experienceNeeded !== null && (
 									<div className="">
 										<p className="text-sm flex gap-2">

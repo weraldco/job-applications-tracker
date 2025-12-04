@@ -3,10 +3,11 @@ import { AnalyticsDashboard } from '@/components/analytics-dashboard';
 import { Header } from '@/components/header';
 import { JobTracker } from '@/components/job-tracker';
 import { RemindersPanel } from '@/components/reminders-panel';
-import { useAuthGuard } from '@/lib/useAuthGuard';
+import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { fetcher } from '@/lib/utils';
 import { JobType } from '@/types/types';
 import { useQuery } from '@tanstack/react-query';
+import LoadingState from './loading-state';
 
 interface JobsResponse {
 	jobs: JobType[]; // your existing Job interface
@@ -16,14 +17,16 @@ interface JobsResponse {
 }
 
 export default function DashboardClientWrapper() {
-	const { user, loading } = useAuthGuard();
+	const { user, loading } = useAuthGuard({
+		redirectIfNotAuthenticated: true,
+		redirectPath: '/auth/signin',
+	});
 	const { data, isLoading, error } = useQuery<JobsResponse>({
 		queryKey: ['jobs-data'],
 		queryFn: () => fetcher(`${process.env.NEXT_PUBLIC_API_URL}/jobs`),
 	});
 
-	if (loading) return <p>Loading..</p>;
-	if (!data) return <p>No data</p>;
+	if (loading || isLoading) return <LoadingState />;
 	return (
 		<div className="min-h-screen bg-gray-50">
 			<Header user={user.user_metadata.displayName} />

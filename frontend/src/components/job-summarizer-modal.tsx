@@ -134,7 +134,6 @@ export function JobSummarizerModal({
 				jobRequirements: JSON.stringify(summarizedJob.jobRequirements),
 				salary: summarizedJob.salary,
 			};
-			console.log('newJob', newJob);
 			onJobAdded(newJob);
 			toast.success('Success', {
 				description: 'Job application added successfully!',
@@ -158,7 +157,6 @@ export function JobSummarizerModal({
 	};
 
 	const handleCancel = () => {
-		console.log('Cancelling...');
 		setTextData('');
 		setFile(null);
 		setSummarizedJob(null);
@@ -473,7 +471,7 @@ export function JobSummarizerModal({
 							<div className="flex space-x-2">
 								<Button
 									onClick={handleSubmit}
-									disabled={isSubmitting}
+									disabled
 									className="flex-1 bg-blue-500 text-white hover:bg-blue-400 duration-200 active:bg-blue-600"
 								>
 									{isSubmitting ? (

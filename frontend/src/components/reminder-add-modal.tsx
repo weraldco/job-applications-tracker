@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReminderType } from '@prisma/client';
 
-import { JobType } from '@/types/types';
+import UseEscClose from '@/hooks/use-esc-close';
+import { CreateReminderInput, JobType } from '@/types/types';
 import { Loader2, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { CreateReminderInput } from './reminders-panel';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Input } from './ui/input';
@@ -31,12 +32,18 @@ const ReminderAddModal = ({
 		type: '',
 		jobId: '',
 	});
-	console.log('add ', data);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [reminderType, setReminderType] = useState<string>('Interview Prep');
-	const [jobTitle, setJobTitle] = useState(
-		"	data.r != '' !== undefined ? data[0].title : ''"
-	);
+	const [jobTitle, setJobTitle] = useState<any | null>(null);
+
+	const jobSelections = [
+		...(data?.map((d) => ({ id: d.id, title: d.title })) ?? []),
+	];
+
+	useEffect(() => {
+		setJobTitle(jobSelections[0]);
+	}, []);
+
 	const [dueDate, setDueDate] = useState<string | null>(null);
 	const typeMap: Record<string, ReminderType> = {
 		'Interview Prep': 'INTERVIEW_PREP',
@@ -54,64 +61,67 @@ const ReminderAddModal = ({
 		<p>Invalid data!</p>;
 		return;
 	}
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsSubmitting(true);
-		if (jobTitle !== '') {
-			console.log('test', data.find((i) => i.title === jobTitle)?.id ?? null);
-		} else {
-			console.log('No jobTitle', 'INTERVIEW_PREP');
-		}
+		// setIsSubmitting(true);
+		// try {
+		// 	const newReminder: CreateReminderInput = {
+		// 		title: formData.title,
+		// 		description: formData.description,
+		// 		dueDate: new Date(String(dueDate)).toISOString(),
+		// 		completed: formData.completed,
+		// 		type:
+		// 			reminderType === undefined
+		// 				? 'INTERVIEW_PREP'
+		// 				: typeMap[reminderType as string],
+		// 		jobId: jobTitle.id,
+		// 	};
 
-		const selectedJob = data.find((i) => i.title === jobTitle);
-		if (!selectedJob) {
-			console.error('No job found for title', jobTitle);
-			return;
-		}
-		try {
-			const newReminder: CreateReminderInput = {
-				title: formData.title,
-				description: formData.description,
-				dueDate: dueDate,
-				completed: formData.completed,
-				type:
-					reminderType === undefined
-						? 'INTERVIEW_PREP'
-						: typeMap[reminderType as string],
-				jobId: selectedJob.id,
-			};
+		// 	onReminderAdded(newReminder);
+		// 	toast.success('Success', {
+		// 		description: 'Reminder added successfully!',
+		// 	});
 
-			console.log(newReminder);
+		// 	formData['title'] = '';
+		// 	formData['description'] = '';
+		// 	formData['dueDate'] = '';
+		// 	formData['completed'] = false;
+		// 	formData['type'] = '';
+		// 	formData['jobId'] = '';
 
-			onReminderAdded(newReminder);
-			toast.success('Success', {
-				description: 'Reminder added successfully!',
-			});
-
-			formData['title'] = '';
-			formData['description'] = '';
-			formData['dueDate'] = '';
-			formData['completed'] = false;
-			formData['type'] = '';
-			formData['jobId'] = '';
-
-			onClose();
-		} catch (error) {
-			toast.error('Error', {
-				description: 'Failed to add new reminder',
-			});
-		} finally {
-			setIsSubmitting(false);
-		}
+		// 	onClose();
+		// } catch (error) {
+		// 	toast.error('Error', {
+		// 		description: 'Failed to add new reminder',
+		// 	});
+		// } finally {
+		// 	setIsSubmitting(false);
+		// }
+		console.log('test');
 	};
+
+	const handleClose = () => {
+		onClose();
+		setFormData({
+			title: '',
+			description: '',
+			dueDate: new Date().toISOString().split('T')[0],
+			completed: false,
+			type: '',
+			jobId: '',
+		});
+	};
+
+	UseEscClose(handleClose);
 	if (!isOpen) return null;
 	return (
 		<div className="fixed inset-0 bg-neutral-700/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
 			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
 				<CardHeader className="flex flex-row items-center justify-between">
 					<h2 className="text-xl">Adding New Reminder</h2>
-					<button onClick={onClose}>
-						<X></X>
+					<button onClick={handleClose}>
+						<X />
 					</button>
 				</CardHeader>
 				<CardContent>
@@ -130,8 +140,8 @@ const ReminderAddModal = ({
 									className="text-sm border rounded px-2 py-1 bg-white cursor-pointer w-full"
 									onClick={(e) => e.stopPropagation()}
 								>
-									{data.map((d, i) => (
-										<option key={i} value={d.title}>
+									{jobSelections.map((d, i) => (
+										<option key={i} value={d.id}>
 											{d.title}
 										</option>
 									))}
@@ -228,7 +238,11 @@ const ReminderAddModal = ({
 									'Add new reminder'
 								)}
 							</Button>
-							<button className="bg-blue-500 hover:bg-blue-400 acrive:bg-blue-600 duration-200 text-white px-4 py-1 rounded	">
+							<button
+								className="bg-blue-500 hover:bg-blue-400 acrive:bg-blue-600 duration-200 text-white px-4 py-1 rounded"
+								type="button"
+								onClick={handleClose}
+							>
 								Cancel
 							</button>
 						</div>

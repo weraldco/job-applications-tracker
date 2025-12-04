@@ -44,7 +44,6 @@ export function AnalyticsDashboard({
 	monthlyCount,
 	statusCount,
 	total,
-	isLoading,
 }: AnalyticsDataT) {
 	//
 
@@ -89,7 +88,6 @@ export function AnalyticsDashboard({
 	const offerRate = statusCount['OFFER'] ? statusCount['OFFER'] : 0 / total;
 
 	const interviewRate = (statusCount['APPLIED'] / total).toFixed();
-	console.log(typeof offerRate);
 	const metrics = [
 		{
 			label: 'Total Applications',

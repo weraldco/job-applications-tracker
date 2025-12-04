@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import UseEscClose from '@/hooks/use-esc-close';
 import { JobInputData, JobType } from '@/types/types';
 import { JobStatus } from '@prisma/client';
 import { Loader2, Plus, X } from 'lucide-react';
@@ -63,9 +64,6 @@ export function EditJobModal({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		// updateJobMutation.mutate({ id: formData.id, data: formData });
-
-		// Lets make a newData that will convert back to string the skills and requirements
 		const newData = {
 			...formData,
 			skillsRequired: JSON.stringify(formData['skillsRequired']),
@@ -77,7 +75,6 @@ export function EditJobModal({
 	};
 
 	if (!isOpen) return null;
-	console.log('Job', formData.skillsRequired);
 	return (
 		<>
 			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white ">
