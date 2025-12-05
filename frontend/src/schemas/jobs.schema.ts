@@ -11,7 +11,7 @@ export const JobsSchema = z.object({
 	jobUrl: z.string().optional(),
 	location: z.string().optional(),
 	salary: z.number().optional(),
-	experienceNeeded: z.number(),
+	experienceNeeded: z.number().optional(),
 	jobDetails: z.string().min(1, { message: 'Job Details is required' }),
 	skillsRequired: z.array(z.string().min(1, { message: 'Skills' })),
 	jobRequirements: z.array(z.string().min(1, { message: 'Required' })),

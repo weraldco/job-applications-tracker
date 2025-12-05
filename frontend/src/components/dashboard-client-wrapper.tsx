@@ -27,6 +27,7 @@ export default function DashboardClientWrapper() {
 	});
 
 	if (loading || isLoading) return <LoadingState />;
+	if (error) return <p>Error fetching data!</p>;
 	return (
 		<div className="min-h-screen bg-gray-50">
 			<Header user={user.user_metadata.displayName} />

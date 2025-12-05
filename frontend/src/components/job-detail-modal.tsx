@@ -11,16 +11,13 @@ import {
 } from '@/components/ui/card';
 import UseEscClose from '@/hooks/use-esc-close';
 import { JobType } from '@/types/types';
-import { Job } from '@prisma/client';
 import { format } from 'date-fns';
 import {
 	Calendar,
 	DollarSign,
 	Edit,
 	ExternalLink,
-	Loader2,
 	MapPin,
-	Trash2,
 	X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -108,21 +105,18 @@ export function JobDetailModal({
 									</div>
 								)}
 
-								{job.salary && (
-									<div className="flex items-center space-x-2">
-										<span className="text-sm text-gray-600">
-											Salary:
-											{job.salary > 0 ? (
-												<span className="flex flex-row items-center">
-													<DollarSign className="h-4 w-4 text-gray-500" />
-													{job.salary}
-												</span>
-											) : (
-												'not disclosed'
-											)}
+								<div className="flex flex-row items-center space-x-2 text-gray-600 text-sm ">
+									<span className="">Salary:</span>
+
+									{job.salary ? (
+										<span className="flex flex-row items-center">
+											<DollarSign className="h-4 w-4 text-gray-500" />
+											{job.salary}
 										</span>
-									</div>
-								)}
+									) : (
+										<span>Not disclosed</span>
+									)}
+								</div>
 
 								{job.experienceNeeded !== null && (
 									<div className="flex items-center space-x-2">

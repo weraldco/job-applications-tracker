@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -11,16 +12,19 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useSummarizeFile } from '@/hooks/use-summarize';
 import { fetcher } from '@/lib/utils';
-import { JobType } from '@/types/types';
 import { useMutation } from '@tanstack/react-query';
-import { Check, Loader2, Sparkles, X } from 'lucide-react';
-import { useState } from 'react';
+import { Check, Loader2, Plus, Sparkles, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import JobRequirementItem from './job-requirement-item';
 import { JobInput } from './job-tracker';
 import { SkillsItem } from './skill-item';
+
+//zod and rhf imports
+import { JobsSchema, JobsSchemaType } from '@/schemas/jobs.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 interface JobSummarizerModalProps {
 	isOpen: boolean;
@@ -44,7 +48,7 @@ export interface SummarizedJob {
 
 interface ResponseT {
 	message: string;
-	result: SummarizedJob;
+	result: JobsSchemaType;
 }
 export function JobSummarizerModal({
 	isOpen,
@@ -53,17 +57,74 @@ export function JobSummarizerModal({
 }: JobSummarizerModalProps) {
 	const [textData, setTextData] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const [summarizedJob, setSummarizedJob] = useState<SummarizedJob | null>(
+	const [summarizedJob, setSummarizedJob] = useState<JobsSchemaType | null>(
 		null
 	);
 
+	const [skill, setSkill] = useState('');
+	const [requirements, setRequirements] = useState('');
+
 	const [file, setFile] = useState<File | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [jobData, setJobData] = useState<JobsSchemaType | null>(null);
 
 	const [isJobDescription, setIsJobDescription] = useState(false);
 	const [isJobFile, setIsJobFile] = useState(false);
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		getValues,
+		reset,
+		formState: { errors, isSubmitting },
+	} = useForm<JobsSchemaType>({
+		resolver: zodResolver(JobsSchema),
+		defaultValues: {
+			title: '',
+			company: '',
+			applicationDate: new Date().toISOString().split('T')[0],
+			jobUrl: '',
+			jobDetails: '',
+			skillsRequired: [],
+			jobRequirements: [],
+			experienceNeeded: undefined,
+			notes: '',
+			salary: undefined,
+			location: '',
+		},
+	});
+	useEffect(() => {
+		async function fetchJob() {
+			setIsLoading(true);
+			try {
+				if (summarizedJob == null) return;
+				const formattedData = {
+					...summarizedJob,
+					applicationDate: String(new Date()),
+					experienceNeeded: summarizedJob.experienceNeeded
+						? Number(summarizedJob.experienceNeeded)
+						: 0,
+					jobUrl: summarizedJob.jobUrl || '',
+					location: summarizedJob.location || '',
+					salary: summarizedJob.salary ? Number(summarizedJob.salary) : 0,
+					notes: summarizedJob.notes || '',
+				};
 
-	// const { mutate: summarizeFile, data, isPending } = useSummarizeFile();
+				setJobData(formattedData);
+				reset({
+					...summarizedJob,
+					applicationDate: new Date().toISOString().split('T')[0],
+				}); // <-- important! reset form with fetched
+
+				console.log(formattedData.applicationDate);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				setIsLoading(false);
+			}
+		}
+
+		fetchJob();
+	}, [summarizedJob, reset]);
 
 	const fileSummarizer = useMutation({
 		mutationFn: (formData: FormData) =>
@@ -121,30 +182,32 @@ export function JobSummarizerModal({
 			return;
 		}
 	};
-	const handleSubmit = async () => {
-		if (!summarizedJob) return;
-
-		setIsSubmitting(true);
+	const onSubmit = async (values: JobsSchemaType) => {
+		if (!values) return;
 		try {
 			const newJob = {
-				...summarizedJob,
+				...values,
 				applicationDate: new Date(),
-				jobUrl: summarizedJob?.jobUrl ? summarizedJob.jobUrl : '',
-				skillsRequired: JSON.stringify(summarizedJob.skillsRequired),
-				jobRequirements: JSON.stringify(summarizedJob.jobRequirements),
-				salary: summarizedJob.salary,
+				jobUrl: values?.jobUrl ? values.jobUrl : '',
+				skillsRequired: JSON.stringify(values.skillsRequired),
+				jobRequirements: JSON.stringify(values.jobRequirements),
+				salary: values.salary ? Number(values.salary) : 0,
+				experienceNeeded: values.experienceNeeded
+					? Number(values.experienceNeeded)
+					: 0,
 			};
 			onJobAdded(newJob);
 			toast.success('Success', {
 				description: 'Job application added successfully!',
 			});
 			handleClose();
+			reset();
 		} catch (error) {
 			toast.error('Error', {
 				description: 'Failed to add job application',
 			});
-		} finally {
-			setIsSubmitting(false);
+
+			console.log(error);
 		}
 	};
 
@@ -152,7 +215,6 @@ export function JobSummarizerModal({
 		setTextData('');
 		setSummarizedJob(null);
 		setIsLoading(false);
-		setIsSubmitting(false);
 		onClose();
 	};
 
@@ -298,199 +360,249 @@ export function JobSummarizerModal({
 								<Check className="h-4 w-4" />
 								<span className="font-medium">Job Information Extracted</span>
 							</div>
+							<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+									<div className="space-y-3">
+										<Label
+											htmlFor="title"
+											className="text-sm font-medium text-gray-700"
+										>
+											Job Title *
+										</Label>
+										<Input
+											id="title"
+											required
+											className="mt-1"
+											{...register('title')}
+										/>
+										{errors.title && <p>{errors.title.message}</p>}
+									</div>
 
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+									<div className="space-y-3">
+										<Label
+											htmlFor="company"
+											className="text-sm font-medium text-gray-700"
+										>
+											Company *
+										</Label>
+										<Input
+											id="company"
+											required
+											className="mt-1"
+											{...register('company')}
+										/>
+										{errors.company && <p>{errors.company.message}</p>}
+									</div>
+
+									<div className="space-y-3">
+										<Label
+											htmlFor="applicationDate"
+											className="text-sm font-medium text-gray-700"
+										>
+											Application Date *
+										</Label>
+										<Input
+											id="applicationDate"
+											type="date"
+											required
+											className="mt-1"
+											{...register('applicationDate')}
+										/>
+										{errors.applicationDate && (
+											<p>{errors.applicationDate.message}</p>
+										)}
+									</div>
+									<div className="space-y-3">
+										<Label
+											htmlFor="location"
+											className="text-sm font-medium text-gray-700"
+										>
+											Location
+										</Label>
+										<Input
+											id="location"
+											className="mt-1"
+											{...register('location')}
+										/>
+										{errors.location && <p>{errors.location.message}</p>}
+									</div>
+
+									<div className="space-y-3">
+										<Label
+											htmlFor="salary"
+											className="text-sm font-medium text-gray-700"
+										>
+											Salary
+										</Label>
+										<Input
+											type="number"
+											id="salary"
+											className="mt-1"
+											{...register('salary', { valueAsNumber: true })}
+										/>
+										{errors.salary && <p>{errors.salary.message}</p>}
+									</div>
+
+									<div className="space-y-3">
+										<Label
+											htmlFor="experienceNeeded"
+											className="text-sm font-medium text-gray-700"
+										>
+											Years of Experience
+										</Label>
+										<Input
+											id="experienceNeeded"
+											type="number"
+											className="mt-1"
+											{...register('experienceNeeded', { valueAsNumber: true })}
+										/>
+										{errors.experienceNeeded && (
+											<p>{errors.experienceNeeded.message}</p>
+										)}
+									</div>
+								</div>
+								<div className="space-y-3">
+									<Label
+										htmlFor="jobUrl"
+										className="text-sm font-medium text-gray-700"
+									>
+										Job URL (optional)
+									</Label>
+									<Input
+										id="jobUrl"
+										type="url"
+										className="mt-1"
+										{...register('jobUrl')}
+									/>
+									{errors.jobUrl && <p>{errors.jobUrl.message}</p>}
+								</div>
 								<div className="space-y-2 flex flex-col">
 									<Label
 										className="text-sm text-neutral-500 font-normal"
-										htmlFor="title"
+										htmlFor="jobDetails"
 									>
-										Job Title
+										Job Details
 									</Label>
-									<Input
-										id="title"
-										value={summarizedJob.title}
-										onChange={(e) =>
-											setSummarizedJob({
-												...summarizedJob,
-												title: e.target.value,
-											})
-										}
+									<Textarea
+										id="jobDetails"
+										placeholder="Job details or Roles in this job post"
+										{...register('jobDetails')}
+										rows={4}
+										className="mt-1"
 									/>
-								</div>
-
-								<div className="space-y-2 flex flex-col">
-									<Label
-										className="text-sm text-neutral-500 font-normal"
-										htmlFor="company"
-									>
-										Company
-									</Label>
-									<Input
-										id="company"
-										value={summarizedJob.company}
-										onChange={(e) =>
-											setSummarizedJob({
-												...summarizedJob,
-												company: e.target.value,
-											})
-										}
-									/>
-								</div>
-
-								<div className="space-y-2 flex flex-col">
-									<Label
-										className="text-sm text-neutral-500 font-normal"
-										htmlFor="location"
-									>
-										Location
-									</Label>
-									<Input
-										id="location"
-										value={summarizedJob.location || ''}
-										onChange={(e) =>
-											setSummarizedJob({
-												...summarizedJob,
-												location: e.target.value,
-											})
-										}
-									/>
-								</div>
-
-								<div className="space-y-2 flex flex-col">
-									<Label
-										className="text-sm text-neutral-500 font-normal"
-										htmlFor="salary"
-									>
-										Salary
-									</Label>
-									<Input
-										id="salary"
-										value={
-											Number(summarizedJob.salary) < -1
-												? 0
-												: summarizedJob.salary
-										}
-										onChange={(e) =>
-											setSummarizedJob({
-												...summarizedJob,
-												salary: Number(e.target.value),
-											})
-										}
-									/>
-								</div>
-
-								<div className="space-y-2 flex flex-col">
-									<Label
-										className="text-sm text-neutral-500 font-normal"
-										htmlFor="experience"
-									>
-										Years of Experience
-									</Label>
-									<Input
-										id="experience"
-										type="number"
-										value={summarizedJob.experienceNeeded || 0}
-										onChange={(e) =>
-											setSummarizedJob({
-												...summarizedJob,
-												experienceNeeded: e.target.value
-													? parseInt(e.target.value)
-													: null,
-											})
-										}
-									/>
-								</div>
-							</div>
-							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="jobUrl"
-								>
-									Job Url/Link (optional)
-								</Label>
-								<Input
-									id="jobUrl"
-									type="string"
-									placeholder="Enter job url/link"
-									value={summarizedJob.jobUrl || ''}
-									onChange={(e) =>
-										setSummarizedJob({
-											...summarizedJob,
-											jobUrl: e.target.value,
-										})
-									}
-								/>
-							</div>
-							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="jobDetail"
-								>
-									Job Details
-								</Label>
-								<Textarea
-									id="jobDetail"
-									value={summarizedJob.jobDetails}
-									onChange={(e) =>
-										setSummarizedJob({
-											...summarizedJob,
-											jobRequirements: e.target.value.split(','),
-										})
-									}
-									rows={4}
-								/>
-							</div>
-							<div className="space-y-2 flex flex-col ">
-								<Label
-									htmlFor="skills"
-									className="text-sm text-neutral-500 font-normal"
-								>
-									Required Skills
-								</Label>
-								<div className="flex flex-wrap gap-2 text-sm">
-									{summarizedJob.skillsRequired.map((skill, i) => (
-										<SkillsItem key={i}>{skill}</SkillsItem>
-									))}
-								</div>
-							</div>
-							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="requirements"
-								>
-									Job Requirements
-								</Label>
-								<div className="flex flex-col gap-2 text-sm ">
-									{summarizedJob.jobRequirements.map((required, i) => (
-										<JobRequirementItem key={i} i={i} required={required} />
-									))}
-								</div>
-							</div>
-
-							<div className="flex space-x-2">
-								<Button
-									onClick={handleSubmit}
-									disabled
-									className="flex-1 bg-blue-500 text-white hover:bg-blue-400 duration-200 active:bg-blue-600"
-								>
-									{isSubmitting ? (
-										<>
-											<Loader2 className="h-4 w-4 mr-2 animate-spin" />
-											Adding Job...
-										</>
-									) : (
-										'Add Job Application'
+									{errors.jobDetails && (
+										<p className="text-red-500">{errors.jobDetails.message}</p>
 									)}
-								</Button>
-								<Button
-									variant="outline"
-									className="bg-neutral-100 duration-200 hover:bg-neutral-200 active:bg-neutral-300"
-									onClick={handleCancel}
-								>
-									Cancel
-								</Button>
-							</div>
+								</div>
+								<div className="space-y-2 flex flex-col">
+									<Label
+										className="text-sm text-neutral-500 font-normal"
+										htmlFor="skillsRequired"
+									>
+										Skills Requirements
+									</Label>
+									<div className="flex flex-row gap-2">
+										<Input
+											className="input"
+											value={skill}
+											onChange={(e) => setSkill(e.target.value)}
+											placeholder="Enter a skill"
+										/>
+										<Button
+											type="button"
+											className="bg-neutral-400 text-white"
+											onClick={() => {
+												const list = getValues('skillsRequired') ?? [];
+												if (!skill) return;
+												setValue('skillsRequired', [...list, skill]);
+												setSkill(''); // clear input
+											}}
+										>
+											<Plus size={18} />
+										</Button>
+									</div>
+									<div className="flex gap-2 text-sm flex-wrap ">
+										{(getValues('skillsRequired') ?? []).map((s, i) => (
+											<SkillsItem key={i}>{s}</SkillsItem>
+										))}
+									</div>
+								</div>
+								<div className="space-y-2 flex flex-col">
+									<Label
+										className="text-sm text-neutral-500 font-normal"
+										htmlFor="jobRequirements"
+									>
+										Job Requirements
+									</Label>
+									<div className="flex flex-row gap-2">
+										<Input
+											className="input"
+											id="jobRequirements"
+											value={requirements}
+											onChange={(e) => setRequirements(e.target.value)}
+											placeholder="Enter a requirements"
+										/>
+										<Button
+											type="button"
+											className="bg-neutral-400 text-white"
+											onClick={() => {
+												const list = getValues('jobRequirements') ?? [];
+												if (!requirements) return;
+												setValue('jobRequirements', [...list, requirements]);
+												setRequirements(''); // clear input
+											}}
+										>
+											<Plus size={18} />
+										</Button>
+									</div>
+									<div className="flex flex-col gap-2 text-sm ">
+										{(getValues('jobRequirements') ?? []).map((s, i) => (
+											<JobRequirementItem key={i} required={s} i={i} />
+										))}
+									</div>
+								</div>
+								<div className="space-y-3">
+									<Label
+										htmlFor="notes"
+										className="text-sm font-medium text-gray-700"
+									>
+										Notes
+									</Label>
+									<Textarea
+										id="notes"
+										rows={3}
+										className="mt-1"
+										{...register('notes')}
+									/>
+									{errors.notes && <p>{errors.notes.message}</p>}
+								</div>
+
+								<div className="flex space-x-3 pt-4 border-t border-gray-200">
+									<Button
+										type="submit"
+										disabled={isSubmitting}
+										className="button-icon w-full"
+									>
+										{isSubmitting ? (
+											<>
+												<Loader2 className="h-4 w-4 mr-2 animate-spin" />
+												Updating...
+											</>
+										) : (
+											'Update Job Application'
+										)}
+									</Button>
+									<Button
+										type="button"
+										onClick={() => {
+											handleCancel();
+										}}
+										className="button-icon"
+									>
+										Cancel
+									</Button>
+								</div>
+							</form>
 						</div>
 					)}
 				</CardContent>

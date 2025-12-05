@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -6,19 +7,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import UseEscClose from '@/hooks/use-esc-close';
-import { JobInputData, JobType } from '@/types/types';
+import { JobType } from '@/types/types';
 import { JobStatus } from '@prisma/client';
 import { Loader2, Plus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import JobRequirementItem from './job-requirement-item';
 import { JobInput } from './job-tracker';
 import { SkillsItem } from './skill-item';
 
-//zod imports
+//zod and rhf imports
 import { JobsSchema, JobsSchemaType } from '@/schemas/jobs.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 
 export interface FormDataT {
 	id: string;
@@ -70,10 +71,11 @@ export function EditJobModal({
 			jobDetails: '',
 			skillsRequired: [],
 			jobRequirements: [],
-			experienceNeeded: 0,
 			notes: '',
-			salary: 0,
 			location: '',
+
+			salary: undefined,
+			experienceNeeded: undefined,
 		},
 	});
 
@@ -113,19 +115,6 @@ export function EditJobModal({
 	const [loading, setLoading] = useState(false);
 	const [jobData, setJobData] = useState<JobsSchemaType | null>(null);
 
-	// const handleSubmit = async (e: React.FormEvent) => {
-	// 	e.preventDefault();
-	// 	setIsSubmitting(true);
-	// 	const newData = {
-	// 		...formData,
-	// 		skillsRequired: JSON.stringify(formData['skillsRequired']),
-	// 		jobRequirements: JSON.stringify(formData['jobRequirements']),
-	// 	};
-	// 	onUpdate(newData);
-	// 	setIsEditing(false);
-	// 	setIsSubmitting(false);
-	// };
-
 	UseEscClose(onClose);
 	if (!isOpen) return null;
 	if (loading) return <p>Loading..</p>;
@@ -135,6 +124,7 @@ export function EditJobModal({
 		const newJob = {
 			...data,
 			id: job.id,
+			experienceNeeded: data.experienceNeeded || 0,
 			applicationDate: new Date(data.applicationDate),
 			skillsRequired: JSON.stringify(data.skillsRequired),
 			jobRequirements: JSON.stringify(data.jobRequirements),

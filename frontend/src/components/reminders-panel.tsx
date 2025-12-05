@@ -69,6 +69,7 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 
 	// Mock data for demo
 	if (isLoading) return <p>Loading..</p>;
+	if (error) return <p>Error fetching data</p>;
 	if (!data) return;
 
 	const getTypeColor = (type: string) => {

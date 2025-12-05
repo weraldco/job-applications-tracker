@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import LoadingState from '@/components/loading-state';
@@ -12,7 +13,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
-import { fetcher } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { Lock, Mail, User2 } from 'lucide-react';
 import Link from 'next/link';

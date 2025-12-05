@@ -64,6 +64,7 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 			applicationDate: new Date(data.applicationDate),
 			skillsRequired: JSON.stringify(data.skillsRequired),
 			jobRequirements: JSON.stringify(data.jobRequirements),
+			experienceNeeded: Number(data.experienceNeeded),
 		};
 		onJobAdded(newJob);
 
