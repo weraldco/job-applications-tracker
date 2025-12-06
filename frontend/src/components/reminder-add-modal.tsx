@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ReminderType } from '@prisma/client';
 
 import UseEscClose from '@/hooks/use-esc-close';
@@ -8,10 +8,19 @@ import { Loader2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
-import { Card, CardContent, CardHeader } from './ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
+
+// Import the zod schemas, zod revolver, useForm
+import {
+	RemindersSchemas,
+	RemindersSchemasType,
+} from '@/schemas/reminders.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
 interface ReminderT {
 	isOpen: boolean;
 	data: JobType[] | undefined;
@@ -25,27 +34,27 @@ const ReminderAddModal = ({
 	onClose,
 	onReminderAdded,
 }: ReminderT) => {
-	const [formData, setFormData] = useState({
-		title: '',
-		description: '',
-		dueDate: new Date().toISOString().split('T')[0],
-		completed: false,
-		type: '',
-		jobId: '',
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors, isSubmitting },
+	} = useForm<RemindersSchemasType>({
+		resolver: zodResolver(RemindersSchemas),
+		defaultValues: {
+			title: '',
+			description: '',
+			dueDate: new Date().toISOString().split('T')[0],
+			completed: false,
+			type: '',
+			jobId: '',
+		},
 	});
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [reminderType, setReminderType] = useState<string>('Interview Prep');
-	const [jobTitle, setJobTitle] = useState<any | null>(null);
 
 	const jobSelections = [
 		...(data?.map((d) => ({ id: d.id, title: d.title })) ?? []),
 	];
 
-	useEffect(() => {
-		setJobTitle(jobSelections[0]);
-	}, []);
-
-	const [dueDate, setDueDate] = useState<string | null>(null);
 	const typeMap: Record<string, ReminderType> = {
 		'Interview Prep': 'INTERVIEW_PREP',
 		Deadline: 'APPLICATION_DEADLINE',
@@ -54,64 +63,29 @@ const ReminderAddModal = ({
 		Other: 'OTHER',
 	};
 
-	const handleReminderTypeChange = (reminder: string) => {
-		setReminderType(reminder as ReminderType);
-	};
-
 	if (!data) {
 		<p>Invalid data!</p>;
 		return;
 	}
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		// setIsSubmitting(true);
-		// try {
-		// 	const newReminder: CreateReminderInput = {
-		// 		title: formData.title,
-		// 		description: formData.description,
-		// 		dueDate: new Date(String(dueDate)).toISOString(),
-		// 		completed: formData.completed,
-		// 		type:
-		// 			reminderType === undefined
-		// 				? 'INTERVIEW_PREP'
-		// 				: typeMap[reminderType as string],
-		// 		jobId: jobTitle.id,
-		// 	};
-
-		// 	onReminderAdded(newReminder);
-		// 	toast.success('Success', {
-		// 		description: 'Reminder added successfully!',
-		// 	});
-
-		// 	formData['title'] = '';
-		// 	formData['description'] = '';
-		// 	formData['dueDate'] = '';
-		// 	formData['completed'] = false;
-		// 	formData['type'] = '';
-		// 	formData['jobId'] = '';
-
-		// 	onClose();
-		// } catch (error) {
-		// 	toast.error('Error', {
-		// 		description: 'Failed to add new reminder',
-		// 	});
-		// } finally {
-		// 	setIsSubmitting(false);
-		// }
-		console.log('test');
+	const onSubmit = (data: RemindersSchemasType) => {
+		const newReminderData = {
+			...data,
+			dueDate: new Date(String(data.dueDate)).toISOString(),
+			jobId: data.jobId,
+			completed: false,
+			type: typeMap[data.type],
+		};
+		onReminderAdded(newReminderData);
+		toast.success('Success', {
+			description: 'Reminder added successfully!',
+		});
+		handleClose();
 	};
 
 	const handleClose = () => {
 		onClose();
-		setFormData({
-			title: '',
-			description: '',
-			dueDate: new Date().toISOString().split('T')[0],
-			completed: false,
-			type: '',
-			jobId: '',
-		});
+		reset();
 	};
 
 	UseEscClose(handleClose);
@@ -120,13 +94,18 @@ const ReminderAddModal = ({
 		<div className="fixed inset-0 bg-neutral-700/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
 			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
 				<CardHeader className="flex flex-row items-center justify-between">
-					<h2 className="text-xl">Adding New Reminder</h2>
+					<div>
+						<h2 className="text-xl font-semibold">Adding New Reminder</h2>
+						<CardDescription>
+							Add your reminder to be more organize your job applications.
+						</CardDescription>
+					</div>
 					<button onClick={handleClose}>
 						<X />
 					</button>
 				</CardHeader>
 				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-6">
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 						<div className="space-y-3">
 							<Label
 								htmlFor="title"
@@ -136,11 +115,15 @@ const ReminderAddModal = ({
 							</Label>
 							<div className="relative">
 								<select
-									value={jobTitle ? jobTitle : 'Choose a job title..'}
-									onChange={(e) => setJobTitle(e.target.value)}
+									{...register('jobId')}
 									className="text-sm border rounded px-2 py-1 bg-white cursor-pointer w-full"
 									onClick={(e) => e.stopPropagation()}
+									defaultValue=""
 								>
+									<option value="" disabled>
+										Choose a job title..
+									</option>
+
 									{jobSelections.map((d, i) => (
 										<option key={i} value={d.id}>
 											{d.title}
@@ -148,7 +131,11 @@ const ReminderAddModal = ({
 									))}
 								</select>
 							</div>
+							{errors.jobId && (
+								<p className="text-red-500">{errors.jobId.message}</p>
+							)}
 						</div>
+
 						<div className="space-y-3">
 							<Label
 								htmlFor="title"
@@ -158,32 +145,31 @@ const ReminderAddModal = ({
 							</Label>
 							<Input
 								id="title"
-								value={formData.title}
-								onChange={(e) =>
-									setFormData({ ...formData, title: e.target.value })
-								}
-								required
 								className="mt-1"
 								placeholder="Enter your reminder title.."
+								{...register('title')}
 							/>
+							{errors.title && (
+								<p className="text-red-500">{errors.title.message}</p>
+							)}
 						</div>
 						<div className="space-y-3">
 							<Label
-								htmlFor="title"
+								htmlFor="description"
 								className="text-sm font-medium text-gray-700"
 							>
 								Reminder Description *
 							</Label>
 							<Textarea
-								id="skillsRequired"
-								value={formData.description}
-								onChange={(e) =>
-									setFormData({ ...formData, description: e.target.value })
-								}
+								id="description"
 								rows={3}
 								className="mt-1"
 								placeholder="Enter your reminder description.."
+								{...register('description')}
 							/>
+							{errors.description && (
+								<p className="text-red-500">{errors.description.message}</p>
+							)}
 						</div>
 						<div className="flex flex-row items-center gap-20">
 							<div className="space-y-3">
@@ -195,11 +181,11 @@ const ReminderAddModal = ({
 								</Label>
 								<div className="relative">
 									<select
-										value={reminderType ? reminderType : ''}
-										onChange={(e) => handleReminderTypeChange(e.target.value)}
+										{...register('type')}
 										className="text-sm border rounded px-2 py-1 bg-white cursor-pointer"
 										onClick={(e) => e.stopPropagation()}
 									>
+										<option value="">Choose a type of reminder</option>
 										{Object.entries(typeMap).map(([key, val]) => (
 											<option key={key} value={key}>
 												{key}
@@ -207,6 +193,9 @@ const ReminderAddModal = ({
 										))}
 									</select>
 								</div>
+								{errors.type && (
+									<p className="text-red-500">{errors.type.message}</p>
+								)}
 							</div>
 							<div className="space-y-3">
 								<Label
@@ -216,11 +205,10 @@ const ReminderAddModal = ({
 									Reminder Due *
 								</Label>
 								<div>
-									<input
-										type="datetime-local"
-										value={dueDate ?? ''}
-										onChange={(e) => setDueDate(e.target.value)}
-									></input>
+									<input type="datetime-local" {...register('dueDate')} />
+									{errors.dueDate && (
+										<p className="text-red-500">{errors.dueDate.message}</p>
+									)}
 								</div>
 							</div>
 						</div>
