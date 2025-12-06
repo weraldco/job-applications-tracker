@@ -45,7 +45,6 @@ export const jobController = {
 			if (!userId) {
 				return res.status(401).json({ error: 'Unauthorized user!' });
 			}
-			console.log('USERID', userId);
 			const body = req.body;
 
 			if (!body) {

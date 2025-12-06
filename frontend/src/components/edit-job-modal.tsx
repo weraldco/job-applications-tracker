@@ -120,7 +120,6 @@ export function EditJobModal({
 	if (loading) return <p>Loading..</p>;
 
 	const onSubmit = (data: JobsSchemaType) => {
-		console.log('Edited job data:', data);
 		const newJob = {
 			...data,
 			id: job.id,

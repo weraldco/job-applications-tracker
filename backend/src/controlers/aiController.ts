@@ -28,7 +28,6 @@ export const aiController = {
 				.status(415)
 				.json({ error: 'Unsupported file type after upload.' });
 		}
-		console.log(extractedContent);
 		if (extractedContent === '') {
 			return res.status(400).json({ error: 'Invalid extracted text.' });
 		}
@@ -36,7 +35,6 @@ export const aiController = {
 		const result = await summarizeJob(extractedContent);
 
 		if (!result) return res.status(400).json({ error: 'Invalid result.' });
-		console.log(result);
 		return res
 			.status(200)
 			.json({ message: 'Successfully summarize file data.', result });
@@ -46,7 +44,6 @@ export const aiController = {
 			return res.status(400).json({ error: 'No data received.' });
 		}
 		const { textData } = req.body;
-		console.log('textData', textData);
 		// 🚨 Access the binary data buffer
 		let extractedContent: string = JSON.stringify(textData);
 

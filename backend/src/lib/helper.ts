@@ -23,7 +23,6 @@ export async function callApiWithBackoff(
 			throw new Error(`HTTP error! status: ${response.status} - ${errorBody}`);
 		}
 		const result = await response.json();
-		console.log('Res', result);
 		return result;
 	} catch (error) {
 		if (error instanceof Error) {
@@ -35,7 +34,6 @@ export async function callApiWithBackoff(
 }
 export async function summarizeJob(parseText: string) {
 	try {
-		// console.log('Extrated', extractedText);
 		// ============== 3. Build Prompt for Job Extractor ==============
 		const prompt = `
 		        You are a job posting details extractor. Your task is to extract the key information from the provided job posting text. 

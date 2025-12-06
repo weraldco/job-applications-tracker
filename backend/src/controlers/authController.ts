@@ -91,7 +91,6 @@ export const signIn = async (req: Request, res: Response) => {
 		});
 
 		const id = data.user.id;
-		console.log('ID', id);
 		// Fetch Prisma user
 		const prismaUser = await prisma.user.findUnique({
 			where: { id: data.user.id },
@@ -162,7 +161,6 @@ export const refresh = async (req: Request, res: Response) => {
 		});
 
 		// 4. Fetch from Prisma
-		console.log('DATA', data);
 		const userId = data.session?.user.id;
 
 		if (!userId) {
@@ -175,7 +173,6 @@ export const refresh = async (req: Request, res: Response) => {
 		if (!prismaUser) {
 			return res.status(404).json({ error: 'User not found in database' });
 		}
-		console.log(prismaUser);
 		return res.json({ user: prismaUser });
 	} catch (err) {
 		console.error(err);

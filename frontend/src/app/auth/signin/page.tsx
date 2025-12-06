@@ -50,7 +50,6 @@ export default function SignInPage() {
 				description: 'Successfully Login, welcome back!',
 			});
 
-			console.log('DATA', data);
 			router.push('/');
 			router.refresh();
 		} catch (error) {

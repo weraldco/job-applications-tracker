@@ -114,8 +114,6 @@ export function JobSummarizerModal({
 					...summarizedJob,
 					applicationDate: new Date().toISOString().split('T')[0],
 				}); // <-- important! reset form with fetched
-
-				console.log(formattedData.applicationDate);
 			} catch (err) {
 				console.error(err);
 			} finally {

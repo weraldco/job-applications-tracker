@@ -29,7 +29,6 @@ export const reminderController = {
 		try {
 			const userId = req.user.id;
 			if (!userId) return res.status(401).json({ error: 'Unauthorized user!' });
-			console.log('ID', userId);
 			const body = req.body;
 
 			const reminders = await reminderService.create({ ...body }, userId);
@@ -52,7 +51,6 @@ export const reminderController = {
 
 			const id = req.params.id;
 			if (!id) return res.status(400).json({ error: 'Invalid id provided!' });
-			console.log('ID', id);
 
 			const reminders = await reminderService.getOne(id, userId);
 			if (!reminders)
@@ -66,7 +64,6 @@ export const reminderController = {
 	},
 	// Update reminder
 	async updateReminder(req: Request, res: Response) {
-		console.log('test');
 		try {
 			const userId = req.user?.id;
 			if (!userId) return res.status(401).json({ error: 'Unauthorized user!' });
