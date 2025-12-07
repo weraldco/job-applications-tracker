@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { supabase } from './supabase';
@@ -29,8 +30,14 @@ export async function fetcher<T>(
 			},
 		});
 
-		if (!res.ok) throw new Error(`Error: ${res.status}`);
-
+		if (!res.ok) {
+			let errorMessage = `Error: ${res.status}`;
+			try {
+				const errorData = await res.json();
+				if (errorData?.error) errorMessage = errorData.error;
+			} catch {}
+			throw new Error(errorMessage);
+		}
 		return res.json();
 	} catch (error) {
 		if (error instanceof TypeError && error.message === 'Failed to fetch!') {
@@ -56,3 +63,46 @@ export function checkNetwork(): boolean {
 	}
 	return true;
 }
+
+export const urlConstructor = (url: string) => {
+	let urlResult = '';
+	let type = '';
+	let error = '';
+	try {
+		// Decode URL in case it's encoded
+		const decodedUrl = decodeURIComponent(url.trim());
+
+		// This regex extracts a 10-digit job ID from any LinkedIn job URL
+		const linkedInMatch = decodedUrl.match(/\/jobs\/view\/(\d{10})/);
+		const linkedInParamMatch = decodedUrl.match(/currentJobId=(\d{10})/);
+
+		if (linkedInMatch) {
+			urlResult = `https://www.linkedin.com/jobs/view/${linkedInMatch[1]}`;
+			type = 'linkedin';
+		}
+
+		// Some LinkedIn share URLs use "currentJobId="
+		else if (linkedInParamMatch) {
+			urlResult = `https://www.linkedin.com/jobs/view/${linkedInParamMatch[1]}`;
+			type = 'linkedin';
+		}
+
+		const jobstreetParamMatch = decodedUrl.match(/jobId=(\d{8})/);
+		const jobStreetMatch = decodedUrl.match(/\job\/(\d{8})/);
+
+		if (jobStreetMatch) {
+			urlResult = `https://ph.jobstreet.com/job/${jobStreetMatch[1]}`;
+			type = 'jobstreet';
+		} else if (jobstreetParamMatch) {
+			urlResult = `https://ph.jobstreet.com/job/${jobstreetParamMatch[1]}`;
+			type = 'linkedin';
+		}
+
+		if (!urlResult) {
+			error = 'No valid job url or invalid found!';
+		}
+	} catch (err) {
+		error = 'Invalid Url!';
+	}
+	return { urlResult, type, error };
+};

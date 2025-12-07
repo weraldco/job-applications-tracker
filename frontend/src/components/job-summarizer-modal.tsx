@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
@@ -12,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { fetcher } from '@/lib/utils';
+import { fetcher, urlConstructor } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { Check, Loader2, Plus, Sparkles, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -56,6 +57,9 @@ export function JobSummarizerModal({
 	onJobAdded,
 }: JobSummarizerModalProps) {
 	const [textData, setTextData] = useState('');
+	const [url, setUrl] = useState('');
+	const [file, setFile] = useState<File | null>(null);
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [summarizedJob, setSummarizedJob] = useState<JobsSchemaType | null>(
 		null
@@ -64,11 +68,11 @@ export function JobSummarizerModal({
 	const [skill, setSkill] = useState('');
 	const [requirements, setRequirements] = useState('');
 
-	const [file, setFile] = useState<File | null>(null);
 	const [jobData, setJobData] = useState<JobsSchemaType | null>(null);
 
 	const [isJobDescription, setIsJobDescription] = useState(false);
 	const [isJobFile, setIsJobFile] = useState(false);
+	const [isJobUrl, setIsJobUrl] = useState(false);
 	const {
 		register,
 		handleSubmit,
@@ -124,9 +128,15 @@ export function JobSummarizerModal({
 		fetchJob();
 	}, [summarizedJob, reset]);
 
-	const fileSummarizer = useMutation({
-		mutationFn: (formData: FormData) =>
-			fetcher<ResponseT>(`${process.env.NEXT_PUBLIC_API_URL}/ai/parse-file`, {
+	const globalSummarizer = useMutation({
+		mutationFn: ({
+			formData,
+			endpoint,
+		}: {
+			formData: FormData;
+			endpoint: string;
+		}) =>
+			fetcher<ResponseT>(`${process.env.NEXT_PUBLIC_API_URL}/ai/${endpoint}`, {
 				method: 'POST',
 				body: formData,
 			}),
@@ -134,28 +144,15 @@ export function JobSummarizerModal({
 			setSummarizedJob(res.result);
 			setIsJobDescription(false);
 			setIsJobFile(false);
+			setIsJobUrl(false);
 		},
-		onError: () => {
-			toast.error('Error', { description: 'Error summarizing data' });
-		},
-		onSettled: () => {
-			setIsLoading(false);
-		},
-	});
+		onError: (error: any) => {
+			const message =
+				error?.message ||
+				error?.response?.data?.error ||
+				'Error summarizing data';
 
-	const textSummarizer = useMutation({
-		mutationFn: (formData: FormData) =>
-			fetcher<ResponseT>(`${process.env.NEXT_PUBLIC_API_URL}/ai/parse-text`, {
-				method: 'POST',
-				body: formData,
-			}),
-		onSuccess: (res) => {
-			setSummarizedJob(res.result);
-			setIsJobDescription(false);
-			setIsJobFile(false);
-		},
-		onError: () => {
-			toast.error('Error', { description: 'Error summarizing data' });
+			toast.error('Error', { description: message });
 		},
 		onSettled: () => {
 			setIsLoading(false);
@@ -163,23 +160,55 @@ export function JobSummarizerModal({
 	});
 
 	const handleSummarize = () => {
-		if (!textData && !file) return;
+		if (!textData && !file && !url) return;
 		setIsLoading(true);
+		const formData = new FormData();
+		let endpoint = '';
 
+		// FILE
 		if (file) {
-			const fileForm = new FormData();
-			fileForm.append('fileData', file);
-			fileSummarizer.mutate(fileForm);
-			return;
+			endpoint = 'parse-file';
+			formData.append('fileData', file);
 		}
+		// TEXT DATA
+		else if (textData) {
+			if (textData.length < 100) {
+				toast.error('Unclear or incomplete job description!', {
+					description: 'Make it more descriptive!',
+				});
+				setIsLoading(false);
+				return;
+			}
+			endpoint = 'parse-text';
+			formData.append('textData', textData);
+		}
+		// URL
+		else if (url) {
+			const { urlResult, type, error } = urlConstructor(url);
+			console.log(urlResult, type);
 
-		if (textData) {
-			const textForm = new FormData();
-			textForm.append('textData', textData);
-			textSummarizer.mutate(textForm);
+			if (error) {
+				toast.error('Error reconstructing url', {
+					description: error,
+				});
+				setIsLoading(false);
+				return;
+			}
+			endpoint = `parse-url`;
+			formData.append('urlData', urlResult);
+			formData.append('urlType', type);
+		}
+		// NO PROVIDED INPUT
+		else {
+			setIsLoading(false);
+			toast('No input provided', {
+				description: 'Enter text, upload file or patse a URL!',
+			});
 			return;
 		}
+		globalSummarizer.mutate({ formData, endpoint });
 	};
+
 	const onSubmit = async (values: JobsSchemaType) => {
 		if (!values) return;
 		try {
@@ -212,14 +241,17 @@ export function JobSummarizerModal({
 	const handleClose = () => {
 		setTextData('');
 		setSummarizedJob(null);
+		setUrl('');
 		setIsLoading(false);
 		onClose();
 	};
 
 	const handleCancel = () => {
 		setTextData('');
+		setUrl('');
 		setFile(null);
 		setSummarizedJob(null);
+		setIsLoading(false);
 	};
 
 	if (!isOpen) return null;
@@ -240,34 +272,49 @@ export function JobSummarizerModal({
 						</button>
 					</CardTitle>
 					<CardDescription>
-						Paste a job posting URL or text to automatically extract key
-						information
+						Paste a job posting URL or text or upload PDF/DOCX to automatically
+						extract job information
 					</CardDescription>
 				</CardHeader>
-				{!isJobDescription && !isJobFile && summarizedJob === null && (
-					<CardContent>
-						<div className=" w-full flex items-center justify-evenly md:flex-row flex-col gap-4">
-							<Button
-								className="summarizer-btn w-full"
-								onClick={() => {
-									setIsJobDescription(true);
-									setIsJobFile(false);
-								}}
-							>
-								Using Job Description
-							</Button>
-							<Button
-								className="summarizer-btn w-full"
-								onClick={() => {
-									setIsJobDescription(false);
-									setIsJobFile(true);
-								}}
-							>
-								Using Job File (PDF,Images,Docx)
-							</Button>
-						</div>
-					</CardContent>
-				)}
+				{!isJobDescription &&
+					!isJobFile &&
+					!isJobUrl &&
+					summarizedJob === null && (
+						<CardContent>
+							<div className=" w-full flex items-center justify-center md:flex-row flex-col gap-4">
+								<Button
+									className="summarizer-btn w-full"
+									onClick={() => {
+										setIsJobDescription(true);
+										setIsJobUrl(false);
+										setIsJobFile(false);
+									}}
+								>
+									Use Job Description
+								</Button>
+								<Button
+									className="summarizer-btn w-full"
+									onClick={() => {
+										setIsJobDescription(false);
+										setIsJobUrl(true);
+										setIsJobFile(false);
+									}}
+								>
+									Use Job URL
+								</Button>
+								<Button
+									className="summarizer-btn w-full"
+									onClick={() => {
+										setIsJobDescription(false);
+										setIsJobUrl(false);
+										setIsJobFile(true);
+									}}
+								>
+									Use File (PDF/Docx)
+								</Button>
+							</div>
+						</CardContent>
+					)}
 				<CardContent className="space-y-6">
 					{isJobDescription && (
 						<>
@@ -275,7 +322,7 @@ export function JobSummarizerModal({
 								<Label htmlFor="url">Job Posting Text Description</Label>
 								<Textarea
 									id="url"
-									placeholder="Paste the job posting URL or copy the full job description text here..."
+									placeholder="Paste the job posting full description text here..."
 									value={textData}
 									onChange={(e) => setTextData(e.target.value)}
 									rows={4}
@@ -305,6 +352,51 @@ export function JobSummarizerModal({
 									onClick={() => {
 										setIsJobDescription(false);
 										setTextData('');
+										handleCancel();
+									}}
+								>
+									Cancel
+								</Button>
+							</div>
+						</>
+					)}
+					{isJobUrl && (
+						<>
+							<div className="space-y-2">
+								<Label htmlFor="url">Job Posting URL</Label>
+								<Textarea
+									id="url"
+									placeholder="Paste the job posting URL here.. (don't paste shorten or shortcut url)"
+									value={url}
+									onChange={(e) => setUrl(e.target.value)}
+									rows={4}
+								/>
+							</div>
+
+							<div className="flex flex-row items-center justify-evenly gap-4">
+								<Button
+									onClick={handleSummarize}
+									disabled={isLoading || !url}
+									className="w-full bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+								>
+									{isLoading ? (
+										<>
+											<Loader2 className="h-4 w-4 mr-2 animate-spin" />
+											Analyzing...
+										</>
+									) : (
+										<>
+											<Sparkles className="h-4 w-4 mr-2" />
+											Summarize Job Posting
+										</>
+									)}
+								</Button>
+								<Button
+									className="px-10 bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+									onClick={() => {
+										setIsJobUrl(false);
+										setUrl('');
+										handleCancel();
 									}}
 								>
 									Cancel
@@ -344,6 +436,7 @@ export function JobSummarizerModal({
 									onClick={() => {
 										setIsJobFile(false);
 										setFile(null);
+										handleCancel();
 									}}
 								>
 									Cancel

@@ -49,22 +49,29 @@ export const aiController = {
 
 		const result = await summarizeJob(extractedContent);
 
+		if (result.title == '' || result.company == '') {
+			return res.status(400).json({ error: 'error' });
+		}
 		return res
 			.status(200)
 			.json({ message: 'Successfully summarized the text data.', result });
 	},
-	// async parseLinkedinUrl(req: Request, res: Response) {
-	// 	if (!req.body) {
-	// 		return res.status(400).json({ error: 'No data received.' });
-	// 	}
-	// 	const { url } = req.body;\
-	// 	// 🚨 Access the binary data buffer
-	// 	let extractedContent: string = JSON.stringify(textData);
+	async parseUrl(req: Request, res: Response) {
+		if (!req.body) {
+			return res.status(400).json({ error: 'No data received.' });
+		}
 
-	// 	const result = await summarizeJob(extractedContent);
+		let result: any = {};
 
-	// 	return res
-	// 		.status(200)
-	// 		.json({ message: 'Successfully summarized the text data.', result });
-	// },
+		if (req.body.urlType == 'linkedin') {
+			result = await aiServices.parseLinkedIn(req.body.urlData);
+		} else if (req.body.urlType == 'jobstreet') {
+			result = await aiServices.parseJobstreet(req.body.urlData);
+			console.log('jobstreet');
+		}
+
+		return res
+			.status(200)
+			.json({ message: 'Successfully summarized the text data.', result });
+	},
 };

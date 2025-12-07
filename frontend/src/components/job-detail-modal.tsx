@@ -21,8 +21,8 @@ import {
 	X,
 } from 'lucide-react';
 import { useState } from 'react';
-import { EditJobModal } from './edit-job-modal';
 import { statusColors } from './job-card';
+import { EditJobModal } from './job-edit-modal';
 import JobRequirementItem from './job-requirement-item';
 import { JobInput } from './job-tracker';
 import { SkillsItem } from './skill-item';

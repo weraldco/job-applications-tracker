@@ -1,5 +1,5 @@
 'use client';
-import { AnalyticsDashboard } from '@/components/analytics-dashboard';
+import { AnalyticsDashboard } from '@/components/analytics-panel';
 import { Header } from '@/components/header';
 import { JobTracker } from '@/components/job-tracker';
 import { RemindersPanel } from '@/components/reminders-panel';

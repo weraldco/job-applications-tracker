@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { AddJobModal } from '@/components/add-job-modal';
+import { AddJobModal } from '@/components/job-add-modal';
 import { JobCard } from '@/components/job-card';
 import { JobSummarizerModal } from '@/components/job-summarizer-modal';
 import { Button } from '@/components/ui/button';

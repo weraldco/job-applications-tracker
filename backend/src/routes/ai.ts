@@ -33,5 +33,6 @@ router.post(
 	multerErrorHandler
 );
 router.post('/parse-text', uploadDocument.none(), aiController.parseTextData);
+router.post('/parse-url', uploadDocument.none(), aiController.parseUrl);
 
 export default router;
