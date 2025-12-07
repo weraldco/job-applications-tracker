@@ -3,8 +3,7 @@
 import { JobDetailModal } from '@/components/job-detail-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { JobType } from '@/types/types';
-import { JobStatus } from '@prisma/client';
+import { JobStatus, JobType } from '@/types/types';
 import { format } from 'date-fns';
 import { Calendar, ExternalLink, MapPin, Trash2 } from 'lucide-react';
 import { useState } from 'react';

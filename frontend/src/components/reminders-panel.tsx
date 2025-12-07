@@ -11,7 +11,6 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { fetcher } from '@/lib/utils';
-// import { Job, Reminder, ReminderType } from '@prisma/client';
 import { CreateReminderInput, JobType, ReminderType } from '@/types/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';

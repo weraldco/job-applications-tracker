@@ -11,6 +11,12 @@ export interface FormDataT {
 	salary: string;
 	location: string;
 }
+export type JobStatus =
+	| 'APPLIED'
+	| 'INTERVIEWING'
+	| 'OFFER'
+	| 'REJECTED'
+	| 'WITHDRAWN';
 
 export interface JobType {
 	id: string;
@@ -75,3 +81,10 @@ export type CreateReminderInput = {
 		| 'OTHER';
 	jobId: string;
 };
+
+export type ReminderStatusType =
+	| 'FOLLOW_UP'
+	| 'INTERVIEW_PREP'
+	| 'THANK_YOU_NOTE'
+	| 'APPLICATION_DEADLINE'
+	| 'OTHER';

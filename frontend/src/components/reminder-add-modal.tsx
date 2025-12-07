@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { ReminderType } from '@prisma/client';
-
 import UseEscClose from '@/hooks/use-esc-close';
-import { CreateReminderInput, JobType } from '@/types/types';
+import {
+	CreateReminderInput,
+	JobType,
+	ReminderStatusType,
+} from '@/types/types';
 import { Loader2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -55,7 +57,7 @@ const ReminderAddModal = ({
 		...(data?.map((d) => ({ id: d.id, title: d.title })) ?? []),
 	];
 
-	const typeMap: Record<string, ReminderType> = {
+	const typeMap: Record<string, ReminderStatusType> = {
 		'Interview Prep': 'INTERVIEW_PREP',
 		Deadline: 'APPLICATION_DEADLINE',
 		'Follow up': 'FOLLOW_UP',
