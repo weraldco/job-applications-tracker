@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Badge } from '@/components/ui/badge';
@@ -43,7 +44,29 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 				method: 'PATCH',
 				body: JSON.stringify(payload.data),
 			}),
+		onMutate: async (newStatus) => {
+			await queryClient.cancelQueries({ queryKey: ['reminder-data'] });
 
+			const prevReminder = await queryClient.getQueryData(['reminder-data']);
+
+			// update UI instantly
+			queryClient.setQueryData<ReminderFetchType>(
+				['reminder-data'],
+				(old: any) => {
+					if (!old) return old;
+					return {
+						...old,
+						reminders: old.reminders.map((reminder: ReminderType) =>
+							reminder.id === newStatus.id
+								? { ...reminder, completed: newStatus.data.completed }
+								: reminder
+						),
+					};
+				}
+			);
+
+			return prevReminder;
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['reminder-data'] });
 		},
@@ -71,7 +94,6 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 	if (isLoading) return <p>Loading..</p>;
 	if (error) return <p>Error fetching data</p>;
 	if (!data) return;
-
 	const getTypeColor = (type: string) => {
 		switch (type) {
 			case 'FOLLOW_UP':

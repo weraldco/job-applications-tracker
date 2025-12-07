@@ -87,6 +87,7 @@ export const jobController = {
 
 			// Check if data is empty
 			const body = req.body;
+			console.log('here');
 			if (!body) {
 				return res.status(400).json({ error: 'Invalid or empty data' });
 			}
@@ -97,6 +98,7 @@ export const jobController = {
 			res.status(500).json({ error: 'Server error!' });
 		}
 	},
+
 	// Delete job data -> api/v1/jobs/delete/[id]
 	async deleteJob(req: Request, res: Response) {
 		try {

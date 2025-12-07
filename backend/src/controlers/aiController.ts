@@ -53,4 +53,18 @@ export const aiController = {
 			.status(200)
 			.json({ message: 'Successfully summarized the text data.', result });
 	},
+	// async parseLinkedinUrl(req: Request, res: Response) {
+	// 	if (!req.body) {
+	// 		return res.status(400).json({ error: 'No data received.' });
+	// 	}
+	// 	const { url } = req.body;\
+	// 	// 🚨 Access the binary data buffer
+	// 	let extractedContent: string = JSON.stringify(textData);
+
+	// 	const result = await summarizeJob(extractedContent);
+
+	// 	return res
+	// 		.status(200)
+	// 		.json({ message: 'Successfully summarized the text data.', result });
+	// },
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { AddJobModal } from '@/components/add-job-modal';
@@ -11,6 +12,8 @@ import { JobStatus } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
 import { Plus, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { JobsResponse } from './dashboard-client-wrapper';
 import { Card } from './ui/card';
 
 export interface JobInput {
@@ -70,7 +73,39 @@ export function JobTracker({
 				method: 'PATCH',
 				body: JSON.stringify({ status }),
 			}),
+		// OPTIMISTIC UPDATE
+		onMutate: async (newStatus) => {
+			await queryClient.cancelQueries({ queryKey: ['jobs-data'] });
+			await queryClient.cancelQueries({ queryKey: ['jobs-analytics'] });
 
+			const previousJobs = queryClient.getQueryData<JobType[]>(['jobs-data']);
+			const previousAnalytics = queryClient.getQueryData(['jobs-analytics']);
+
+			// update UI instantly
+			queryClient.setQueryData<JobsResponse>(['jobs-data'], (old: any) => {
+				if (!old) return old;
+				return {
+					...old,
+					jobs: old.jobs.map((job: JobType) =>
+						job.id === newStatus.id ? { ...job, status: newStatus.status } : job
+					),
+				};
+			});
+
+			return { previousJobs, previousAnalytics };
+		},
+
+		// ERROR: rollback changes
+		onError: (_err, _vars, ctx) => {
+			if (ctx?.previousJobs)
+				queryClient.setQueryData(['jobs-data'], ctx.previousJobs);
+
+			if (ctx?.previousAnalytics)
+				queryClient.setQueryData(['jobs-analytics'], ctx.previousAnalytics);
+
+			toast.error('Error', { description: 'Failed to update status.' });
+		},
+		// SUCCESS: refetch to sync with DB
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['jobs-data'] });
 			queryClient.invalidateQueries({ queryKey: ['jobs-analytics'] });

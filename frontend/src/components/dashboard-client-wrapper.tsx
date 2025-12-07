@@ -9,7 +9,7 @@ import { JobType } from '@/types/types';
 import { useQuery } from '@tanstack/react-query';
 import LoadingState from './loading-state';
 
-interface JobsResponse {
+export interface JobsResponse {
 	jobs: JobType[]; // your existing Job interface
 	monthCount: Record<string, number>;
 	statusCount: Record<string, number>;

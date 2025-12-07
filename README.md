@@ -186,3 +186,15 @@ Or use OAuth providers (Google/GitHub) if configured.
 - [ ] Resume version tracking
 - [ ] Interview preparation tools
 - [ ] Salary negotiation tracker
+
+job, work, hunt, seek,
+suitcase, record, appl
+
+JobStashr
+
+Features
+
+- Search
+- History
+- Reminder
+- Jobs
