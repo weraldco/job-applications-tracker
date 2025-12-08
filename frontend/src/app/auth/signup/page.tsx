@@ -142,7 +142,11 @@ export default function SignUpPage() {
 							</p>
 						</div>
 
-						<Button type="submit" className="w-full" disabled={isSubmitting}>
+						<Button
+							type="submit"
+							className="w-full button-icon"
+							disabled={isSubmitting}
+						>
 							{isSubmitting ? 'Creating account...' : 'Create account'}
 						</Button>
 					</form>

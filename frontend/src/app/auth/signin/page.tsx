@@ -104,7 +104,11 @@ export default function SignInPage() {
 							</div>
 						</div>
 
-						<Button type="submit" className="w-full" disabled={isLoading}>
+						<Button
+							type="submit"
+							className="w-full button-icon"
+							disabled={isLoading}
+						>
 							{isLoading ? 'Signing in...' : 'Sign in'}
 						</Button>
 					</form>
