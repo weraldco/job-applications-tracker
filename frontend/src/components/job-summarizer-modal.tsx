@@ -185,7 +185,6 @@ export function JobSummarizerModal({
 		// URL
 		else if (url) {
 			const { urlResult, type, error } = urlConstructor(url);
-			console.log(urlResult, type);
 
 			if (error) {
 				toast.error('Error reconstructing url', {
