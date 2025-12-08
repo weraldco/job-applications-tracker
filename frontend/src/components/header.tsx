@@ -22,7 +22,7 @@ export function Header({ user }: HeaderT) {
 					description: 'Successfully Logout, thank you!',
 				});
 
-				router.push('/auth/signin');
+				router.push('/');
 			}
 		} catch (error) {
 			toast.error('Error Message', {

@@ -28,7 +28,7 @@ export default function SignUpPage() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { user, loading } = useAuthGuard({
 		redirectIfAuthenticated: true,
-		redirectPath: '/',
+		redirectPath: '/home',
 	});
 	interface UserType {
 		name: string;
@@ -48,7 +48,7 @@ export default function SignUpPage() {
 				description:
 					"Welcome! You've successfully sign-up. You must verify your account first to complete the registration.",
 			});
-			router.push('/');
+			router.push('/home');
 			router.refresh();
 		},
 		onError: () => {

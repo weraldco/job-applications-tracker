@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 8080;
 app.use(
 	cors({
 		origin: [
-			'http://localhost:3000 ',
+			'http://localhost:3000',
 			'https://job-applications-tracker-ten.vercel.app',
 		],
 
