@@ -1,10 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
 
 const Header = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -26,13 +26,12 @@ const Header = () => {
 						<Image
 							src="/images/logo.webp"
 							alt="JobStashr Logo"
-							width={40}
-							height={40}
-							className="h-8 w-8 sm:h-10 sm:w-10"
+							width={200}
+							height={200}
 						/>
-						<span className="text-xl sm:text-2xl font-bold text-primary">
+						{/* <span className="text-xl sm:text-2xl font-bold text-primary">
 							JobStashr
-						</span>
+						</span> */}
 					</Link>
 
 					{/* Desktop Navigation */}
