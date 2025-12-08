@@ -67,7 +67,6 @@ export const aiController = {
 			result = await aiServices.parseLinkedIn(req.body.urlData);
 		} else if (req.body.urlType == 'jobstreet') {
 			result = await aiServices.parseJobstreet(req.body.urlData);
-			console.log('jobstreet');
 		}
 
 		return res

@@ -87,7 +87,7 @@ export const jobController = {
 
 			// Check if data is empty
 			const body = req.body;
-			console.log('here');
+
 			if (!body) {
 				return res.status(400).json({ error: 'Invalid or empty data' });
 			}

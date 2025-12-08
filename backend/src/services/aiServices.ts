@@ -95,7 +95,7 @@ export const aiServices = {
 				.catch(() => '');
 
 			await browser.close();
-			console.log('SUM', summarizer);
+
 			const result = {
 				success: true,
 				jobUrl: url,
@@ -110,7 +110,7 @@ export const aiServices = {
 				experienceNeeded: summarizer.experienceNeeded,
 				salary: summarizer.salary,
 			};
-			console.log(result);
+
 			return result;
 		} catch (error) {
 			console.error('JOBSTREET SCRAPER ERROR:', error);
@@ -163,7 +163,6 @@ export const aiServices = {
 				.catch(() => '');
 
 			const summarizer = await summarizeJob(fullDescription);
-			console.log(summarizer);
 			// Posted date (optional)
 			const posted = await page
 				.$eval(

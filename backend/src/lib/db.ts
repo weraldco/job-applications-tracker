@@ -1,5 +1,3 @@
-// src/lib/db.ts
-
 import { PrismaPg } from '@prisma/adapter-pg'; // Import the Prisma adapter
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg'; // Import the driver pool
