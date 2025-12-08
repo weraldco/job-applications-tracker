@@ -10,8 +10,5 @@ module.exports = {
 	transform: {
 		'^.+\\.(ts|tsx|js|jsx)$': ['babel-jest', { presets: ['next/babel'] }],
 	},
-	transformIgnorePatterns: [
-		// Transform next-auth and its dependencies (ESM)
-		'node_modules/(?!(next-auth|@auth/core)/)',
-	],
+	transformIgnorePatterns: [],
 };
