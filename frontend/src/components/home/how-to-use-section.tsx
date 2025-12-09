@@ -1,6 +1,12 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
 import { FileText, Link as LinkIcon, Upload } from 'lucide-react';
 
 export default function HowToUseSection() {
@@ -8,7 +14,8 @@ export default function HowToUseSection() {
 		{
 			id: 1,
 			title: 'Job Description',
-			description: 'Simply paste the job description text and let our AI extract all the key information automatically.',
+			description:
+				'Simply paste the job description text and let our AI extract all the key information automatically.',
 			icon: FileText,
 			steps: [
 				'Copy the job posting text',
@@ -19,7 +26,8 @@ export default function HowToUseSection() {
 		{
 			id: 2,
 			title: 'Job URL',
-			description: 'Enter the job posting URL and we\'ll fetch and summarize the entire job description for you.',
+			description:
+				"Enter the job posting URL and we'll fetch and summarize the entire job description for you.",
 			icon: LinkIcon,
 			steps: [
 				'Copy the job posting URL',
@@ -30,7 +38,8 @@ export default function HowToUseSection() {
 		{
 			id: 3,
 			title: 'Job File',
-			description: 'Upload your job posting as a PDF or DOCX file, and we\'ll extract and summarize everything automatically.',
+			description:
+				"Upload your job posting as a PDF or DOCX file, and we'll extract and summarize everything automatically.",
 			icon: Upload,
 			steps: [
 				'Upload PDF or DOCX file',
@@ -44,10 +53,15 @@ export default function HowToUseSection() {
 		<section id="how-to-use" className="py-20 sm:py-24 lg:py-28 bg-white">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
-				<div className="text-center mb-12 sm:mb-16">
-					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+				<div className="text-center mb-12 sm:mb-16 flex flex-col gap-8">
+					<div className="w-full flex items-center justify-center">
+						<h3 className="bg-orange-400/50 px-4 py-1 rounded-full text-white border border-orange-300 font-semibold">
+							HOW TO USE
+						</h3>
+					</div>
+					{/* <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
 						How To Use
-					</h2>
+					</h2> */}
 					<p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
 						Three simple ways to summarize any job posting with AI. Choose the
 						method that works best for you.
@@ -110,4 +124,3 @@ export default function HowToUseSection() {
 		</section>
 	);
 }
-

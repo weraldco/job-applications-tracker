@@ -54,11 +54,9 @@
 	--chart-4: 280 65% 60%;
 	--chart-5: 340 75% 55%;
 }
-
-* {
+/* * {
 	border-color: hsl(var(--border));
-}
-
+} */
 body {
 	background-color: hsl(var(--background));
 	color: hsl(var(--foreground));
@@ -111,4 +109,12 @@ button {
 
 .animation-delay-4000 {
 	animation-delay: 4s;
+}
+
+.nav-menu {
+	@apply text-gray-700 hover:bg-neutral-100 px-4 py-2 rounded-full duration-200 transition-colors text-[0.9rem];
+}
+
+.mobile-nav-menu {
+	@apply hover:bg-neutral-200/50  py-4 px-4 duration-200;
 }

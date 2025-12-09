@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { ArrowRight, Rocket } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CTASection() {
 	return (
@@ -28,7 +28,7 @@ export default function CTASection() {
 							<Button
 								size="lg"
 								variant="secondary"
-								className="text-lg px-8 py-6 h-auto group bg-white text-primary hover:bg-gray-100"
+								className="text-base px-6 py-4 h-auto group bg-orange-400 text-primary hover:bg-orange-300"
 							>
 								Get Started Free
 								<ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -38,7 +38,7 @@ export default function CTASection() {
 							<Button
 								size="lg"
 								variant="outline"
-								className="text-lg px-8 py-6 h-auto border-white/30 text-white hover:bg-white/10"
+								className="text-base px-6 py-4 h-auto border-white border-2 text-white"
 							>
 								Sign In
 							</Button>
@@ -53,4 +53,3 @@ export default function CTASection() {
 		</section>
 	);
 }
-

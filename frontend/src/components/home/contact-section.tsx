@@ -1,14 +1,20 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Mail, MessageSquare, Send } from 'lucide-react';
+import Image from 'next/image';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import Image from 'next/image';
 
 export default function ContactSection() {
 	const [formData, setFormData] = useState({
@@ -26,7 +32,7 @@ export default function ContactSection() {
 		// Simulate form submission
 		setTimeout(() => {
 			toast.success('Message sent!', {
-				description: 'We\'ll get back to you soon.',
+				description: "We'll get back to you soon.",
 			});
 			setFormData({ name: '', email: '', subject: '', message: '' });
 			setIsSubmitting(false);
@@ -47,9 +53,11 @@ export default function ContactSection() {
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
 				<div className="text-center mb-12 sm:mb-16">
-					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-						Contact Us
-					</h2>
+					<div className="w-full flex items-center justify-center">
+						<h3 className="bg-orange-400/50 px-4 py-1 rounded-full text-white border border-orange-300 font-semibold">
+							CONTACT US
+						</h3>
+					</div>
 					<p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
 						Have questions? We'd love to hear from you. Send us a message and
 						we'll respond as soon as possible.
@@ -162,4 +170,3 @@ export default function ContactSection() {
 		</section>
 	);
 }
-

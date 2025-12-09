@@ -16,6 +16,7 @@ import { supabase } from '../../../lib/supabase';
 import LoadingState from '@/components/loading-state';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { Lock, Mail } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -62,8 +63,16 @@ export default function SignInPage() {
 	};
 	if (loading) return <LoadingState />;
 	return (
-		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-			<Card className="w-full max-w-md">
+		<div className="min-h-screen flex items-center justify-center p-4 flex-col gap-4 bg-orange-50/70">
+			<div className="flex items-center justify-center">
+				<Image
+					src="/images/logo.webp"
+					width={300}
+					height={300}
+					alt="jobstashr-logo"
+				/>
+			</div>
+			<Card className="w-full max-w-md bg-white border-0 rounded-2xl">
 				<CardHeader className="text-center space-y-2">
 					<CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
 					<CardDescription>
@@ -72,16 +81,19 @@ export default function SignInPage() {
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleSubmit} className="space-y-4">
-						<div className="space-y-2">
-							<Label htmlFor="email">Email</Label>
+						<div className="space-y-2 ">
+							<Label htmlFor="email" className="text-neutral-400 text-xs">
+								Your Email
+							</Label>
 							<div className="relative">
-								<Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+								<Mail className="absolute right-4 top-4 h-4 w-4 text-gray-400" />
 								<Input
 									id="email"
 									type="email"
 									required
 									autoComplete="email"
-									className="pl-10"
+									className=" rounded-full pl-4 pt-6 pb-6 text-sm outline-0 border-[#e7e7e7] bg-[#fafbfd] "
+									placeholder="Enter your email address.."
 									value={email}
 									onChange={(event) => setEmail(event.target.value)}
 								/>
@@ -89,15 +101,18 @@ export default function SignInPage() {
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="password">Password</Label>
+							<Label htmlFor="password" className="text-neutral-400 text-xs">
+								Password
+							</Label>
 							<div className="relative">
-								<Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+								<Lock className="absolute right-4 top-4 h-4 w-4 text-gray-400" />
 								<Input
 									id="password"
 									type="password"
 									required
 									autoComplete="current-password"
-									className="pl-10"
+									className="pl-4 pt-6 pb-6 outline-0 border-[#e7e7e7] bg-[#fafbfd] rounded-full text-sm"
+									placeholder="Enter your password.."
 									value={password}
 									onChange={(event) => setPassword(event.target.value)}
 								/>
@@ -106,18 +121,18 @@ export default function SignInPage() {
 
 						<Button
 							type="submit"
-							className="w-full button-icon"
+							className="w-full  bg-[#ef831e] hover:bg-[#f69234] active:bg-[#d1721a] duration-200 text-white border-0 outline-0 py-7 text-sm rounded-full"
 							disabled={isLoading}
 						>
 							{isLoading ? 'Signing in...' : 'Sign in'}
 						</Button>
 					</form>
 
-					<p className="mt-6 text-center text-sm text-gray-600">
+					<p className="mt-6 text-center text-sm text-gray-400">
 						Don&apos;t have an account?{' '}
 						<Link
 							href="/auth/signup"
-							className="font-medium text-blue-600 hover:underline"
+							className="font-medium text-[#ef831e]/90 hover:underline"
 						>
 							Sign up
 						</Link>

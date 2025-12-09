@@ -1,8 +1,8 @@
 'use client';
 
+import { Facebook, Linkedin, Mail, Twitter } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Facebook, Twitter, Linkedin, Mail } from 'lucide-react';
 
 export default function Footer() {
 	const currentYear = new Date().getFullYear();
@@ -44,18 +44,18 @@ export default function Footer() {
 							<Image
 								src="/images/logo.webp"
 								alt="JobStashr Logo"
-								width={40}
-								height={40}
-								className="h-10 w-10"
+								width={200}
+								height={200}
+								// className="h-10 w-10"
 							/>
-							<span className="text-2xl font-bold text-white">JobStashr</span>
+							{/* <span className="text-2xl font-bold text-white">JobStashr</span> */}
 						</Link>
 						<p className="text-gray-400 mb-4 max-w-sm">
-							Your smart workspace for tracking every application, interview, and
-							career move. Powered by AI.
+							Your smart workspace for tracking every application, interview,
+							and career move. Powered by AI.
 						</p>
 						{/* Social Links */}
-						<div className="flex items-center space-x-4">
+						{/* <div className="flex items-center space-x-4">
 							{socialLinks.map((social) => {
 								const Icon = social.icon;
 								return (
@@ -69,7 +69,7 @@ export default function Footer() {
 									</a>
 								);
 							})}
-						</div>
+						</div> */}
 					</div>
 
 					{/* Product Links */}
@@ -134,4 +134,3 @@ export default function Footer() {
 		</footer>
 	);
 }
-

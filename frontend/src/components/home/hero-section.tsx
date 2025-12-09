@@ -1,14 +1,14 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HeroSection() {
 	return (
-		<section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 sm:py-28 lg:py-32">
+		<section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 py-30 sm:py-58 lg:py-70">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="max-w-4xl mx-auto text-center">
+				<div className="max-w-4xl mx-auto text-center ">
 					{/* Badge */}
 					<div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6">
 						<Sparkles className="h-4 w-4" />
@@ -27,21 +27,22 @@ export default function HeroSection() {
 					</p>
 
 					{/* CTA Buttons */}
-					<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-						<Link href="/auth/signup">
+					<div className="flex flex-col sm:flex-row items-center justify-center gap-4 ">
+						<Link href="/auth/signup" className="max-w-70 w-full bg-amber-50">
 							<Button
 								size="lg"
-								className="text-lg px-8 py-6 h-auto group"
+								variant="outline"
+								className="text-lg px-8 py-4 h-auto group border-2 border-orange-400 text-orange-400 w-full"
 							>
 								Start Tracking Free
 								<ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
 							</Button>
 						</Link>
-						<Link href="/auth/signin">
+						<Link href="/auth/signin" className="max-w-70 w-full group">
 							<Button
 								variant="outline"
 								size="lg"
-								className="text-lg px-8 py-6 h-auto"
+								className="text-lg px-8 py-4 h-auto w-full bg-orange-400 text-white group-hover:bg-orange-400/80 group-active:bg-orange-300 duration-200"
 							>
 								Sign In
 							</Button>
@@ -64,4 +65,3 @@ export default function HeroSection() {
 		</section>
 	);
 }
-

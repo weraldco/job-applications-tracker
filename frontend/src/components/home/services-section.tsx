@@ -1,7 +1,13 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Database, Bell } from 'lucide-react';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
+import { Bell, Database, Sparkles } from 'lucide-react';
 
 export default function ServicesSection() {
 	const services = [
@@ -47,10 +53,18 @@ export default function ServicesSection() {
 	];
 
 	return (
-		<section id="services" className="py-20 sm:py-24 lg:py-28 bg-gradient-to-br from-gray-50 to-blue-50">
+		<section
+			id="services"
+			className="py-20 sm:py-24 lg:py-28 bg-gradient-to-br from-gray-50 to-blue-50"
+		>
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
 				<div className="text-center mb-12 sm:mb-16">
+					<div className="w-full flex items-center justify-start">
+						<h3 className="bg-orange-400/50 px-4 py-1 rounded-full text-white border border-orange-300 font-semibold">
+							OUR SERVICES
+						</h3>
+					</div>
 					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
 						Our Services
 					</h2>
@@ -73,7 +87,9 @@ export default function ServicesSection() {
 									<div className="p-4 bg-primary/10 rounded-lg w-fit mb-4">
 										<Icon className="h-8 w-8 text-primary" />
 									</div>
-									<CardTitle className="text-2xl mb-2">{service.title}</CardTitle>
+									<CardTitle className="text-2xl mb-2">
+										{service.title}
+									</CardTitle>
 									<CardDescription className="text-base">
 										{service.description}
 									</CardDescription>
@@ -96,4 +112,3 @@ export default function ServicesSection() {
 		</section>
 	);
 }
-

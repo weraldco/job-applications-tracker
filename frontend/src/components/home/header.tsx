@@ -18,8 +18,8 @@ const Header = () => {
 	};
 
 	return (
-		<header className="w-full sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-			<nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+		<header className="w-full sticky top-0 z-50 bg-white/20 backdrop-blur-sm  p-4">
+			<nav className="container mx-auto sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between h-16">
 					{/* Logo */}
 					<Link href="/" className="flex items-center space-x-2">
@@ -35,12 +35,12 @@ const Header = () => {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<div className="hidden md:flex items-center space-x-8">
+					<div className="hidden lg:flex items-center space-x-8">
 						<ul className="flex items-center space-x-6">
 							<li>
 								<button
 									onClick={() => scrollToSection('how-to-use')}
-									className="text-gray-700 hover:text-primary transition-colors"
+									className="nav-menu"
 								>
 									How to Use
 								</button>
@@ -48,7 +48,7 @@ const Header = () => {
 							<li>
 								<button
 									onClick={() => scrollToSection('services')}
-									className="text-gray-700 hover:text-primary transition-colors"
+									className="nav-menu"
 								>
 									Services
 								</button>
@@ -56,27 +56,33 @@ const Header = () => {
 							<li>
 								<button
 									onClick={() => scrollToSection('contact')}
-									className="text-gray-700 hover:text-primary transition-colors"
+									className="nav-menu"
 								>
 									Contact Us
 								</button>
 							</li>
 						</ul>
 						<div className="flex items-center space-x-4">
-							<Link href="/auth/signin">
-								<Button variant="ghost" size="sm">
-									Sign In
+							<Link href="/auth/signin" className="">
+								<Button
+									className="border-orage-400 rounded-full border-2  hover:border-orange-300 active:border-orange-500 duration-200 text-orange-400 hover:text-orange-300 active:text-orange-500"
+									variant="outline"
+								>
+									Sign in
 								</Button>
 							</Link>
-							<Link href="/auth/signup">
-								<Button size="sm">Get Started</Button>
+							<Link
+								href="/auth/signup"
+								className="hover:bg-orange-300 active:bg-orange-500 bg-orange-400 duration-200 text-neutral-50 rounded-full px-4 py-1"
+							>
+								<Button>Get Started</Button>
 							</Link>
 						</div>
 					</div>
 
 					{/* Mobile Menu Button */}
 					<button
-						className="md:hidden p-2"
+						className="lg:hidden p-2"
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
 						aria-label="Toggle menu"
 					>
@@ -90,17 +96,17 @@ const Header = () => {
 
 				{/* Mobile Navigation */}
 				{mobileMenuOpen && (
-					<div className="md:hidden py-4 border-t border-gray-200">
-						<ul className="flex flex-col space-y-4">
-							<li>
+					<div className="lg:hidden py-4 border-t border-gray-200 ">
+						<ul className="flex flex-col space-y-2">
+							<li className="hover:bg-neutral-200/50  py-4 px-4 duration-200">
 								<button
 									onClick={() => scrollToSection('how-to-use')}
-									className="text-gray-700 hover:text-primary transition-colors w-full text-left"
+									className="text-gray-700 hover:text-primary transition-colors w-full text-left "
 								>
 									How to Use
 								</button>
 							</li>
-							<li>
+							<li className="hover:bg-neutral-200/50  py-4 px-4 duration-200">
 								<button
 									onClick={() => scrollToSection('services')}
 									className="text-gray-700 hover:text-primary transition-colors w-full text-left"
@@ -108,7 +114,7 @@ const Header = () => {
 									Services
 								</button>
 							</li>
-							<li>
+							<li className="hover:bg-neutral-200/50  py-4 px-4 duration-200">
 								<button
 									onClick={() => scrollToSection('contact')}
 									className="text-gray-700 hover:text-primary transition-colors w-full text-left"
@@ -116,16 +122,18 @@ const Header = () => {
 									Contact Us
 								</button>
 							</li>
-							<li className="pt-4 border-t border-gray-200 flex flex-col space-y-2">
-								<Link href="/auth/signin" className="w-full">
-									<Button variant="ghost" size="sm" className="w-full">
-										Sign In
-									</Button>
+							<li className="pt-4 border-t border-gray-200 flex flex-col space-y-2 ">
+								<Link
+									href="/auth/signin"
+									className="hover:bg-orange-300 active:bg-orange-500 bg-orange-400 py-4 px-4 duration-200  text-white"
+								>
+									<button className="">Sign In</button>
 								</Link>
-								<Link href="/auth/signup" className="w-full">
-									<Button size="sm" className="w-full">
-										Get Started
-									</Button>
+								<Link
+									href="/auth/signup"
+									className="hover:bg-orange-300 active:bg-orange-500  py-4 px-4 duration-200 bg-orange-400 text-white"
+								>
+									<button className="">Get Started</button>
 								</Link>
 							</li>
 						</ul>
