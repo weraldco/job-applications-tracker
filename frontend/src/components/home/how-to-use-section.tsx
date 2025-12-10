@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/card';
 import { FileText, Link as LinkIcon, Upload } from 'lucide-react';
 import SectionTitle from './section-title';
-import TitleTag from './title-tag';
 
 export default function HowToUseSection() {
 	const demos = [

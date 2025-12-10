@@ -214,7 +214,7 @@ export function JobTracker({
 				<div className="flex flex-wrap md:justify-start justify-center space-x-2 mb-4 gap-y-2">
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'ALL' ? 'bg-neutral-400' : 'bg-neutral-500'
+							filter === 'ALL' ? 'bg-[#A7A8AA]' : 'bg-[#C4C6C9]'
 						}`}
 						size="sm"
 						onClick={() => setFilter('ALL')}
@@ -223,7 +223,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'APPLIED' ? 'bg-blue-400' : 'bg-blue-500'
+							filter === 'APPLIED' ? 'bg-[#3b82f6]' : 'bg-[#5493f9]'
 						}`}
 						size="sm"
 						onClick={() => setFilter('APPLIED')}
@@ -232,7 +232,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'INTERVIEWING' ? 'bg-[#f8b137]' : 'bg-[#f59e0b]'
+							filter === 'INTERVIEWING' ? 'bg-[#f7c839]' : 'bg-[#ffd145]'
 						}`}
 						size="sm"
 						onClick={() => setFilter('INTERVIEWING')}
@@ -241,7 +241,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'OFFER' ? 'bg-[#16d394]' : 'bg-[#11b981]'
+							filter === 'OFFER' ? 'bg-[#11b981]' : 'bg-[#16d394]'
 						}`}
 						size="sm"
 						onClick={() => setFilter('OFFER')}
@@ -250,7 +250,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'REJECTED' ? 'bg-[#fd6767]' : 'bg-[#ef4444]'
+							filter === 'REJECTED' ? 'bg-[#FF5B5B]' : 'bg-[#fc6c6c]'
 						}`}
 						size="sm"
 						onClick={() => setFilter('REJECTED')}

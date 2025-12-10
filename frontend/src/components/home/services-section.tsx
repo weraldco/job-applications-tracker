@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/card';
 import { Bell, Database, Sparkles } from 'lucide-react';
 import SectionTitle from './section-title';
-import TitleTag from './title-tag';
 
 export default function ServicesSection() {
 	const services = [
