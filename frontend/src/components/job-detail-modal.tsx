@@ -19,6 +19,7 @@ import {
 	Edit,
 	ExternalLink,
 	MapPin,
+	Plus,
 	X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -56,17 +57,30 @@ export function JobDetailModal({
 						<CardHeader className="border-b border-neutral-200">
 							{/* HEADER */}
 							<div className="flex items-start justify-between ">
-								<div className="">
+								<div className="flex flex-col gap-2 ">
 									<CardTitle className="flex items-center space-x-3 ">
-										<span>{job.title}</span>
+										<span className="text-[1.5rem] md:text-3xl">
+											{job.title}
+										</span>
 									</CardTitle>
-									<CardDescription className="text-lg">
+									<CardDescription className="text-base text-neutral-600">
 										{job.company}
 									</CardDescription>
+									<div className="flex md:hidden">
+										<Badge
+											className={`border-0 py-2 px-4 ${
+												statusColors[job.status]
+											}`}
+										>
+											{job.status}
+										</Badge>
+									</div>
 								</div>
 								<div className="flex items-center space-x-2 ">
 									<Badge
-										className={`border-0 py-2 px-4 ${statusColors[job.status]}`}
+										className={`border-0 py-2 px-4 md:flex hidden ${
+											statusColors[job.status]
+										}`}
 									>
 										{job.status}
 									</Badge>
@@ -194,13 +208,24 @@ export function JobDetailModal({
 
 							{/* Actions */}
 						</CardContent>
-						<CardFooter className="flex space-x-2 border-t border-neutral-200 pt-6">
-							<Button disabled className="flex-1 primary-btn">
-								Add Event
+						<CardFooter className="flex space-x-2 border-t border-neutral-200 pt-6 ">
+							<Button disabled className="flex-1 primary-btn px-0">
+								<span className="flex items-center justify-center sm:hidden text-xs">
+									<Plus size="18" /> Event
+								</span>
+								<span className="hidden sm:flex">Add Event</span>
 							</Button>
-							<Button className="flex-1 primary-btn">Add Reminder</Button>
-							<Button disabled className="flex-1 primary-btn">
-								Upload Document
+							<Button className="flex-1  primary-btn px-2">
+								<span className="flex items-center justify-center sm:hidden text-xs">
+									<Plus size="18" /> Reminder
+								</span>
+								<span className="hidden sm:flex">Add Reminder</span>
+							</Button>
+							<Button disabled className="flex-1 primary-btn px-2">
+								<span className="flex items-center justify-center sm:hidden text-xs">
+									<Plus size="18" /> Document
+								</span>
+								<span className="hidden sm:flex">Add Document</span>
 							</Button>
 						</CardFooter>
 					</Card>

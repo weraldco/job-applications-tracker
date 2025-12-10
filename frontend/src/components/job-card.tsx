@@ -48,8 +48,17 @@ export function JobCard({
 											{job.title}
 										</h3>
 										<p className="text-gray-600">{job.company}</p>
+										<div className="w-full max-w-[110px] flex md:hidden ">
+											<Badge
+												className={`${
+													statusColors[job.status]
+												} px-3 py-1 mt-1 `}
+											>
+												{job.status}
+											</Badge>
+										</div>
 									</div>
-									<div className="w-full max-w-[110px] ">
+									<div className="w-full max-w-[110px] hidden md:flex ">
 										<Badge
 											className={`${statusColors[job.status]} px-3 py-1 mt-1 `}
 										>

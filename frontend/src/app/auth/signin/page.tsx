@@ -15,7 +15,13 @@ import { supabase } from '../../../lib/supabase';
 
 import LoadingState from '@/components/loading-state';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
-import { Lock, Mail } from 'lucide-react';
+import {
+	ArrowBigDownDashIcon,
+	ArrowBigLeftDash,
+	ArrowLeft,
+	Lock,
+	Mail,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -63,14 +69,17 @@ export default function SignInPage() {
 	};
 	if (loading) return <LoadingState />;
 	return (
-		<div className="min-h-screen flex items-center justify-center p-4 flex-col gap-4 bg-orange-50/70">
+		<div className="min-h-screen flex items-center justify-center p-4 flex-col gap-4 bg-orange-50/70 relative">
 			<div className="flex items-center justify-center">
-				<Image
-					src="/images/logo.webp"
-					width={300}
-					height={300}
-					alt="jobstashr-logo"
-				/>
+				<Link href="/" className="">
+					<Image
+						src="/images/logo.webp"
+						width={300}
+						height={300}
+						alt="jobstashr-logo"
+						className="w-60 md:w-80"
+					/>
+				</Link>
 			</div>
 			<Card className="w-full max-w-md bg-white border-0 rounded-2xl">
 				<CardHeader className="text-center space-y-2">

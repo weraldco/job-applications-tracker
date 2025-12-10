@@ -41,11 +41,11 @@ export function Header({ user }: HeaderT) {
 							src="/images/logo.webp"
 							width={300}
 							height={200}
-							className="w-50"
+							className="w-40 md:w-50	"
 							alt="jobstashr-logo"
 						/>
 
-						<span className="text-xs sm:text-sm">
+						<span className="text-xs sm:text-sm hidden md:flex">
 							Manage and track your job applications efficiently
 						</span>
 					</div>
@@ -62,7 +62,7 @@ export function Header({ user }: HeaderT) {
 							onClick={handleSignOut}
 							className="flex items-center space-x-2 secondary-btn"
 						>
-							<LogOut className="h-4 w-4 " />
+							<LogOut className="h-4 w-4" />
 							<span className="hidden md:flex">Sign out</span>
 						</Button>
 					</div>
