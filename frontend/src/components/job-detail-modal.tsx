@@ -6,6 +6,7 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
@@ -24,8 +25,8 @@ import { useState } from 'react';
 import { statusColors } from './job-card';
 import { EditJobModal } from './job-edit-modal';
 import JobRequirementItem from './job-requirement-item';
+import { SkillsItem } from './job-skill-item';
 import { JobInput } from './job-tracker';
-import { SkillsItem } from './skill-item';
 
 interface JobDetailModalProps {
 	job: JobType;
@@ -49,28 +50,26 @@ export function JobDetailModal({
 	if (!isOpen) return null;
 	return (
 		<>
-			<div className="fixed inset-0 bg-neutral-700/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
+			<div className="fixed inset-0 bg-neutral-700/50 bg-opacity-50 flex items-center justify-center p-4 z-50 ">
 				{!isEditing ? (
-					<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
-						<CardHeader>
+					<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-0">
+						<CardHeader className="border-b border-neutral-200">
 							{/* HEADER */}
 							<div className="flex items-start justify-between ">
 								<div className="">
 									<CardTitle className="flex items-center space-x-3 ">
 										<span>{job.title}</span>
-										<Badge
-											className={`border-0 py-2 px-4 ${
-												statusColors[job.status]
-											}`}
-										>
-											{job.status}
-										</Badge>
 									</CardTitle>
 									<CardDescription className="text-lg">
 										{job.company}
 									</CardDescription>
 								</div>
 								<div className="flex items-center space-x-2 ">
+									<Badge
+										className={`border-0 py-2 px-4 ${statusColors[job.status]}`}
+									>
+										{job.status}
+									</Badge>
 									<Button
 										className="secondary-btn"
 										size="sm"
@@ -136,7 +135,7 @@ export function JobDetailModal({
 										onClick={() => {
 											if (job.jobUrl) window.open(job.jobUrl, '_blank');
 										}}
-										className="flex items-center space-x-2"
+										className="secondary-btn flex gap-2"
 									>
 										<ExternalLink className="h-4 w-4" />
 										<span>View Original Posting</span>
@@ -194,16 +193,16 @@ export function JobDetailModal({
 							)}
 
 							{/* Actions */}
-							<div className="flex space-x-2 pt-4 border-t">
-								<Button disabled className="flex-1 button-icon">
-									Add Event
-								</Button>
-								<Button className="flex-1 button-icon">Add Reminder</Button>
-								<Button disabled className="flex-1 button-icon">
-									Upload Document
-								</Button>
-							</div>
 						</CardContent>
+						<CardFooter className="flex space-x-2 border-t border-neutral-200 pt-6">
+							<Button disabled className="flex-1 primary-btn">
+								Add Event
+							</Button>
+							<Button className="flex-1 primary-btn">Add Reminder</Button>
+							<Button disabled className="flex-1 primary-btn">
+								Upload Document
+							</Button>
+						</CardFooter>
 					</Card>
 				) : (
 					<EditJobModal

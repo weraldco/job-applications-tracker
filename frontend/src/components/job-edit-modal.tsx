@@ -12,8 +12,8 @@ import { Loader2, Plus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import JobRequirementItem from './job-requirement-item';
+import { SkillsItem } from './job-skill-item';
 import { JobInput } from './job-tracker';
-import { SkillsItem } from './skill-item';
 
 //zod and rhf imports
 import { JobsSchema, JobsSchemaType } from '@/schemas/jobs.schema';
@@ -139,8 +139,8 @@ export function EditJobModal({
 	};
 	return (
 		<>
-			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white ">
-				<CardHeader>
+			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-0">
+				<CardHeader className="border-b border-neutral-200">
 					<div className="flex flex-row justify-between">
 						<div className="flex flex-col gap-2">
 							<h1 className="text-xl font-semibold">Update Job Posting</h1>
@@ -150,11 +150,12 @@ export function EditJobModal({
 						</div>
 						<Button
 							className="secondary-btn"
+							size="sm"
 							onClick={() => {
 								setIsEditing(false);
 							}}
 						>
-							<X size={18}></X>
+							<X className="h-4 w-4" />
 						</Button>
 					</div>
 				</CardHeader>
@@ -162,49 +163,40 @@ export function EditJobModal({
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div className="space-y-3">
-								<Label
-									htmlFor="title"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="title" className="input-label">
 									Job Title *
 								</Label>
 								<Input
 									id="title"
 									required
-									className="mt-1"
+									className="input-field"
 									{...register('title')}
 								/>
 								{errors.title && <p>{errors.title.message}</p>}
 							</div>
 
 							<div className="space-y-3">
-								<Label
-									htmlFor="company"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="company" className="text-sm text-gray-400">
 									Company *
 								</Label>
 								<Input
 									id="company"
 									required
-									className="mt-1"
+									className="input-field"
 									{...register('company')}
 								/>
 								{errors.company && <p>{errors.company.message}</p>}
 							</div>
 
 							<div className="space-y-3">
-								<Label
-									htmlFor="applicationDate"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="applicationDate" className="input-label">
 									Application Date *
 								</Label>
 								<Input
 									id="applicationDate"
 									type="date"
 									required
-									className="mt-1"
+									className="input-field"
 									{...register('applicationDate')}
 								/>
 								{errors.applicationDate && (
@@ -213,42 +205,37 @@ export function EditJobModal({
 							</div>
 
 							<div className="space-y-3">
-								<Label
-									htmlFor="location"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="location" className="input-label">
 									Location
 								</Label>
 								<Input
 									id="location"
-									className="mt-1"
+									className="input-field"
 									{...register('location')}
 								/>
 								{errors.location && <p>{errors.location.message}</p>}
 							</div>
 
 							<div className="space-y-3">
-								<Label
-									htmlFor="salary"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="salary" className="input-label">
 									Salary
 								</Label>
-								<Input id="salary" className="mt-1" {...register('salary')} />
+								<Input
+									id="salary"
+									className="input-field"
+									{...register('salary')}
+								/>
 								{errors.salary && <p>{errors.salary.message}</p>}
 							</div>
 
 							<div className="space-y-3">
-								<Label
-									htmlFor="experienceNeeded"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="experienceNeeded" className="input-label">
 									Years of Experience
 								</Label>
 								<Input
 									id="experienceNeeded"
 									type="number"
-									className="mt-1"
+									className="input-field"
 									{...register('experienceNeeded')}
 								/>
 								{errors.experienceNeeded && (
@@ -258,55 +245,48 @@ export function EditJobModal({
 						</div>
 
 						<div className="space-y-3">
-							<Label
-								htmlFor="jobUrl"
-								className="text-sm font-medium text-gray-700"
-							>
+							<Label htmlFor="jobUrl" className="input-label">
 								Job URL
 							</Label>
 							<Input
 								id="jobUrl"
 								type="url"
-								className="mt-1"
+								className="input-field"
+								placeholder="Enter a job url.."
 								{...register('jobUrl')}
 							/>
 							{errors.jobUrl && <p>{errors.jobUrl.message}</p>}
 						</div>
 						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobDetails"
-							>
+							<Label className="input-label" htmlFor="jobDetails">
 								Job Details
 							</Label>
 							<Textarea
 								id="jobDetails"
-								placeholder="Job details or Roles in this job post"
+								placeholder="Job details or job roles.."
 								{...register('jobDetails')}
-								rows={3}
-								className="mt-1"
+								rows={4}
+								className="input-field"
 							/>
 							{errors.jobDetails && (
 								<p className="text-red-500">{errors.jobDetails.message}</p>
 							)}
 						</div>
 						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="skillsRequired"
-							>
+							<Label className="input-label" htmlFor="skillsRequired">
 								Skills Requirements
 							</Label>
 							<div className="flex flex-row gap-2">
 								<Input
-									className="input"
+									className="input-field"
 									value={skill}
 									onChange={(e) => setSkill(e.target.value)}
-									placeholder="Enter a skill"
+									placeholder="Enter a skill.."
 								/>
 								<Button
 									type="button"
-									className="bg-neutral-400 text-white"
+									size="sm"
+									className="bg-neutral-500 hover:bg-neutral-500/90 active:bg-neutral-600 duration-200 text-white py-5"
 									onClick={() => {
 										const list = getValues('skillsRequired') ?? [];
 										if (!skill) return;
@@ -324,23 +304,21 @@ export function EditJobModal({
 							</div>
 						</div>
 						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobRequirements"
-							>
+							<Label className="input-label" htmlFor="jobRequirements">
 								Job Requirements
 							</Label>
 							<div className="flex flex-row gap-2">
 								<Input
-									className="input"
+									className="input-field"
 									id="jobRequirements"
 									value={requirements}
 									onChange={(e) => setRequirements(e.target.value)}
-									placeholder="Enter a requirements"
+									placeholder="Enter a requirements.."
 								/>
 								<Button
 									type="button"
-									className="bg-neutral-400 text-white"
+									size="sm"
+									className="bg-neutral-500 hover:bg-neutral-500/90 active:bg-neutral-600 duration-200 text-white py-5"
 									onClick={() => {
 										const list = getValues('jobRequirements') ?? [];
 										if (!requirements) return;
@@ -358,16 +336,14 @@ export function EditJobModal({
 							</div>
 						</div>
 						<div className="space-y-3">
-							<Label
-								htmlFor="notes"
-								className="text-sm font-medium text-gray-700"
-							>
+							<Label htmlFor="notes" className="input-label">
 								Notes
 							</Label>
 							<Textarea
 								id="notes"
 								rows={3}
-								className="mt-1"
+								className="mt-1 input-field"
+								placeholder="Enter a notes.."
 								{...register('notes')}
 							/>
 							{errors.notes && <p>{errors.notes.message}</p>}
@@ -377,7 +353,7 @@ export function EditJobModal({
 							<Button
 								type="submit"
 								disabled={isSubmitting}
-								className="button-icon w-full"
+								className="primary-btn w-full"
 							>
 								{isSubmitting ? (
 									<>
@@ -393,7 +369,7 @@ export function EditJobModal({
 								onClick={() => {
 									setIsEditing(false);
 								}}
-								className="button-icon"
+								className="primary-btn"
 							>
 								Cancel
 							</Button>

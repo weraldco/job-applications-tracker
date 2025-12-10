@@ -8,6 +8,8 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Bell, Database, Sparkles } from 'lucide-react';
+import SectionTitle from './section-title';
+import TitleTag from './title-tag';
 
 export default function ServicesSection() {
 	const services = [
@@ -59,20 +61,12 @@ export default function ServicesSection() {
 		>
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
-				<div className="text-center mb-12 sm:mb-16">
-					<div className="w-full flex items-center justify-start">
-						<h3 className="bg-orange-400/50 px-4 py-1 rounded-full text-white border border-orange-300 font-semibold">
-							OUR SERVICES
-						</h3>
-					</div>
-					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-						Our Services
-					</h2>
-					<p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-						Everything you need to manage your job search efficiently and
-						effectively.
-					</p>
-				</div>
+				<SectionTitle
+					tagTitle="OUR SERVICES"
+					title="Making Your Life Easier"
+					description="Everything you need to manage your job search efficiently and
+						effectively."
+				/>
 
 				{/* Service Cards */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
@@ -81,7 +75,7 @@ export default function ServicesSection() {
 						return (
 							<Card
 								key={service.id}
-								className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white"
+								className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white border-0"
 							>
 								<CardHeader>
 									<div className="p-4 bg-primary/10 rounded-lg w-fit mb-4">

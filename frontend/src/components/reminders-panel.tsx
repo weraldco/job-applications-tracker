@@ -125,7 +125,7 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 
 	return (
 		<>
-			<Card className="">
+			<Card className=" border-0 bg-white">
 				<CardHeader>
 					<CardTitle className="flex items-center space-x-2">
 						<Bell className="h-5 w-5" />
@@ -135,7 +135,7 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 						Stay on top of your job search tasks
 					</CardDescription>
 				</CardHeader>
-				<CardContent className="space-y-4">
+				<CardContent className="space-y-4 ">
 					<Button
 						className="w-full button-icon"
 						size="sm"
@@ -145,11 +145,11 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 						Add Reminder
 					</Button>
 
-					<div className="space-y-3">
+					<div className="space-y-3 border-0 ">
 						{data.reminders.map((reminder: ReminderType) => (
 							<div
 								key={reminder.id}
-								className={`p-3 border rounded-lg ${
+								className={`p-3 border border-neutral-300 rounded-lg ${
 									reminder.completed ? 'bg-gray-50 opacity-60' : 'bg-white'
 								}`}
 							>

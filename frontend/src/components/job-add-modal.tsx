@@ -22,8 +22,8 @@ import { Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import JobRequirementItem from './job-requirement-item';
+import { SkillsItem } from './job-skill-item';
 import { JobInput } from './job-tracker';
-import { SkillsItem } from './skill-item';
 
 interface AddJobModalProps {
 	isOpen: boolean;
@@ -84,8 +84,8 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 
 	return (
 		<div className="fixed inset-0 bg-neutral-700/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
-			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
-				<CardHeader className="pb-4">
+			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-0">
+				<CardHeader className="pb-4 border-b border-neutral-200">
 					<div className="flex items-center justify-between">
 						<div>
 							<CardTitle className="text-xl font-semibold text-gray-900">
@@ -95,12 +95,7 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								Enter the details of your job application
 							</CardDescription>
 						</div>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={handleClose}
-							className="shrink-0"
-						>
+						<Button className="secondary-btn" size="sm" onClick={handleClose}>
 							<X className="h-4 w-4" />
 						</Button>
 					</div>
@@ -109,145 +104,131 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 						<div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="title"
-								>
+								<Label className="input-label" htmlFor="title">
 									Job Title *
 								</Label>
 								<Input
 									id="title"
 									placeholder="Enter a Job Title.."
 									type="text"
-									className="input"
+									className="input-field"
 									{...register('title')}
 								/>
 								{errors.title && (
-									<p className="text-red-500">{errors.title.message}</p>
+									<p className="text-red-500 text-sm italic">
+										{errors.title.message}
+									</p>
 								)}
 							</div>
 							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="company"
-								>
+								<Label className="input-label" htmlFor="company">
 									Company *
 								</Label>
 								<Input
 									id="company"
 									placeholder="Enter a Job Title.."
 									type="text"
-									className="input"
+									className="input-field"
 									{...register('company')}
 								/>
 								{errors.company && (
-									<p className="text-red-500">{errors.company.message}</p>
+									<p className="text-red-500 text-sm italic">
+										{errors.company.message}
+									</p>
 								)}
 							</div>
 							{/* Application Date */}
 							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="applicationDate"
-								>
+								<Label className="input-label" htmlFor="applicationDate">
 									Application Date *
 								</Label>
 								<Input
 									id="applicationDate"
 									type="date"
-									className="input"
+									className="input-field"
 									{...register('applicationDate')}
 								/>
 								{errors.applicationDate && (
-									<p className="text-red-500">
+									<p className="text-red-500 text-sm italic">
 										{errors.applicationDate.message}
 									</p>
 								)}
 							</div>
 							{/* Location */}
 							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="location"
-								>
+								<Label className="input-label" htmlFor="location">
 									Location (optional)
 								</Label>
 								<Input
 									id="location"
 									placeholder="Location of the company.."
 									type="text"
-									className="input"
+									className="input-field"
 									{...register('location')}
 								/>
 								{errors.location && (
-									<p className="text-red-500">{errors.location.message}</p>
+									<p className="text-red-500 text-sm italic">
+										{errors.location.message}
+									</p>
 								)}
 							</div>
 							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="experienceNeeded"
-								>
+								<Label className="input-label" htmlFor="experienceNeeded">
 									Experience Needed (optional)
 								</Label>
 								<Input
 									id="experienceNeeded"
 									type="number"
-									className="input"
+									className="input-field"
 									{...register('experienceNeeded', { valueAsNumber: true })}
 								/>
 								{errors.experienceNeeded && (
-									<p className="text-red-500">
+									<p className="text-red-500 text-sm italic">
 										{errors.experienceNeeded.message}
 									</p>
 								)}
 							</div>
 							{/* Salary */}
 							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="salary"
-								>
+								<Label className="input-label" htmlFor="salary">
 									Salary (optional)
 								</Label>
 								<Input
 									id="salary"
 									type="number"
-									className="input"
+									className="input-field"
 									{...register('salary', { valueAsNumber: true })}
 								/>
 								{errors.salary && (
-									<p className="text-red-500">{errors.salary.message}</p>
+									<p className="text-red-500 text-sm italic">
+										{errors.salary.message}
+									</p>
 								)}
 							</div>
 
 							{/* Job URL */}
 							<div className="space-y-2 flex flex-col">
-								<Label
-									className="text-sm text-neutral-500 font-normal"
-									htmlFor="jobUrl"
-								>
+								<Label className="input-label" htmlFor="jobUrl">
 									jobUrl (optional)
 								</Label>
 								<Input
 									id="jobUrl"
 									placeholder="jobUrl of the company.."
 									type="text"
-									className="input"
+									className="input-field"
 									{...register('jobUrl')}
 								/>
 								{errors.jobUrl && (
-									<p className="text-red-500">{errors.jobUrl.message}</p>
+									<p className="text-red-500 text-sm italic">
+										{errors.jobUrl.message}
+									</p>
 								)}
 							</div>
 						</div>
 
 						{/* Job Details */}
 						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobDetails"
-							>
+							<Label className="input-label" htmlFor="jobDetails">
 								Job Details
 							</Label>
 							<Textarea
@@ -255,31 +236,31 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								placeholder="Job details or Roles in this job post"
 								{...register('jobDetails')}
 								rows={3}
-								className="mt-1"
+								className="mt-1 input-field"
 							/>
 							{errors.jobDetails && (
-								<p className="text-red-500">{errors.jobDetails.message}</p>
+								<p className="text-red-500 text-sm italic">
+									{errors.jobDetails.message}
+								</p>
 							)}
 						</div>
 
 						{/* Skills Requirements */}
 						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="skillsRequired"
-							>
+							<Label className="input-label" htmlFor="skillsRequired">
 								Skills Requirements
 							</Label>
 							<div className="flex flex-row gap-2">
 								<Input
-									className="input"
+									className="input-field"
 									value={skill}
 									onChange={(e) => setSkill(e.target.value)}
 									placeholder="Enter a skill"
 								/>
 								<Button
 									type="button"
-									className="bg-neutral-400 text-white"
+									className="bg-neutral-500 hover:bg-neutral-500/90 active:bg-neutral-600 duration-200 text-white py-5"
+									size="sm"
 									onClick={() => {
 										const list = getValues('skillsRequired') ?? [];
 										if (!skill) return;
@@ -299,15 +280,12 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 
 						{/* Job Requirements */}
 						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="jobRequirements"
-							>
+							<Label className="input-label" htmlFor="jobRequirements">
 								Job Requirements
 							</Label>
 							<div className="flex flex-row gap-2">
 								<Input
-									className="input"
+									className="input-field"
 									id="jobRequirements"
 									value={requirements}
 									onChange={(e) => setRequirements(e.target.value)}
@@ -315,7 +293,8 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 								/>
 								<Button
 									type="button"
-									className="bg-neutral-400 text-white"
+									className="bg-neutral-500 hover:bg-neutral-500/90 active:bg-neutral-600 duration-200 text-white py-5"
+									size="sm"
 									onClick={() => {
 										const list = getValues('jobRequirements') ?? [];
 										if (!requirements) return;
@@ -335,17 +314,14 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 
 						{/* Notes */}
 						<div className="space-y-2 flex flex-col">
-							<Label
-								className="text-sm text-neutral-500 font-normal"
-								htmlFor="notes"
-							>
+							<Label className="input-label" htmlFor="notes">
 								Notes (optional)
 							</Label>
 							<Textarea
 								id="notes"
 								{...register('notes')}
 								rows={3}
-								className="mt-1"
+								className="mt-1 input-field"
 							/>
 						</div>
 						<div className="flex space-x-3 pt-4 border-t border-gray-200">

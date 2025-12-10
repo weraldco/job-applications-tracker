@@ -32,7 +32,7 @@ export default function HeroSection() {
 							<Button
 								size="lg"
 								variant="outline"
-								className="text-lg px-8 py-4 h-auto group border-2 border-orange-400 text-orange-400 w-full"
+								className="text-lg px-8 py-4 h-auto group border-2 border-[#ff8804] hover:border-[#ff9a27] active:border-[#ec7f03] duration-200 text-[#ff8804] hover:text-[#ff9a27] active:text-orange-500 w-full"
 							>
 								Start Tracking Free
 								<ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -42,7 +42,8 @@ export default function HeroSection() {
 							<Button
 								variant="outline"
 								size="lg"
-								className="text-lg px-8 py-4 h-auto w-full bg-orange-400 text-white group-hover:bg-orange-400/80 group-active:bg-orange-300 duration-200"
+								className="text-lg px-8 py-4 h-auto w-full
+								hover:bg-[#ff9a27] active:bg-[#ec7f03] bg-[#ff8804]  text-white  duration-200"
 							>
 								Sign In
 							</Button>

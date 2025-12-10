@@ -65,13 +65,6 @@ body {
 button {
 	@apply cursor-pointer;
 }
-.filter-button-active {
-	@apply bg-neutral-200 border-neutral-300/50 border-1;
-}
-
-.filter-button-inactive {
-	@apply border-1 hover:bg-neutral-100 active:bg-neutral-200 duration-200;
-}
 
 .button-icon {
 	@apply space-x-2 bg-blue-500 text-amber-50 hover:bg-blue-400 active:bg-blue-600 duration-200;
@@ -79,10 +72,19 @@ button {
 .summarizer-btn {
 	@apply bg-blue-500 px-6 py-8 text-base text-white rounded-lg hover:bg-blue-400 active:bg-blue-600 duration-200;
 }
-.secondary-btn {
-	@apply border hover:border-blue-500  duration-200 hover:text-blue-500;
-}
 
+.primary-btn {
+	@apply space-x-2 bg-blue-500 text-amber-50 hover:bg-blue-400 active:bg-blue-600 duration-200;
+}
+.secondary-btn {
+	@apply border-neutral-400 text-neutral-400 duration-200 hover:border-orange-400 hover:text-orange-400 rounded-lg border;
+}
+.input-field {
+	@apply border-[#e7e7e7] bg-[#fafbfd];
+}
+.input-label {
+	@apply text-sm font-normal text-gray-400;
+}
 /* Hero Section Animations */
 @keyframes blob {
 	0% {

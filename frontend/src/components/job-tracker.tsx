@@ -170,8 +170,8 @@ export function JobTracker({
 	}
 
 	return (
-		<Card className="bg-white rounded-lg shadow">
-			<div className="p-3 md:p-6 border-b">
+		<Card className="bg-white rounded-lg shadow border-0">
+			<div className="p-3 md:p-6 border-b border-neutral-200">
 				<div className="flex items-center justify-between mb-4">
 					<h2 className="text-xl font-semibold text-gray-900">
 						Job Applications
@@ -179,14 +179,14 @@ export function JobTracker({
 					<div className="hidden md:flex space-x-2 ">
 						<Button
 							onClick={() => setIsSummarizerModalOpen(true)}
-							className="button-icon"
+							className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
 						>
 							<Sparkles className="h-4 w-4" />
 							<span>AI Summarize</span>
 						</Button>
 						<Button
 							onClick={() => setIsAddModalOpen(true)}
-							className="button-icon"
+							className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
 						>
 							<Plus className="h-4 w-4" />
 							<span>Add Job</span>
@@ -195,14 +195,14 @@ export function JobTracker({
 					<div className="flex space-x-2 md:hidden">
 						<Button
 							onClick={() => setIsSummarizerModalOpen(true)}
-							className="button-icon"
+							className="flex flex-row gap-2 bg-neutral-500 hover:bg-neutral-400 active:bg-neutral-600 text-white duration-200	"
 						>
 							<Sparkles size={16} />
 							<span>AI</span>
 						</Button>
 						<Button
 							onClick={() => setIsAddModalOpen(true)}
-							className="button-icon"
+							className="flex flex-row gap-2 bg-neutral-500 hover:bg-neutral-400 active:bg-neutral-600 text-white duration-200"
 						>
 							<Plus size={18} />
 							Add
@@ -213,55 +213,45 @@ export function JobTracker({
 				{/* Status Filter */}
 				<div className="flex flex-wrap md:justify-start justify-center space-x-2 mb-4 gap-y-2">
 					<Button
-						className={
-							filter === 'ALL'
-								? 'filter-button-active'
-								: 'filter-button-inactive'
-						}
+						className={` text-white rounded-lg ${
+							filter === 'ALL' ? 'bg-neutral-400' : 'bg-neutral-500'
+						}`}
 						size="sm"
 						onClick={() => setFilter('ALL')}
 					>
 						All ({jobs.length})
 					</Button>
 					<Button
-						className={
-							filter === 'APPLIED'
-								? 'filter-button-active'
-								: 'filter-button-inactive'
-						}
+						className={` text-white rounded-lg ${
+							filter === 'APPLIED' ? 'bg-blue-400' : 'bg-blue-500'
+						}`}
 						size="sm"
 						onClick={() => setFilter('APPLIED')}
 					>
 						Applied ({statusCounts.APPLIED})
 					</Button>
 					<Button
-						className={
-							filter === 'INTERVIEWING'
-								? 'filter-button-active'
-								: 'filter-button-inactive'
-						}
+						className={` text-white rounded-lg ${
+							filter === 'INTERVIEWING' ? 'bg-[#f8b137]' : 'bg-[#f59e0b]'
+						}`}
 						size="sm"
 						onClick={() => setFilter('INTERVIEWING')}
 					>
 						Interviewing ({statusCounts.INTERVIEWING})
 					</Button>
 					<Button
-						className={
-							filter === 'OFFER'
-								? 'filter-button-active'
-								: 'filter-button-inactive'
-						}
+						className={` text-white rounded-lg ${
+							filter === 'OFFER' ? 'bg-[#16d394]' : 'bg-[#11b981]'
+						}`}
 						size="sm"
 						onClick={() => setFilter('OFFER')}
 					>
 						Offer ({statusCounts.OFFER})
 					</Button>
 					<Button
-						className={
-							filter === 'REJECTED'
-								? 'filter-button-active'
-								: 'filter-button-inactive'
-						}
+						className={` text-white rounded-lg ${
+							filter === 'REJECTED' ? 'bg-[#fd6767]' : 'bg-[#ef4444]'
+						}`}
 						size="sm"
 						onClick={() => setFilter('REJECTED')}
 					>

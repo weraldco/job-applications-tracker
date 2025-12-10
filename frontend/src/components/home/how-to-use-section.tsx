@@ -8,6 +8,8 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { FileText, Link as LinkIcon, Upload } from 'lucide-react';
+import SectionTitle from './section-title';
+import TitleTag from './title-tag';
 
 export default function HowToUseSection() {
 	const demos = [
@@ -53,20 +55,12 @@ export default function HowToUseSection() {
 		<section id="how-to-use" className="py-20 sm:py-24 lg:py-28 bg-white">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
-				<div className="text-center mb-12 sm:mb-16 flex flex-col gap-8">
-					<div className="w-full flex items-center justify-center">
-						<h3 className="bg-orange-400/50 px-4 py-1 rounded-full text-white border border-orange-300 font-semibold">
-							HOW TO USE
-						</h3>
-					</div>
-					{/* <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-						How To Use
-					</h2> */}
-					<p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-						Three simple ways to summarize any job posting with AI. Choose the
-						method that works best for you.
-					</p>
-				</div>
+				<SectionTitle
+					tagTitle="HOW TO USE"
+					title="Track Your Applications with Simple Ways"
+					description="Three simple ways to summarize any job posting with AI. Choose the
+						method that works best for you."
+				/>
 
 				{/* Demo Cards */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">

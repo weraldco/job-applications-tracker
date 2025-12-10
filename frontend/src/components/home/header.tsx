@@ -65,7 +65,7 @@ const Header = () => {
 						<div className="flex items-center space-x-4">
 							<Link href="/auth/signin" className="">
 								<Button
-									className="border-orage-400 rounded-full border-2  hover:border-orange-300 active:border-orange-500 duration-200 text-orange-400 hover:text-orange-300 active:text-orange-500"
+									className="border-[#ff8804] rounded-full border-2  hover:border-[#ff9a27] active:border-[#ec7f03] duration-200 text-[#ff8804] hover:text-[#ff9a27] active:text-orange-500"
 									variant="outline"
 								>
 									Sign in
@@ -73,7 +73,7 @@ const Header = () => {
 							</Link>
 							<Link
 								href="/auth/signup"
-								className="hover:bg-orange-300 active:bg-orange-500 bg-orange-400 duration-200 text-neutral-50 rounded-full px-4 py-1"
+								className="hover:bg-[#ff9a27] active:bg-[#ec7f03] bg-[#ff8804] duration-200 text-neutral-50 rounded-full px-4 py-1"
 							>
 								<Button>Get Started</Button>
 							</Link>

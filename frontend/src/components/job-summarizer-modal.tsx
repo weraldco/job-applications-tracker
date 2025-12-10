@@ -19,8 +19,8 @@ import { Check, Loader2, Plus, Sparkles, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import JobRequirementItem from './job-requirement-item';
+import { SkillsItem } from './job-skill-item';
 import { JobInput } from './job-tracker';
-import { SkillsItem } from './skill-item';
 
 //zod and rhf imports
 import { JobsSchema, JobsSchemaType } from '@/schemas/jobs.schema';
@@ -256,19 +256,16 @@ export function JobSummarizerModal({
 	if (!isOpen) return null;
 	return (
 		<div className="fixed inset-0 bg-neutral-700/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
-			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
-				<CardHeader>
+			<Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-0">
+				<CardHeader className="border-b border-neutral-200">
 					<CardTitle className="flex items-center space-x-2 justify-between">
 						<div className="flex items-center gap-2">
 							<Sparkles className="h-5 w-5" />
 							<span>AI Job Summarizer</span>
 						</div>
-						<button
-							className="bg-neutral-100 rounded hover:bg-neutral-200 duration-200"
-							onClick={handleClose}
-						>
-							<X />
-						</button>
+						<Button className="secondary-btn" size="sm" onClick={handleClose}>
+							<X className="h-4 w-4" />
+						</Button>
 					</CardTitle>
 					<CardDescription>
 						Paste a job posting URL or text or upload PDF/DOCX to automatically
@@ -318,10 +315,13 @@ export function JobSummarizerModal({
 					{isJobDescription && (
 						<>
 							<div className="space-y-2">
-								<Label htmlFor="url">Job Posting Text Description</Label>
+								<Label htmlFor="url" className="input-label">
+									Job Posting Text Description
+								</Label>
 								<Textarea
 									id="url"
 									placeholder="Paste the job posting full description text here..."
+									className="input-field"
 									value={textData}
 									onChange={(e) => setTextData(e.target.value)}
 									rows={4}
@@ -332,7 +332,7 @@ export function JobSummarizerModal({
 								<Button
 									onClick={handleSummarize}
 									disabled={isLoading || !textData}
-									className="w-full bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+									className="w-full primary-btn"
 								>
 									{isLoading ? (
 										<>
@@ -347,7 +347,7 @@ export function JobSummarizerModal({
 									)}
 								</Button>
 								<Button
-									className="px-10 bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+									className="primary-btn px-10"
 									onClick={() => {
 										setIsJobDescription(false);
 										setTextData('');
@@ -362,11 +362,14 @@ export function JobSummarizerModal({
 					{isJobUrl && (
 						<>
 							<div className="space-y-2">
-								<Label htmlFor="url">Job Posting URL</Label>
+								<Label htmlFor="url" className="input-label">
+									Job Posting URL
+								</Label>
 								<Textarea
 									id="url"
 									placeholder="Paste the job posting URL here.. (don't paste shorten or shortcut url)"
 									value={url}
+									className="input-field"
 									onChange={(e) => setUrl(e.target.value)}
 									rows={4}
 								/>
@@ -376,7 +379,7 @@ export function JobSummarizerModal({
 								<Button
 									onClick={handleSummarize}
 									disabled={isLoading || !url}
-									className="w-full bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+									className="w-full primary-btn"
 								>
 									{isLoading ? (
 										<>
@@ -391,7 +394,7 @@ export function JobSummarizerModal({
 									)}
 								</Button>
 								<Button
-									className="px-10 bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+									className="px-10 primary-btn"
 									onClick={() => {
 										setIsJobUrl(false);
 										setUrl('');
@@ -408,15 +411,16 @@ export function JobSummarizerModal({
 							<div>
 								<input
 									type="file"
-									accept=".png,.jpg,.jpeg,.pdf,.docx"
+									accept=".pdf,.docx"
 									onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+									className=""
 								/>
 							</div>
 							<div className="flex flex-row items-center justify-evenly gap-4">
 								<Button
 									onClick={handleSummarize}
 									disabled={isLoading || !file}
-									className="w-full bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+									className="w-full primary-btn"
 								>
 									{isLoading ? (
 										<>
@@ -431,7 +435,7 @@ export function JobSummarizerModal({
 									)}
 								</Button>
 								<Button
-									className="px-10 bg-blue-400 duration-200 hover:bg-blue-500 active:bg-blue-600 text-white"
+									className="px-10 primary-btn"
 									onClick={() => {
 										setIsJobFile(false);
 										setFile(null);
@@ -445,7 +449,7 @@ export function JobSummarizerModal({
 					)}
 
 					{summarizedJob && (
-						<div className="space-y-4 border-t pt-4">
+						<div className="space-y-4 pt-4">
 							<div className="flex items-center space-x-2 text-green-600">
 								<Check className="h-4 w-4" />
 								<span className="font-medium">Job Information Extracted</span>
@@ -453,49 +457,40 @@ export function JobSummarizerModal({
 							<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									<div className="space-y-3">
-										<Label
-											htmlFor="title"
-											className="text-sm font-medium text-gray-700"
-										>
+										<Label htmlFor="title" className="input-label">
 											Job Title *
 										</Label>
 										<Input
 											id="title"
 											required
-											className="mt-1"
+											className="mt-1 input-field"
 											{...register('title')}
 										/>
 										{errors.title && <p>{errors.title.message}</p>}
 									</div>
 
 									<div className="space-y-3">
-										<Label
-											htmlFor="company"
-											className="text-sm font-medium text-gray-700"
-										>
+										<Label htmlFor="company" className="input-label">
 											Company *
 										</Label>
 										<Input
 											id="company"
 											required
-											className="mt-1"
+											className="mt-1 input-field"
 											{...register('company')}
 										/>
 										{errors.company && <p>{errors.company.message}</p>}
 									</div>
 
 									<div className="space-y-3">
-										<Label
-											htmlFor="applicationDate"
-											className="text-sm font-medium text-gray-700"
-										>
+										<Label htmlFor="applicationDate" className="input-label">
 											Application Date *
 										</Label>
 										<Input
 											id="applicationDate"
 											type="date"
 											required
-											className="mt-1"
+											className="mt-1 input-field"
 											{...register('applicationDate')}
 										/>
 										{errors.applicationDate && (
@@ -503,47 +498,38 @@ export function JobSummarizerModal({
 										)}
 									</div>
 									<div className="space-y-3">
-										<Label
-											htmlFor="location"
-											className="text-sm font-medium text-gray-700"
-										>
+										<Label htmlFor="location" className="input-label">
 											Location
 										</Label>
 										<Input
 											id="location"
-											className="mt-1"
+											className="mt-1 input-field"
 											{...register('location')}
 										/>
 										{errors.location && <p>{errors.location.message}</p>}
 									</div>
 
 									<div className="space-y-3">
-										<Label
-											htmlFor="salary"
-											className="text-sm font-medium text-gray-700"
-										>
+										<Label htmlFor="salary" className="input-label">
 											Salary
 										</Label>
 										<Input
 											type="number"
 											id="salary"
-											className="mt-1"
+											className="mt-1 input-field"
 											{...register('salary', { valueAsNumber: true })}
 										/>
 										{errors.salary && <p>{errors.salary.message}</p>}
 									</div>
 
 									<div className="space-y-3">
-										<Label
-											htmlFor="experienceNeeded"
-											className="text-sm font-medium text-gray-700"
-										>
+										<Label htmlFor="experienceNeeded" className="input-label">
 											Years of Experience
 										</Label>
 										<Input
 											id="experienceNeeded"
 											type="number"
-											className="mt-1"
+											className="mt-1 input-field"
 											{...register('experienceNeeded', { valueAsNumber: true })}
 										/>
 										{errors.experienceNeeded && (
@@ -552,25 +538,19 @@ export function JobSummarizerModal({
 									</div>
 								</div>
 								<div className="space-y-3">
-									<Label
-										htmlFor="jobUrl"
-										className="text-sm font-medium text-gray-700"
-									>
+									<Label htmlFor="jobUrl" className="input-label">
 										Job URL (optional)
 									</Label>
 									<Input
 										id="jobUrl"
 										type="url"
-										className="mt-1"
+										className="mt-1 input-field"
 										{...register('jobUrl')}
 									/>
 									{errors.jobUrl && <p>{errors.jobUrl.message}</p>}
 								</div>
 								<div className="space-y-2 flex flex-col">
-									<Label
-										className="text-sm text-neutral-500 font-normal"
-										htmlFor="jobDetails"
-									>
+									<Label className="input-label" htmlFor="jobDetails">
 										Job Details
 									</Label>
 									<Textarea
@@ -578,29 +558,27 @@ export function JobSummarizerModal({
 										placeholder="Job details or Roles in this job post"
 										{...register('jobDetails')}
 										rows={4}
-										className="mt-1"
+										className="mt-1 input-field"
 									/>
 									{errors.jobDetails && (
 										<p className="text-red-500">{errors.jobDetails.message}</p>
 									)}
 								</div>
 								<div className="space-y-2 flex flex-col">
-									<Label
-										className="text-sm text-neutral-500 font-normal"
-										htmlFor="skillsRequired"
-									>
+									<Label className="input-label" htmlFor="skillsRequired">
 										Skills Requirements
 									</Label>
 									<div className="flex flex-row gap-2">
 										<Input
-											className="input"
+											className="input-field"
 											value={skill}
 											onChange={(e) => setSkill(e.target.value)}
 											placeholder="Enter a skill"
 										/>
 										<Button
 											type="button"
-											className="bg-neutral-400 text-white"
+											size="sm"
+											className="bg-neutral-500 hover:bg-neutral-500/90 active:bg-neutral-600 duration-200 text-white py-5"
 											onClick={() => {
 												const list = getValues('skillsRequired') ?? [];
 												if (!skill) return;
@@ -618,15 +596,12 @@ export function JobSummarizerModal({
 									</div>
 								</div>
 								<div className="space-y-2 flex flex-col">
-									<Label
-										className="text-sm text-neutral-500 font-normal"
-										htmlFor="jobRequirements"
-									>
+									<Label className="input-label" htmlFor="jobRequirements">
 										Job Requirements
 									</Label>
 									<div className="flex flex-row gap-2">
 										<Input
-											className="input"
+											className="input-field"
 											id="jobRequirements"
 											value={requirements}
 											onChange={(e) => setRequirements(e.target.value)}
@@ -634,7 +609,8 @@ export function JobSummarizerModal({
 										/>
 										<Button
 											type="button"
-											className="bg-neutral-400 text-white"
+											size="sm"
+											className="bg-neutral-500 hover:bg-neutral-500/90 active:bg-neutral-600 duration-200 text-white py-5"
 											onClick={() => {
 												const list = getValues('jobRequirements') ?? [];
 												if (!requirements) return;
@@ -652,16 +628,13 @@ export function JobSummarizerModal({
 									</div>
 								</div>
 								<div className="space-y-3">
-									<Label
-										htmlFor="notes"
-										className="text-sm font-medium text-gray-700"
-									>
+									<Label htmlFor="notes" className="input-label">
 										Notes
 									</Label>
 									<Textarea
 										id="notes"
 										rows={3}
-										className="mt-1"
+										className="mt-1 input-field"
 										{...register('notes')}
 									/>
 									{errors.notes && <p>{errors.notes.message}</p>}
@@ -676,10 +649,10 @@ export function JobSummarizerModal({
 										{isSubmitting ? (
 											<>
 												<Loader2 className="h-4 w-4 mr-2 animate-spin" />
-												Updating...
+												Adding...
 											</>
 										) : (
-											'Update Job Application'
+											'Adding New Job Application'
 										)}
 									</Button>
 									<Button

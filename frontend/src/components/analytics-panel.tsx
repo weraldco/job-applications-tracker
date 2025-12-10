@@ -113,7 +113,7 @@ export function AnalyticsDashboard({
 	];
 
 	return (
-		<Card>
+		<Card className="border-0 bg-white">
 			<CardHeader>
 				<CardTitle className="flex items-center space-x-2">
 					<TrendingUp className="h-5 w-5" />
@@ -125,7 +125,10 @@ export function AnalyticsDashboard({
 				{/* Metrics */}
 				<div className="grid grid-cols-2 gap-4">
 					{metrics.map((metric, index) => (
-						<div key={index} className="text-center p-3 bg-gray-50 rounded-lg">
+						<div
+							key={index}
+							className="text-center p-3  border border-neutral-200 rounded-lg"
+						>
 							<metric.icon className="h-6 w-6 mx-auto text-gray-600 mb-2" />
 							<div className="text-2xl font-bold text-gray-900">
 								{metric.value}

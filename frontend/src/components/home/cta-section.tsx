@@ -23,22 +23,22 @@ export default function CTASection() {
 						their job search and land their dream job.
 					</p>
 
-					<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-						<Link href="/auth/signup">
+					<div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full  ">
+						<Link href="/auth/signup" className="w-full max-w-[200px]">
 							<Button
 								size="lg"
 								variant="secondary"
-								className="text-base px-6 py-4 h-auto group bg-orange-400 text-primary hover:bg-orange-300"
+								className="text-base px-6 py-4 h-auto group bg-orange-400 text-primary hover:bg-orange-300 w-full"
 							>
 								Get Started Free
 								<ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
 							</Button>
 						</Link>
-						<Link href="/auth/signin">
+						<Link href="/auth/signin" className="w-full max-w-[200px]">
 							<Button
 								size="lg"
 								variant="outline"
-								className="text-base px-6 py-4 h-auto border-white border-2 text-white"
+								className="text-base px-6 py-4 h-auto border-white border-2 text-white w-full "
 							>
 								Sign In
 							</Button>

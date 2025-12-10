@@ -18,10 +18,10 @@ interface JobCardProps {
 
 export const statusColors = {
 	APPLIED: 'bg-[#5690FB] text-white',
-	INTERVIEWING: 'bg-[#FBD256]/70 text-yellow-800',
-	OFFER: 'bg-[#32CA41]/70 text-green-800',
-	REJECTED: 'bg-[#FF5B5B]/70 text-red-800',
-	WITHDRAWN: 'bg-[#C4C6C9] text-gray-800',
+	INTERVIEWING: 'bg-[#f8b137] text-white',
+	OFFER: 'bg-[#11b981] text-white',
+	REJECTED: 'bg-[#FF5B5B] text-white',
+	WITHDRAWN: 'bg-[#8c8b89] text-white',
 };
 
 export function JobCard({
@@ -35,7 +35,7 @@ export function JobCard({
 	return (
 		<>
 			<div
-				className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer "
+				className="border rounded-lg p-4 hover:shadow-md  transition-shadow cursor-pointer border-neutral-200"
 				onClick={() => setIsDetailModalOpen(true)}
 			>
 				<div className="flex items-start justify-between ">
@@ -121,7 +121,7 @@ export function JobCard({
 									onChange={(e) =>
 										onStatusChange(e.target.value as JobStatus, job.id)
 									}
-									className="text-sm cursor-pointer rounded px-2 py-2 secondary-btn"
+									className="text-sm cursor-pointer px-2 py-2 secondary-btn "
 									onClick={(e) => e.stopPropagation()}
 								>
 									<option value="APPLIED">Applied</option>
