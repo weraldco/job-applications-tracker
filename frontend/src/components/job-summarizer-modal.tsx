@@ -226,8 +226,8 @@ export function JobSummarizerModal({
 			toast.success('Success', {
 				description: 'Job application added successfully!',
 			});
-			handleClose();
-			reset();
+			// handleClose();
+			// reset();
 		} catch (error) {
 			toast.error('Error', {
 				description: 'Failed to add job application',

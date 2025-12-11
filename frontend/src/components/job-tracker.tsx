@@ -47,9 +47,30 @@ export function JobTracker({
 				method: 'POST',
 				body: JSON.stringify(newJob),
 			}),
+		onMutate: async (newJob) => {
+			// Cancel any outgoing refetches (so they don’t overwrite our optimistic update)
+			console.log('NJ', newJob);
 
+			await queryClient.cancelQueries({ queryKey: ['jobs-data'] });
+			// Snapshot the previous value
+			const previousJobs = queryClient.getQueryData<JobType[]>(['jobs-data']);
+			console.log('TEst', previousJobs);
+			// Optimistically update the cache
+			// if (previousJobs) {
+			// 	queryClient.setQueryData<JobsResponse>(
+			// 		['jobs-data'],
+			// 		[
+			// 			...previousJobs,
+			// 			{ ...newJob, id: Math.random().toString(36).substr(2, 9) }, // temporary ID
+			// 		]
+			// 	);
+			// }
+
+			// Return context for rollback in case of error
+			return { previousJobs };
+		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['jobs-data'] });
+			toast.success('Job added successfully!');
 		},
 	});
 

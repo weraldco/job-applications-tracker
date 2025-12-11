@@ -20,6 +20,7 @@ app.use(
 		origin: [
 			'http://localhost:3000',
 			'https://job-applications-tracker-ten.vercel.app',
+			'https://jobstashr.vercel.app/',
 		],
 
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
