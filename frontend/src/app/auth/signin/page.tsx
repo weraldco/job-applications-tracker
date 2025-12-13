@@ -46,7 +46,9 @@ export default function SignInPage() {
 			});
 
 			if (!data.user?.email_confirmed_at) {
-				toast.error('ERROR', { description: ' Email need to verify first.' });
+				toast.error('ERROR', {
+					description: `Email need to verify first. here https://jobstashr.vercel.app/auth/verify-email?email=${email}`,
+				});
 
 				setTimeout(() => {
 					router.push(`/auth/verify-email?email=${email}`);

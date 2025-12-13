@@ -51,6 +51,9 @@ export default function SignUpPage() {
 			const { error } = await supabase.auth.resend({
 				type: 'signup',
 				email: email, // replace or pass dynamically
+				options: {
+					emailRedirectTo: 'https://jobstashr.vercel.app/verified',
+				},
 			});
 			if (error) {
 				toast.error('ERROR', { description: 'Something went wrong!' });
