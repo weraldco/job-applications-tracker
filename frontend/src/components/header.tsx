@@ -14,6 +14,7 @@ interface HeaderT {
 
 export function Header({ user }: HeaderT) {
 	const router = useRouter();
+
 	const handleSignOut = async () => {
 		try {
 			const signOut = await supabase.auth.signOut();

@@ -4,10 +4,41 @@ import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const Header = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	const error = searchParams.get('error');
+	const errorCode = searchParams.get('error_code');
+	const errorDescription = searchParams.get('error_description');
+
+	useEffect(() => {
+		if (error && errorCode === 'otp_expired') {
+			toast.error('Error Verification', {
+				description: errorDescription,
+			});
+			router.push('/auth/verify-pending');
+			return;
+		}
+
+		if (error) {
+			toast.error('Error Verification', {
+				description: errorDescription,
+			});
+			return;
+		}
+
+		if (!error) {
+			toast.success('Email Verification', {
+				description: 'Successfully verified your email',
+			});
+		}
+	}, [error, errorCode, errorDescription, router]);
 
 	const scrollToSection = (id: string) => {
 		const element = document.getElementById(id);
