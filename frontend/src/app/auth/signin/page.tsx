@@ -48,6 +48,13 @@ export default function SignInPage() {
 				password,
 			});
 
+			if (!data.user?.email_confirmed_at) {
+				toast.error('ERROR', { description: ' Email need to verify first.' });
+
+				setTimeout(() => {
+					router.push(`/auth/verify-email?email=${email}`);
+				}, 2000);
+			}
 			if (error) {
 				toast.error('ERROR MESSAGE', { description: error.message });
 				return;

@@ -49,7 +49,7 @@ export default function SignUpPage() {
 				description:
 					"Welcome! You've successfully sign-up. You must verify your account first to complete the registration.",
 			});
-			router.push('/home');
+			router.push(`/auth/verify-email?email=${email}`);
 			router.refresh();
 		},
 		onError: () => {

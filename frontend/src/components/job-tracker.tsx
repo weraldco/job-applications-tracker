@@ -48,29 +48,56 @@ export function JobTracker({
 				body: JSON.stringify(newJob),
 			}),
 		onMutate: async (newJob) => {
-			// Cancel any outgoing refetches (so they don’t overwrite our optimistic update)
-			console.log('NJ', newJob);
-
 			await queryClient.cancelQueries({ queryKey: ['jobs-data'] });
-			// Snapshot the previous value
-			const previousJobs = queryClient.getQueryData<JobType[]>(['jobs-data']);
-			console.log('TEst', previousJobs);
-			// Optimistically update the cache
-			// if (previousJobs) {
-			// 	queryClient.setQueryData<JobsResponse>(
-			// 		['jobs-data'],
-			// 		[
-			// 			...previousJobs,
-			// 			{ ...newJob, id: Math.random().toString(36).substr(2, 9) }, // temporary ID
-			// 		]
-			// 	);
-			// }
 
-			// Return context for rollback in case of error
-			return { previousJobs };
+			const previousData = queryClient.getQueryData<JobsResponse>([
+				'jobs-data',
+			]);
+			queryClient.setQueryData<JobsResponse>(['jobs-data'], (old) => {
+				if (!old) return old;
+
+				const optimisticJob: JobType = {
+					id: Math.random().toString(36).substr(2, 9),
+
+					// REQUIRED FIELDS
+					userId: newJob.userId!,
+					title: newJob.title ?? '',
+					company: newJob.company ?? '',
+					status: newJob.status ?? 'APPLIED',
+					jobUrl: newJob.jobUrl ?? '',
+					jobDetails: newJob.jobDetails ?? '',
+					skillsRequired: newJob.skillsRequired ?? '',
+					jobRequirements: newJob.jobRequirements ?? '',
+					experienceNeeded: newJob.experienceNeeded ?? 0,
+					salary: newJob.salary ?? 0,
+					location: newJob.location ?? '',
+
+					// OPTIONAL FIELDS
+					applicationDate: newJob.applicationDate ?? new Date(),
+					notes: newJob.notes ?? '',
+					createdAt: new Date(),
+					updatedAt: new Date(),
+
+					...newJob, // override any optional properties afterward
+				};
+
+				return {
+					...old,
+					jobs: [...old.jobs, optimisticJob],
+				};
+			});
+
+			return { previousData };
 		},
-		onSuccess: () => {
-			toast.success('Job added successfully!');
+
+		onError: (err, newJob, context) => {
+			if (context?.previousData) {
+				queryClient.setQueryData(['jobs-data'], context.previousData);
+			}
+			toast.error('Failed to add job');
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ['jobs-data'] });
 		},
 	});
 
