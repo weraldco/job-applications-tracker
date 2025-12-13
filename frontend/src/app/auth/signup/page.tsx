@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
+import { supabase } from '@/lib/supabase';
 import { useMutation } from '@tanstack/react-query';
 import { Lock, Mail, User2 } from 'lucide-react';
 import Image from 'next/image';
@@ -43,8 +44,17 @@ export default function SignUpPage() {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(newUser),
 			}),
-		onSuccess: () => {
+		onSuccess: async () => {
 			// redirect to '/' or index page
+			const { error } = await supabase.auth.resend({
+				type: 'signup',
+				email: email, // replace or pass dynamically
+			});
+			if (error) {
+				toast.error('ERROR', { description: 'Something went wrong!' });
+				return;
+			}
+
 			toast.success('Successfully Signup', {
 				description:
 					"Welcome! You've successfully sign-up. You must verify your account first to complete the registration.",

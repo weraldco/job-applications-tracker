@@ -24,6 +24,7 @@ const VerifyEmailPage = () => {
 
 		if (error) {
 			toast.error('Error', { description: `Something went wrong. ${error}` });
+			return;
 		}
 
 		toast.success('Success!', {
