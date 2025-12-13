@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const useCheckVerified = (
-	redirectIfVerified: string = '/home',
+	redirectIfVerified: string = '/dashboard',
 	redirectIfLoggedOut: string = '/auth/signin'
 ) => {
 	const searchParams = useSearchParams();

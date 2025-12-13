@@ -32,7 +32,7 @@ export default function SignUpPage() {
 
 	const { user, loading } = useAuthGuard({
 		redirectIfAuthenticated: true,
-		redirectPath: '/home',
+		redirectPath: '/dashboard',
 	});
 	interface UserType {
 		name: string;

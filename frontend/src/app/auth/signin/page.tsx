@@ -24,7 +24,7 @@ import { toast } from 'sonner';
 export default function SignInPage() {
 	const { user, loading } = useAuthGuard({
 		redirectIfAuthenticated: true,
-		redirectPath: '/home',
+		redirectPath: '/dashboard',
 	});
 	const router = useRouter();
 	const [email, setEmail] = useState('');
@@ -63,7 +63,7 @@ export default function SignInPage() {
 				description: 'Successfully Login, welcome back!',
 			});
 
-			router.push('/home');
+			router.push('/dashboard');
 			router.refresh();
 		} catch (error) {
 			toast.error('Sign in failed', {
