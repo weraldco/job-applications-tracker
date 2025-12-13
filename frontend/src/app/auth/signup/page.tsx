@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { supabase } from '@/lib/supabase';
 import { useMutation } from '@tanstack/react-query';
-import { Lock, Mail, User2 } from 'lucide-react';
+import { Eye, EyeClosed, Lock, Mail, User2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -28,6 +28,8 @@ export default function SignUpPage() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isShowPassword, setIsShowPassword] = useState(false);
+
 	const { user, loading } = useAuthGuard({
 		redirectIfAuthenticated: true,
 		redirectPath: '/home',
@@ -112,7 +114,7 @@ export default function SignUpPage() {
 								Full name
 							</Label>
 							<div className="relative">
-								<User2 className="absolute right-4 top-4 h-4 w-4 text-gray-400" />
+								<User2 className="absolute left-4 top-4 h-4 w-4 text-gray-400" />
 								<Input
 									id="name"
 									name="name"
@@ -122,7 +124,7 @@ export default function SignUpPage() {
 									minLength={2}
 									value={name}
 									onChange={(event) => setName(event.target.value)}
-									className=" rounded-full pl-4 pt-6 pb-6 text-sm outline-0 border-[#e7e7e7] bg-[#fafbfd] "
+									className="pl-10 pt-6 pb-6 outline-0 border-[#e7e7e7] bg-[#fafbfd] rounded-full text-sm"
 								/>
 							</div>
 						</div>
@@ -132,7 +134,7 @@ export default function SignUpPage() {
 								Email address
 							</Label>
 							<div className="relative">
-								<Mail className="absolute right-4 top-4 h-4 w-4 text-gray-400" />
+								<Mail className="absolute left-4 top-4 h-4 w-4 text-gray-400" />
 								<Input
 									id="email"
 									name="email"
@@ -141,7 +143,7 @@ export default function SignUpPage() {
 									required
 									value={email}
 									onChange={(event) => setEmail(event.target.value)}
-									className=" rounded-full pl-4 pt-6 pb-6 text-sm outline-0 border-[#e7e7e7] bg-[#fafbfd] "
+									className="pl-10 pt-6 pb-6 outline-0 border-[#e7e7e7] bg-[#fafbfd] rounded-full text-sm"
 								/>
 							</div>
 						</div>
@@ -151,18 +153,27 @@ export default function SignUpPage() {
 								Password
 							</Label>
 							<div className="relative">
-								<Lock className="absolute right-4 top-4 h-4 w-4 text-gray-400" />
+								<Lock className="absolute left-4 top-4 h-4 w-4 text-gray-400" />
 								<Input
 									id="password"
-									name="password"
-									type="password"
-									placeholder="********"
-									minLength={8}
+									type={isShowPassword ? 'text' : 'password'}
 									required
+									autoComplete="current-password"
+									className="pl-10 pt-6 pb-6 outline-0 border-[#e7e7e7] bg-[#fafbfd] rounded-full text-sm"
+									placeholder="Enter your password.."
 									value={password}
 									onChange={(event) => setPassword(event.target.value)}
-									className=" rounded-full pl-4 pt-6 pb-6 text-sm outline-0 border-[#e7e7e7] bg-[#fafbfd] "
 								/>
+								<button
+									type="button"
+									onClick={() => setIsShowPassword((curr) => !curr)}
+								>
+									{isShowPassword ? (
+										<EyeClosed className="absolute right-4 top-4 h-5 w-6 text-gray-400 hover:text-gray-500" />
+									) : (
+										<Eye className="absolute right-4 top-4 h-5 w-6 text-gray-400 hover:text-gray-500" />
+									)}
+								</button>
 							</div>
 							<p className="text-xs text-gray-400">
 								Use at least 8 characters. Include letters, numbers, or symbols

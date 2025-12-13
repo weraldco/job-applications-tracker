@@ -15,13 +15,7 @@ import { supabase } from '../../../lib/supabase';
 
 import LoadingState from '@/components/loading-state';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
-import {
-	ArrowBigDownDashIcon,
-	ArrowBigLeftDash,
-	ArrowLeft,
-	Lock,
-	Mail,
-} from 'lucide-react';
+import { Eye, EyeClosed, Lock, Mail } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -36,6 +30,9 @@ export default function SignInPage() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+
+	// Show passwor
+	const [isShowPassword, setIsShowPassword] = useState(false);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -102,13 +99,13 @@ export default function SignInPage() {
 								Your Email
 							</Label>
 							<div className="relative">
-								<Mail className="absolute right-4 top-4 h-4 w-4 text-gray-400" />
+								<Mail className="absolute left-4 top-4 h-4 w-4 text-gray-400" />
 								<Input
 									id="email"
 									type="email"
 									required
 									autoComplete="email"
-									className=" rounded-full pl-4 pt-6 pb-6 text-sm outline-0 border-[#e7e7e7] bg-[#fafbfd] "
+									className=" rounded-full pl-10 pt-6 pb-6 text-sm outline-0 border-[#e7e7e7] bg-[#fafbfd] "
 									placeholder="Enter your email address.."
 									value={email}
 									onChange={(event) => setEmail(event.target.value)}
@@ -121,17 +118,27 @@ export default function SignInPage() {
 								Password
 							</Label>
 							<div className="relative">
-								<Lock className="absolute right-4 top-4 h-4 w-4 text-gray-400" />
+								<Lock className="absolute left-4 top-4 h-4 w-4 text-gray-400" />
 								<Input
 									id="password"
-									type="password"
+									type={isShowPassword ? 'text' : 'password'}
 									required
 									autoComplete="current-password"
-									className="pl-4 pt-6 pb-6 outline-0 border-[#e7e7e7] bg-[#fafbfd] rounded-full text-sm"
+									className="pl-10 pt-6 pb-6 outline-0 border-[#e7e7e7] bg-[#fafbfd] rounded-full text-sm"
 									placeholder="Enter your password.."
 									value={password}
 									onChange={(event) => setPassword(event.target.value)}
 								/>
+								<button
+									type="button"
+									onClick={() => setIsShowPassword((curr) => !curr)}
+								>
+									{isShowPassword ? (
+										<EyeClosed className="absolute right-4 top-4 h-5 w-6 text-gray-400 hover:text-gray-500" />
+									) : (
+										<Eye className="absolute right-4 top-4 h-5 w-6 text-gray-400 hover:text-gray-500" />
+									)}
+								</button>
 							</div>
 						</div>
 
