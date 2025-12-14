@@ -9,7 +9,7 @@ import { queryClient } from '@/lib/react-query';
 import { fetcher } from '@/lib/utils';
 import { JobStatus, JobType } from '@/types/types';
 import { useMutation } from '@tanstack/react-query';
-import { Plus, Sparkles } from 'lucide-react';
+import { Briefcase, Plus, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { JobsResponse } from './dashboard-client-wrapper';
@@ -220,21 +220,30 @@ export function JobTracker({
 	return (
 		<Card className="bg-white rounded-lg shadow border-0">
 			<div className="p-3 md:p-6 border-b border-neutral-200">
-				<div className="flex items-center justify-between mb-4">
-					<h2 className="text-xl font-semibold text-gray-900">
-						Job Applications
-					</h2>
+				<div className="flex items-start justify-between mb-4">
+					<div>
+						<h2 className="text-xl font-semibold text-gray-900 flex flex-row gap-2">
+							Job Applications
+						</h2>
+						<span className="text-sm text-neutral-600">
+							Manage and organize your job applications.
+						</span>
+					</div>
 					<div className="hidden md:flex space-x-2 ">
 						<Button
 							onClick={() => setIsSummarizerModalOpen(true)}
-							className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
+							// className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
+							size="sm"
+							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
 						>
 							<Sparkles className="h-4 w-4" />
 							<span>AI Summarize</span>
 						</Button>
 						<Button
 							onClick={() => setIsAddModalOpen(true)}
-							className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
+							// className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
+							size="sm"
+							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
 						>
 							<Plus className="h-4 w-4" />
 							<span>Add Job</span>
@@ -242,15 +251,17 @@ export function JobTracker({
 					</div>
 					<div className="flex space-x-2 md:hidden">
 						<Button
+							size="sm"
 							onClick={() => setIsSummarizerModalOpen(true)}
-							className="flex flex-row gap-2 bg-neutral-500 hover:bg-neutral-400 active:bg-neutral-600 text-white duration-200	"
+							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
 						>
 							<Sparkles size={16} />
 							<span>AI</span>
 						</Button>
 						<Button
 							onClick={() => setIsAddModalOpen(true)}
-							className="flex flex-row gap-2 bg-neutral-500 hover:bg-neutral-400 active:bg-neutral-600 text-white duration-200"
+							size="sm"
+							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
 						>
 							<Plus size={18} />
 							Add
@@ -262,7 +273,7 @@ export function JobTracker({
 				<div className="flex flex-wrap md:justify-start justify-center space-x-2 mb-4 gap-y-2">
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'ALL' ? 'bg-[#A7A8AA]' : 'bg-[#C4C6C9]'
+							filter === 'ALL' ? 'bg-gray-1' : 'bg-gray-1/80'
 						}`}
 						size="sm"
 						onClick={() => setFilter('ALL')}
@@ -271,7 +282,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'APPLIED' ? 'bg-[#3b82f6]' : 'bg-[#5493f9]'
+							filter === 'APPLIED' ? 'bg-blue-1' : 'bg-blue-1/80'
 						}`}
 						size="sm"
 						onClick={() => setFilter('APPLIED')}
@@ -280,7 +291,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'INTERVIEWING' ? 'bg-[#f7c839]' : 'bg-[#ffd145]'
+							filter === 'INTERVIEWING' ? 'bg-yellow-1' : 'bg-yellow-1/80'
 						}`}
 						size="sm"
 						onClick={() => setFilter('INTERVIEWING')}
@@ -289,7 +300,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'OFFER' ? 'bg-[#11b981]' : 'bg-[#16d394]'
+							filter === 'OFFER' ? 'bg-green-1' : 'bg-green-1/80'
 						}`}
 						size="sm"
 						onClick={() => setFilter('OFFER')}
@@ -298,7 +309,7 @@ export function JobTracker({
 					</Button>
 					<Button
 						className={` text-white rounded-lg ${
-							filter === 'REJECTED' ? 'bg-[#FF5B5B]' : 'bg-[#fc6c6c]'
+							filter === 'REJECTED' ? 'bg-red-1' : 'bg-red-1/80'
 						}`}
 						size="sm"
 						onClick={() => setFilter('REJECTED')}

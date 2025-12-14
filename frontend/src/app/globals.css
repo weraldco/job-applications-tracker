@@ -54,6 +54,16 @@
 	--chart-4: 280 65% 60%;
 	--chart-5: 340 75% 55%;
 }
+
+@theme {
+	--color-red-1: #ff5b5b;
+	--color-blue-1: #3b82f6;
+	--color-green-1: #11b981;
+	--color-yellow-1: #f7c839;
+	--color-gray-1: #a7a8aa;
+	--color-orange-primary: rgb(255, 136, 4);
+}
+
 /* * {
 	border-color: hsl(var(--border));
 } */
@@ -119,4 +129,8 @@ button {
 
 .mobile-nav-menu {
 	@apply hover:bg-neutral-200/50  py-4 px-4 duration-200;
+}
+
+.sidebar-menu-item {
+	@apply bg-neutral-50 p-4 flex flex-row gap-2 hover:bg-neutral-100 duration-200 cursor-pointer rounded active:bg-neutral-200;
 }
