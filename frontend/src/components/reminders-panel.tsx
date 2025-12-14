@@ -13,10 +13,10 @@ import {
 import { fetcher } from '@/lib/utils';
 import { CreateReminderInput, JobType, ReminderType } from '@/types/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { Bell, CheckCircle, Clock, Plus, Trash2 } from 'lucide-react';
+import { Bell, Plus } from 'lucide-react';
 import { useState } from 'react';
 import ReminderAddModal from './reminder-add-modal';
+import RemindersItem from './reminders-item';
 
 export type ReminderFetchType = {
 	message: string;
@@ -93,32 +93,14 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 	if (isLoading) return <p>Loading..</p>;
 	if (error) return <p>Error fetching data</p>;
 	if (!data) return;
-	const getTypeColor = (type: string) => {
-		switch (type) {
-			case 'FOLLOW_UP':
-				return 'bg-blue-100 text-blue-800';
-			case 'INTERVIEW_PREP':
-				return 'bg-yellow-100 text-yellow-800';
-			case 'APPLICATION_DEADLINE':
-				return 'bg-red-100 text-red-800';
-			default:
-				return 'bg-gray-100 text-gray-800';
-		}
+
+	const handleUpdate = ({ id, data }: { id: string; data: any }) => {
+		updateReminderMutation.mutate({ id, data });
 	};
 
-	const getTypeLabel = (type: string) => {
-		switch (type) {
-			case 'FOLLOW_UP':
-				return 'Follow Up';
-			case 'INTERVIEW_PREP':
-				return 'Interview Prep';
-			case 'APPLICATION_DEADLINE':
-				return 'Deadline';
-			default:
-				return type;
-		}
+	const handleDelete = (id: string) => {
+		deleteReminderMutation.mutate(id);
 	};
-
 	const onClose = () => {
 		setIsAddReminderModalOpen(false);
 	};
@@ -126,105 +108,34 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 	return (
 		<>
 			<Card className=" border-0 bg-white">
-				<CardHeader>
-					<CardTitle className="flex items-center space-x-2">
-						<Bell className="h-5 w-5" />
-						<span>Reminders</span>
-					</CardTitle>
-					<CardDescription>
-						Stay on top of your job search tasks
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="space-y-4 ">
+				<CardHeader className="flex flex-row justify-between border-b border-neutral-200">
+					<div>
+						<CardTitle className="flex items-center space-x-2">
+							<Bell className="h-5 w-5" />
+							<span>Reminders</span>
+						</CardTitle>
+						<CardDescription className="text-neutral-600">
+							Stay on top of your job search tasks
+						</CardDescription>
+					</div>
 					<Button
-						className="w-full button-icon"
+						className="border-gray-400 border text-gray-400 hover:border-orange-primary active:border-orange-primary/80 hover:text-orange-primary duration-200"
 						size="sm"
 						onClick={() => setIsAddReminderModalOpen(true)}
 					>
 						<Plus className="h-4 w-4 mr-2" />
 						Add Reminder
 					</Button>
-
+				</CardHeader>
+				<CardContent className="space-y-4 ">
 					<div className="space-y-3 border-0 ">
 						{data.reminders.map((reminder: ReminderType) => (
-							<div
+							<RemindersItem
 								key={reminder.id}
-								className={`p-3 border border-neutral-300 rounded-lg ${
-									reminder.completed ? 'bg-gray-50 opacity-60' : 'bg-white'
-								}`}
-							>
-								<div className="flex items-start justify-between">
-									<div className="flex-1">
-										<div className="flex items-center space-x-2 mb-1">
-											<h4
-												className={`font-medium ${
-													reminder.completed ? 'line-through' : ''
-												}`}
-											>
-												{reminder.title}
-											</h4>
-											<Badge className={getTypeColor(reminder.type)}>
-												{getTypeLabel(reminder.type)}
-											</Badge>
-										</div>
-										<p className="text-sm text-gray-600 mb-2">
-											{reminder.description}
-										</p>
-										<div className="flex items-center space-x-1 text-xs text-gray-500">
-											<Clock className="h-3 w-3" />
-											<span>
-												{format(reminder.dueDate, 'MMM dd, yyyy - hh:mm')}
-											</span>
-										</div>
-									</div>
-									<div className="flex gap-2">
-										{reminder.completed ? (
-											<Button
-												variant="outline"
-												className=" p-2 border-neutral-900"
-												onClick={() =>
-													updateReminderMutation.mutate({
-														id: reminder.id,
-														data: {
-															completed: reminder.completed ? false : true,
-														},
-													})
-												}
-											>
-												<CheckCircle className=" text-green-500" size={16} />
-											</Button>
-										) : (
-											<Button
-												className="p-2 secondary-btn"
-												onClick={() =>
-													updateReminderMutation.mutate({
-														id: reminder.id,
-														data: {
-															completed: reminder.completed ? false : true,
-														},
-													})
-												}
-											>
-												<CheckCircle size={16} />
-											</Button>
-										)}
-										<Button
-											className="p-2 secondary-btn"
-											onClick={() => {
-												if (
-													confirm(
-														'Are you sure you want to delete this reminder?'
-													)
-												) {
-													deleteReminderMutation.mutate(reminder.id);
-												}
-											}}
-										>
-											<Trash2 size={16}></Trash2>
-										</Button>
-									</div>
-								</div>
-							</div>
+								reminder={reminder}
+								onUpdate={handleUpdate}
+								onDelete={handleDelete}
+							/>
 						))}
 					</div>
 

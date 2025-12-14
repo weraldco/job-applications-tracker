@@ -29,11 +29,11 @@ export function Sidebar({ userName, userEmail }: SidebarProps) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	const menuItems = [
-		{ name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-		{ name: 'Jobs', icon: Briefcase, path: '/jobs' },
-		{ name: 'Reminders', icon: Bell, path: '/reminders' },
-		{ name: 'Calendar', icon: Calendar, path: '/calendar' },
-		{ name: 'History', icon: History, path: '/history' },
+		{ name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+		{ name: 'Jobs', icon: Briefcase, path: '/dashboard/jobs' },
+		// { name: 'Reminders', icon: Bell, path: '/reminders' },
+		// { name: 'Calendar', icon: Calendar, path: '/calendar' },
+		// { name: 'History', icon: History, path: '/history' },
 	];
 
 	const handleNavigation = (path: string) => {

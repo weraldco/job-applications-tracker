@@ -54,6 +54,16 @@
 	--chart-4: 280 65% 60%;
 	--chart-5: 340 75% 55%;
 }
+
+@theme {
+	--color-red-1: #ff5b5b;
+	--color-blue-1: #3b82f6;
+	--color-green-1: #11b981;
+	--color-yellow-1: #f7c839;
+	--color-gray-1: #a7a8aa;
+	--color-orange-primary: rgb(255, 136, 4);
+}
+
 /* * {
 	border-color: hsl(var(--border));
 } */

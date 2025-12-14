@@ -106,3 +106,29 @@ export const urlConstructor = (url: string) => {
 	}
 	return { urlResult, type, error };
 };
+
+export const getTypeColor = (type: string) => {
+	switch (type) {
+		case 'FOLLOW_UP':
+			return 'bg-blue-1 text-white';
+		case 'INTERVIEW_PREP':
+			return 'bg-yellow-1 text-white';
+		case 'APPLICATION_DEADLINE':
+			return 'bg-red-1 text-white';
+		default:
+			return 'bg-gray-1 text-white';
+	}
+};
+
+export const getTypeLabel = (type: string) => {
+	switch (type) {
+		case 'FOLLOW_UP':
+			return 'Follow Up';
+		case 'INTERVIEW_PREP':
+			return 'Interview Prep';
+		case 'APPLICATION_DEADLINE':
+			return 'Deadline';
+		default:
+			return type;
+	}
+};
