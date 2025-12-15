@@ -84,7 +84,7 @@ button {
 }
 
 .primary-btn {
-	@apply space-x-2 bg-blue-500 text-amber-50 hover:bg-blue-400 active:bg-blue-600 duration-200;
+	@apply border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200;
 }
 .secondary-btn {
 	@apply border-neutral-400 text-neutral-400 duration-200 hover:border-orange-400 hover:text-orange-400 rounded-lg border;
@@ -134,3 +134,4 @@ button {
 .sidebar-menu-item {
 	@apply bg-neutral-50 p-4 flex flex-row gap-2 hover:bg-neutral-100 duration-200 cursor-pointer rounded active:bg-neutral-200;
 }
+

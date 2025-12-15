@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useState } from 'react';
+import SiteLogo from '../site-logo';
 
 const Header = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,18 +24,7 @@ const Header = () => {
 			<nav className="container mx-auto sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between h-16">
 					{/* Logo */}
-					<Link href="/" className="flex items-center space-x-2">
-						<Image
-							src="/images/logo.webp"
-							alt="JobStashr Logo"
-							width={200}
-							height={200}
-						/>
-						{/* <span className="text-xl sm:text-2xl font-bold text-primary">
-							JobStashr
-						</span> */}
-					</Link>
-
+					<SiteLogo className="w-60 lg:w-80"/>
 					{/* Desktop Navigation */}
 					<div className="hidden lg:flex items-center space-x-8">
 						<ul className="flex items-center space-x-6">

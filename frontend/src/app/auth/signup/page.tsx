@@ -2,6 +2,7 @@
 'use client';
 
 import LoadingState from '@/components/loading-state';
+import SiteLogo from '@/components/site-logo';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -89,16 +90,8 @@ export default function SignUpPage() {
 	if (loading) return <LoadingState />;
 	return (
 		<div className="min-h-screen flex items-center justify-center p-4 flex-col gap-4 bg-orange-50/70">
-			<div className="flex items-center justify-center">
-				<Link href="/" className="">
-					<Image
-						src="/images/logo.webp"
-						width={300}
-						height={300}
-						alt="jobstashr-logo"
-						className="w-60 md:w-80"
-					/>
-				</Link>
+			<div className="flex items-center justify-center ">
+				<SiteLogo  className="w-60 md:w-80 h-20 "/>
 			</div>
 			<Card className="w-full max-w-md bg-white border-0 rounded-2xl">
 				<CardHeader className="space-y-2 text-center">
