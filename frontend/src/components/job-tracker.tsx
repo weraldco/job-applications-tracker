@@ -234,7 +234,7 @@ export function JobTracker({
 							onClick={() => setIsSummarizerModalOpen(true)}
 							// className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
 							size="sm"
-							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
+							className="primary-btn"
 						>
 							<Sparkles className="h-4 w-4" />
 							<span>AI Summarize</span>
@@ -243,7 +243,7 @@ export function JobTracker({
 							onClick={() => setIsAddModalOpen(true)}
 							// className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
 							size="sm"
-							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
+							className="primary-btn"
 						>
 							<Plus className="h-4 w-4" />
 							<span>Add Job</span>
@@ -253,7 +253,7 @@ export function JobTracker({
 						<Button
 							size="sm"
 							onClick={() => setIsSummarizerModalOpen(true)}
-							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
+							className="primary-btn"
 						>
 							<Sparkles size={16} />
 							<span>AI</span>
@@ -261,7 +261,7 @@ export function JobTracker({
 						<Button
 							onClick={() => setIsAddModalOpen(true)}
 							size="sm"
-							className="border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200"
+							className="primary-btn"
 						>
 							<Plus size={18} />
 							Add
@@ -334,10 +334,10 @@ export function JobTracker({
 								: `No jobs with status "${filter.toLowerCase()}".`}
 						</p>
 						<Button
-							className="button-icon"
+							className="primary-btn"
 							onClick={() => setIsAddModalOpen(true)}
 						>
-							Add Your First Job
+							Add Your First Jobs
 						</Button>
 					</div>
 				) : (

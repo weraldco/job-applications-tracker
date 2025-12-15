@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import SiteLogo from '@/components/site-logo';
 export default function SignInPage() {
 	const { user, loading } = useAuthGuard({
 		redirectIfAuthenticated: true,
@@ -77,15 +78,7 @@ export default function SignInPage() {
 	return (
 		<div className="min-h-screen flex items-center justify-center p-4 flex-col gap-4 bg-orange-50/70 relative">
 			<div className="flex items-center justify-center">
-				<Link href="/" className="">
-					<Image
-						src="/images/logo.webp"
-						width={300}
-						height={300}
-						alt="jobstashr-logo"
-						className="w-60 md:w-80"
-					/>
-				</Link>
+				<SiteLogo  className="w-60 md:w-80 h-20 "/>
 			</div>
 			<Card className="w-full max-w-md bg-white border-0 rounded-2xl">
 				<CardHeader className="text-center space-y-2">
