@@ -83,8 +83,14 @@ button {
 	@apply bg-blue-500 px-6 py-8 text-base text-white rounded-lg hover:bg-blue-400 active:bg-blue-600 duration-200;
 }
 
-.primary-btn {
+.primary-btn-bordered {
 	@apply border border-neutral-400 text-neutral-400 hover:border-orange-primary hover:text-orange-primary duration-200;
+}
+.primary-btn-bordered-orange {
+	@apply border-1 border-[#ff9a6b] text-[#ff9a6b] hover:border-[#ff9a6b]/80 active:border-[#ff9a6b] duration-200;
+}
+.primary-btn {
+	@apply text-white bg-[#ff9a6b] hover:bg-[#ff9a6b]/80 active:bg-[#ff9a6b] duration-200 cursor-pointer;
 }
 .secondary-btn {
 	@apply border-neutral-400 text-neutral-400 duration-200 hover:border-orange-400 hover:text-orange-400 rounded-lg border;
@@ -134,4 +140,3 @@ button {
 .sidebar-menu-item {
 	@apply bg-neutral-50 p-4 flex flex-row gap-2 hover:bg-neutral-100 duration-200 cursor-pointer rounded active:bg-neutral-200;
 }
-

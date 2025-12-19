@@ -102,23 +102,25 @@ const ReminderAddModal = ({
 							Add your reminder to be more organize your job applications.
 						</CardDescription>
 					</div>
-					<button onClick={handleClose}>
-						<X />
-					</button>
+					<Button
+						size="sm"
+						variant="outline"
+						className="primary-btn-bordered px-2"
+						onClick={handleClose}
+					>
+						<X size="18" />
+					</Button>
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 						<div className="space-y-3">
-							<Label
-								htmlFor="title"
-								className="text-sm font-medium text-gray-700"
-							>
+							<Label htmlFor="title" className="input-label">
 								Reminder For what Job Posting *
 							</Label>
 							<div className="relative">
 								<select
 									{...register('jobId')}
-									className="text-sm border rounded px-2 py-1 bg-white cursor-pointer w-full"
+									className="text-sm border rounded px-2 py-2 bg-white cursor-pointer w-full input-field"
 									onClick={(e) => e.stopPropagation()}
 									defaultValue=""
 								>
@@ -139,15 +141,12 @@ const ReminderAddModal = ({
 						</div>
 
 						<div className="space-y-3">
-							<Label
-								htmlFor="title"
-								className="text-sm font-medium text-gray-700"
-							>
+							<Label htmlFor="title" className="input-label">
 								Reminder Title *
 							</Label>
 							<Input
 								id="title"
-								className="mt-1"
+								className="input-field"
 								placeholder="Enter your reminder title.."
 								{...register('title')}
 							/>
@@ -156,16 +155,13 @@ const ReminderAddModal = ({
 							)}
 						</div>
 						<div className="space-y-3">
-							<Label
-								htmlFor="description"
-								className="text-sm font-medium text-gray-700"
-							>
+							<Label htmlFor="description" className="input-label">
 								Reminder Description *
 							</Label>
 							<Textarea
 								id="description"
 								rows={3}
-								className="mt-1"
+								className="input-field"
 								placeholder="Enter your reminder description.."
 								{...register('description')}
 							/>
@@ -175,16 +171,13 @@ const ReminderAddModal = ({
 						</div>
 						<div className="flex flex-row items-center gap-20">
 							<div className="space-y-3">
-								<Label
-									htmlFor="title"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="title" className="input-label">
 									Reminder Type *
 								</Label>
 								<div className="relative">
 									<select
 										{...register('type')}
-										className="text-sm border rounded px-2 py-1 bg-white cursor-pointer"
+										className="text-sm border rounded px-2 py-2 input-field cursor-pointer"
 										onClick={(e) => e.stopPropagation()}
 									>
 										<option value="">Choose a type of reminder</option>
@@ -200,25 +193,29 @@ const ReminderAddModal = ({
 								)}
 							</div>
 							<div className="space-y-3">
-								<Label
-									htmlFor="title"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="title" className="input-label">
 									Reminder Due *
 								</Label>
 								<div>
-									<input type="datetime-local" {...register('dueDate')} />
+									<input
+										type="datetime-local"
+										{...register('dueDate')}
+										className="input-field border-neutrel-300 border px-3 py-1 rounded"
+									/>
 									{errors.dueDate && (
 										<p className="text-red-500">{errors.dueDate.message}</p>
 									)}
 								</div>
 							</div>
 						</div>
-						<div className=" flex flex-row gap-4">
+						<div className=" flex flex-row gap-4 mt-10">
 							<Button
 								type="submit"
 								disabled={isSubmitting}
-								className="flex-1 bg-blue-500 hover:bg-blue-400 acrive:bg-blue-600 duration-200 text-white"
+								// className="flex-1 bg-blue-500 hover:bg-blue-400 acrive:bg-blue-600 duration-200 text-white"
+
+								className=" w-full primary-btn
+"
 							>
 								{isSubmitting ? (
 									<>
@@ -229,13 +226,14 @@ const ReminderAddModal = ({
 									'Add new reminder'
 								)}
 							</Button>
-							<button
-								className="bg-blue-500 hover:bg-blue-400 acrive:bg-blue-600 duration-200 text-white px-4 py-1 rounded"
+							<Button
+								// className="bg-blue-500 hover:bg-blue-400 acrive:bg-blue-600 duration-200 text-white px-4 py-1 rounded"
+								className="primary-btn-bordered-orange"
 								type="button"
 								onClick={handleClose}
 							>
 								Cancel
-							</button>
+							</Button>
 						</div>
 					</form>
 				</CardContent>

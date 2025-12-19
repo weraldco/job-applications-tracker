@@ -36,7 +36,7 @@ const RemindersItem = ({
 							<Badge
 								className={`${getTypeColor(
 									reminder.type
-								)} text-center hidden md:flex`}
+								)} text-center hidden md:flex py-1 px-3`}
 							>
 								{getTypeLabel(reminder.type).toUpperCase()}
 							</Badge>
@@ -91,7 +91,9 @@ const RemindersItem = ({
 					</div>
 					{/* Reminder Content */}
 					<div className="flex items-start md:hidden">
-						<Badge className={`${getTypeColor(reminder.type)} text-center `}>
+						<Badge
+							className={`${getTypeColor(reminder.type)} text-center px-3 py-1`}
+						>
 							{getTypeLabel(reminder.type).toUpperCase()}
 						</Badge>
 					</div>

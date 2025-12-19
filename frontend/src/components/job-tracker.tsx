@@ -9,11 +9,12 @@ import { queryClient } from '@/lib/react-query';
 import { fetcher } from '@/lib/utils';
 import { JobStatus, JobType } from '@/types/types';
 import { useMutation } from '@tanstack/react-query';
-import { Briefcase, Plus, Sparkles } from 'lucide-react';
+import { Plus, Search, SearchCheck, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { JobsResponse } from './dashboard-client-wrapper';
 import { Card } from './ui/card';
+import { Input } from './ui/input';
 
 export interface JobInput {
 	title: string;
@@ -39,6 +40,7 @@ export function JobTracker({
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const [isSummarizerModalOpen, setIsSummarizerModalOpen] = useState(false);
 	const [filter, setFilter] = useState<JobStatus | 'ALL'>('ALL');
+	const [searchQuery, setSearchQuery] = useState('');
 
 	// add new Job
 	const addJobMutation = useMutation({
@@ -167,6 +169,7 @@ export function JobTracker({
 			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['jobs-data'] });
+			queryClient.invalidateQueries({ queryKey: ['reminder-data'] });
 		},
 	});
 	if (!jobs) {
@@ -192,9 +195,28 @@ export function JobTracker({
 		}
 	};
 
-	const filteredJobs =
-		filter === 'ALL' ? jobs : jobs.filter((job) => job.status === filter);
+	const filteredJobs = (
+		filter === 'ALL' ? jobs : jobs.filter((job) => job.status === filter)
+	).filter(
+		(job) =>
+			job.title.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
+			job.company.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
+	);
+	// 	  const filteredJobs =
+	// filter === 'ALL'
+	// 	? jobs
+	// 	: jobs.filter(
+	// 			(job) =>
+	// 				job.status === filter &&
+	// 				(job.title
+	// 					.toLocaleLowerCase()
+	// 					.includes(searchQuery.toLocaleLowerCase()) ||
+	// 					job.company
+	// 						.toLocaleLowerCase()
+	// 						.includes(searchQuery.toLocaleLowerCase()))
+	// 	  );
 
+	console.log(filteredJobs);
 	const statusCounts = {
 		APPLIED: jobs.filter((job) => job.status === 'APPLIED').length,
 		INTERVIEWING: jobs.filter((job) => job.status === 'INTERVIEWING').length,
@@ -232,7 +254,6 @@ export function JobTracker({
 					<div className="hidden md:flex space-x-2 ">
 						<Button
 							onClick={() => setIsSummarizerModalOpen(true)}
-							// className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
 							size="sm"
 							className="primary-btn"
 						>
@@ -241,7 +262,6 @@ export function JobTracker({
 						</Button>
 						<Button
 							onClick={() => setIsAddModalOpen(true)}
-							// className="flex flex-row gap-2 bg-[#737373] hover:bg-[#7f7f7f] active:bg-[#5c5c5c] text-white duration-200 rounded-lg"
 							size="sm"
 							className="primary-btn"
 						>
@@ -268,7 +288,15 @@ export function JobTracker({
 						</Button>
 					</div>
 				</div>
-
+				<div className="relative mb-4">
+					<Input
+						placeholder="Search job application.."
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						className="border-gray-1"
+					></Input>
+					<Search className="absolute top-2 right-2 text-gray-1 " />
+				</div>
 				{/* Status Filter */}
 				<div className="flex flex-wrap md:justify-start justify-center space-x-2 mb-4 gap-y-2">
 					<Button

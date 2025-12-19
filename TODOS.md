@@ -5,3 +5,5 @@
 - [] Medium: Resume parser and register all the details to your profile.
 - [] Medium: Profile x Job assestment and checking if you are fit to the position.
 - [] Normal: Sidebar
+- [] Job Comparison
+- 

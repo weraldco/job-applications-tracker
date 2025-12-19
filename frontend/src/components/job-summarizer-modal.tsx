@@ -279,7 +279,7 @@ export function JobSummarizerModal({
 						<CardContent>
 							<div className=" w-full flex items-center justify-center md:flex-row flex-col gap-4">
 								<Button
-									className="summarizer-btn w-full"
+									className="primary-btn p-8 text-base w-full"
 									onClick={() => {
 										setIsJobDescription(true);
 										setIsJobUrl(false);
@@ -289,7 +289,7 @@ export function JobSummarizerModal({
 									Use Job Description
 								</Button>
 								<Button
-									className="summarizer-btn w-full"
+									className="primary-btn p-8 text-base w-full"
 									onClick={() => {
 										setIsJobDescription(false);
 										setIsJobUrl(true);
@@ -299,7 +299,7 @@ export function JobSummarizerModal({
 									Use Job URL
 								</Button>
 								<Button
-									className="summarizer-btn w-full"
+									className="primary-btn p-8 text-base w-full"
 									onClick={() => {
 										setIsJobDescription(false);
 										setIsJobUrl(false);
@@ -435,7 +435,7 @@ export function JobSummarizerModal({
 									)}
 								</Button>
 								<Button
-									className="px-10 primary-btn"
+									className="px-10 primary-btn-bordered-orange"
 									onClick={() => {
 										setIsJobFile(false);
 										setFile(null);
@@ -644,7 +644,7 @@ export function JobSummarizerModal({
 									<Button
 										type="submit"
 										disabled={isSubmitting}
-										className="button-icon w-full"
+										className="primary-btn w-full"
 									>
 										{isSubmitting ? (
 											<>
@@ -660,7 +660,7 @@ export function JobSummarizerModal({
 										onClick={() => {
 											handleCancel();
 										}}
-										className="button-icon"
+										className="primary-btn-bordered-orange"
 									>
 										Cancel
 									</Button>

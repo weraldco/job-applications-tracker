@@ -328,7 +328,7 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 							<Button
 								type="submit"
 								disabled={isSubmitting}
-								className="button-icon flex-1 "
+								className="primary-btn flex-1 "
 							>
 								{isSubmitting ? (
 									<>
@@ -342,7 +342,7 @@ export function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
 							<Button
 								type="button"
 								onClick={handleClose}
-								className="button-icon"
+								className="primary-btn-bordered-orange "
 							>
 								Cancel
 							</Button>
