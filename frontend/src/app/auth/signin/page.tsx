@@ -14,14 +14,13 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '../../../lib/supabase';
 
 import LoadingState from '@/components/loading-state';
+import SiteLogo from '@/components/site-logo';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { Eye, EyeClosed, Lock, Mail } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import SiteLogo from '@/components/site-logo';
 export default function SignInPage() {
 	const { user, loading } = useAuthGuard({
 		redirectIfAuthenticated: true,
@@ -35,7 +34,7 @@ export default function SignInPage() {
 	// Show passwor
 	const [isShowPassword, setIsShowPassword] = useState(false);
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+	const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		setIsLoading(true);
@@ -64,6 +63,11 @@ export default function SignInPage() {
 				description: 'Successfully Login, welcome back!',
 			});
 
+			// Save a date when you successfully logged in.
+			if (data.session) {
+				localStorage.setItem('loginAt', Date.now().toString());
+			}
+
 			router.push('/dashboard');
 			router.refresh();
 		} catch (error) {
@@ -78,7 +82,7 @@ export default function SignInPage() {
 	return (
 		<div className="min-h-screen flex items-center justify-center p-4 flex-col gap-4 bg-orange-50/70 relative">
 			<div className="flex items-center justify-center">
-				<SiteLogo  className="w-60 md:w-80 h-20 "/>
+				<SiteLogo className="w-60 md:w-80 h-20 " />
 			</div>
 			<Card className="w-full max-w-md bg-white border-0 rounded-2xl">
 				<CardHeader className="text-center space-y-2">
@@ -88,7 +92,7 @@ export default function SignInPage() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-4">
+					<form onSubmit={handleLogin} className="space-y-4">
 						<div className="space-y-2 ">
 							<Label htmlFor="email" className="text-neutral-400 text-xs">
 								Your Email

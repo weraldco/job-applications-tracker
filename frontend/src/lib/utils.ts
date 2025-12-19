@@ -112,7 +112,7 @@ export const getTypeColor = (type: string) => {
 		case 'FOLLOW_UP':
 			return 'bg-blue-1 text-white';
 		case 'INTERVIEW_PREP':
-			return 'bg-yellow-1 text-white';
+			return 'bg-yellow-1/80 text-white';
 		case 'APPLICATION_DEADLINE':
 			return 'bg-red-1 text-white';
 		default:

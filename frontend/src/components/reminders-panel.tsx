@@ -119,7 +119,7 @@ export function RemindersPanel({ jobs }: { jobs: JobType[] | undefined }) {
 						</CardDescription>
 					</div>
 					<Button
-						className="border-gray-400 border text-gray-400 hover:border-orange-primary active:border-orange-primary/80 hover:text-orange-primary duration-200"
+						className="primary-btn"
 						size="sm"
 						onClick={() => setIsAddReminderModalOpen(true)}
 					>
