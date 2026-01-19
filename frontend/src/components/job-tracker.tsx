@@ -202,19 +202,6 @@ export function JobTracker({
 			job.title.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
 			job.company.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
 	);
-	// 	  const filteredJobs =
-	// filter === 'ALL'
-	// 	? jobs
-	// 	: jobs.filter(
-	// 			(job) =>
-	// 				job.status === filter &&
-	// 				(job.title
-	// 					.toLocaleLowerCase()
-	// 					.includes(searchQuery.toLocaleLowerCase()) ||
-	// 					job.company
-	// 						.toLocaleLowerCase()
-	// 						.includes(searchQuery.toLocaleLowerCase()))
-	// 	  );
 
 	console.log(filteredJobs);
 	const statusCounts = {

@@ -1,3 +1,5 @@
+//app.ts
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -22,7 +24,7 @@ app.use(
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
 		credentials: true,
-	})
+	}),
 );
 
 // Middleware
@@ -38,6 +40,5 @@ app.use('/api/v1/jobs', jobRouter);
 app.use('/api/v1/reminders', reminderRouter);
 app.use('/api/v1/ai', aiRouter);
 app.use('/api/v1/test', testRouter);
-app.listen(PORT, () => {
-	console.log(`Server is running in http://localhost:${PORT}`);
-});
+
+export default app;
