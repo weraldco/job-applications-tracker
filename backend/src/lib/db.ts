@@ -17,7 +17,7 @@ export const prisma =
 	globalForPrisma.prisma ??
 	new PrismaClient({
 		adapter, // Inject the adapter here
-		log: ['query', 'info', 'warn', 'error'], // Optional: Recommended logging setup
+		log: ['query', 'info', 'warn', 'error'], // Optional: Recommended logging setups
 	});
 
 if (process.env.NODE_ENV !== 'production') {
