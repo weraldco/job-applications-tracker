@@ -19,6 +19,7 @@ export async function fetcher<T>(
 	const access_token = data.session?.access_token;
 
 	if (!access_token) throw new Error('No session found');
+
 	const isFormData = options?.body instanceof FormData;
 	try {
 		const res = await fetch(url, {
@@ -26,7 +27,7 @@ export async function fetcher<T>(
 			headers: {
 				...(isFormData ? {} : { 'Content-Type': 'application/json' }),
 				Authorization: `Bearer ${access_token}`,
-				...options?.headers,
+				...(options?.headers || {}),
 			},
 		});
 
