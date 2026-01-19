@@ -23,22 +23,3 @@ export const prisma =
 if (process.env.NODE_ENV !== 'production') {
 	globalForPrisma.prisma = prisma;
 }
-
-// // src/lib/db.ts
-// import { PrismaClient } from '@prisma/client';
-
-// // Make Prisma Client a global variable in development
-// declare global {
-//   var prisma: PrismaClient | undefined;
-// }
-
-// // Use existing global Prisma in development to prevent too many connections
-// export const prisma =
-//   global.prisma ??
-//   new PrismaClient({
-//     log: ['query', 'info', 'warn', 'error'], // optional
-//   });
-
-// if (process.env.NODE_ENV !== 'production') {
-//   global.prisma = prisma;
-// }
