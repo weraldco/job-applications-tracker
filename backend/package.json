@@ -2,12 +2,13 @@
 	"name": "backend",
 	"version": "1.0.0",
 	"description": "A Node.js Express server using TypeScript.",
-	"main": "dist/index.js",
+	"main": "dist/local.js",
 	"type": "commonjs",
 	"scripts": {
 		"dev": "ts-node-dev --respawn --transpile-only src/local.ts",
 		"build": "prisma generate && tsc",
-		"start": "node dist/index.js"
+		"start": "node dist/local.js",
+		"postinstall": "prisma generate"
 	},
 	"keywords": [
 		"typescript",
