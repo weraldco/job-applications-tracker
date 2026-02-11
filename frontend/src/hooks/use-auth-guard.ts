@@ -30,14 +30,16 @@ export function useAuthGuard({
 			// Check the expiration first
 			const lastLogged = localStorage.getItem('loginAt');
 
-			const expired = Date.now() - Number(lastLogged) > MAX_SESSION_MS;
+			const expired = lastLogged
+				? Date.now() - Number(lastLogged) > MAX_SESSION_MS
+				: false;
 
 			if (expired) {
 				await supabase.auth.signOut();
 				localStorage.removeItem('loginAt');
 				setUser(null);
 				setLoading(false);
-				router.replace('/auth/signin');
+				if (redirectIfNotAuthenticated) router.replace(redirectPath);
 				return;
 			}
 
