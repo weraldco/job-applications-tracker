@@ -5,7 +5,7 @@
 		"outDir": "./dist",
 
 		// Environment Settings
-		"module": "CommonJS",
+		"module": "commonjs",
 		"target": "esnext",
 		"lib": ["esnext"],
 		"types": ["node"],
@@ -29,6 +29,7 @@
 		"skipLibCheck": true,
 		"moduleDetection": "force"
 	},
-	"include": ["src/**/*", "lib/**/*", "types"], // <-- ADD THIS LINE
+	"include": ["src/**/*", "lib/**/*", "types/**/*"],
+	// "include": ["src/**/*", "api/**/*"],
 	"exclude": ["node_modules", "dist"]
 }
