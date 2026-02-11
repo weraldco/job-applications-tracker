@@ -19,7 +19,11 @@ const PORT = process.env.PORT || 8080;
 // Allow frontend
 app.use(
 	cors({
-		origin: ['http://localhost:3000', 'https://jobstashr.vercel.app'],
+		origin: [
+			'http://localhost:3000',
+			'https://jobstashr.vercel.app',
+			'https://job-stashr.weraldco.com',
+		],
 
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
