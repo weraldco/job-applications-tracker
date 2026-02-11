@@ -7,7 +7,7 @@
 	"scripts": {
 		"dev": "ts-node-dev --respawn --transpile-only src/local.ts",
 		"build": "prisma generate && tsc",
-		"start": "node dist/local.js"
+		"start": "node dist/index.js"
 	},
 	"keywords": [
 		"typescript",
