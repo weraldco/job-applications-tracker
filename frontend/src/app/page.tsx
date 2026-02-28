@@ -1,24 +1,32 @@
-import ContactSection from '@/components/lading-page/contact-section';
-import CTASection from '@/components/lading-page/cta-section';
-import Footer from '@/components/lading-page/footer';
-import Header from '@/components/lading-page/header';
-import HeroSection from '@/components/lading-page/hero-section';
-import HowToUseSection from '@/components/lading-page/how-to-use-section';
-import ServicesSection from '@/components/lading-page/services-section';
+
+import { AnimateOnScroll } from '@/components/lading-page/animate-on-scroll';
+import { Features } from '@/components/lading-page/features';
+import { FinalCTA } from '@/components/lading-page/final-cta';
+import { Footer } from '@/components/lading-page/footer';
+import { Header } from '@/components/lading-page/header';
+import { Hero } from '@/components/lading-page/hero';
+import { HowItWorks } from '@/components/lading-page/how-it-works';
+import { ProblemSection } from '@/components/lading-page/problem-section';
 import { Suspense } from 'react';
 
 export default function LandingPage() {
 	return (
 		<Suspense fallback={<p>Verifying users..</p>}>
-			<div className="min-h-screen">
+			<div>
 				<Header />
-				<main>
-					<HeroSection />
-					<HowToUseSection />
-					<ServicesSection />
-					<CTASection />
-					<ContactSection />
-				</main>
+				<Hero />
+				<AnimateOnScroll>
+					<ProblemSection />
+				</AnimateOnScroll>
+				<AnimateOnScroll>
+					<HowItWorks />
+				</AnimateOnScroll>
+				<AnimateOnScroll>
+					<Features />
+				</AnimateOnScroll>
+				<AnimateOnScroll>
+					<FinalCTA />
+				</AnimateOnScroll>
 				<Footer />
 			</div>
 		</Suspense>
